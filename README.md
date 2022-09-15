@@ -3,7 +3,7 @@
 ## Crazy 8 Card Game ##
 
 # Who you’re working with (you and your team members)? #
-*List Team Members Here: Marco Roman, Tristan Stuart, Quinn Templeton, Emmanual Sapolucia,Christian Davis
+*List Team Members Here: Marco Roman, Tristan Stuart, Quinn Templeton, Emmanual Sapolucia,Christian Davis*
 
 # What you’re creating? #
 *We are are creating a Crazy 8 web app with multiplayer functionality.
