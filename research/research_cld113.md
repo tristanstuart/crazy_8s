@@ -1,4 +1,4 @@
-# Game Implementation Research - Christian Davis #
+# Christian Davis - Game Implementation Research  #
 
 **Purpose of Research (Why you are doing it)**
 
