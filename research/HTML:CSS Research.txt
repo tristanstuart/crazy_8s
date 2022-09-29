@@ -1,0 +1,54 @@
+HTML/CSS Research
+
+HTML:
+HTML is the most widely used language for developing web pages.
+It defines the structure of websites and formats web pages.
+Web Architecture:
+Website
+Your browser starts by loading the main HTML file, and then the CSS and JavaScript
+Userinteracts with the website and is not concerned with the backends of a web application
+Web server
+Once you've developed your website, you need to host it on a server
+ to make it accessible on the internet
+Server, along with the database contains all the data of a website and facilitates user interaction
+IP Address
+Website is hosted on an IP address
+We put a domain name over that IP address, the same way we put names over people’s phone numbers
+
+CSS:
+Css is not a programming language, it's in fact a styling language
+Css is often used for presentation
+Typically is attached to HTML elements in order to style the HTML
+Css is creatively focused and is geared towards allowing you to do what you want in terms of styling existing content.
+You can use multiple selectors to specify an ancestor of an element
+
+Syntax:
+
+selector{
+	property1: value;
+	property2 value;
+}
+
+Example:
+
+h1{
+	color: blue;
+}
+
+CSS Selectors:
+Element - Elements like in the previous examples turn all of the h1 blue
+Class - Lets you select HTML elements based upon its class
+ID - Like an HTML attribute but the element can only have ID but can have multiple classes
+Should be unique across the HTML but is not enforced
+CSS Selector Combinations:
+.selector-1.selector-2 {
+	property: value;
+}
+
+
+JavaScript:
+Allows fo us to have functional dynamic websites
+JavaScript can be implemented in the frontend and backend of a website inorder to make the website capable of the dynamic requests called for it.
+Can be used for mobile apps
+
+
