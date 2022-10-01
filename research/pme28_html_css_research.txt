@@ -1,0 +1,14 @@
+HTML and CSS Research
+
+This research is being done to familiarize myself with HTML and CSS. I have looked at files from this language
+before, but needed to do research on formatting standards and other features to ensure I could appropriately
+contribute to this project.
+
+This research will directly increase the quality of the portions of the front-end that I contribute to on this project.
+This includes the AboutMe page in sprint one, and any subsequent files in sprints two and three.
+
+For the first sprint, I expect to apply this research in writing the HTML and CSS for the AboutMe page of our
+website. In further sprints I expect to apply this information in other web elements.
+
+The specific task that I have to do for this sprint which is dependent on my research is the 'Create About Us HTML
+page' task.
