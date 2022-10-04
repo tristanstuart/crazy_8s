@@ -1,0 +1,24 @@
+Game Implementation Research
+/Assignment 13/
+
+Sockets:
+- Sockets are used nearly everywhere, but are one of the most severely misunderstood technologies around. 
+- INET sockets account for 99% od sockets in use
+- Client sockets are normally only used for one exchange
+- A web server is a bit more complex. First, the web server creates a server socket
+
+
+IPC:
+- If you need fast IPC between two processes on one machine, look into pipes or shared memory
+- If you need to use AF_INET sockets, bind the 'server' socket to 'localhost'. On most platforms 
+this will take a shortcut around a couple of layers of network code and its quite a bit faster.
+
+Using a Socket:
+- The first thing to note, is that the web browser's "client" socket and the web server's 
+"client" sockets are identical beasts
+	- This is a "peer to peer" conversation.
+- Normally, the connecting sockets starts the conversation, by sending in a request, or perhaps
+a signon.
+- The major stumbling block of sockets are the send and receive operations
+- Send and receive operate on network buffers and do not necessarily handle all the bytes you 
+hand them, because of their major focus is handling network buffers.
