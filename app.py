@@ -10,6 +10,13 @@ def index():
 def login():
 	return render_template('login.html')
 
+@app.route('/signup')
+def signup():
+	return render_template('signup.html')
+
+@app.route('/home')
+def home():
+	return render_template('index.html')
 
 
 if __name__ == '__main__':
