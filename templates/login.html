@@ -1,30 +1,30 @@
-<!DOCTYPE html>   
-<html>   
-<head>  
-<meta name="viewport" content="width=device-width, initial-scale=1">  
-<title> Login Page </title>  
-<link rel="stylesheet" href="static/styles/login1.css" type="text/css">
-</head>    
-<body>    
-    <center><h1> Crazy 8's Login Form </h1>  </center>
-    <div class="container">   
-        <form>  
-            <label>Username : </label>   
-            <input type="text" placeholder="Enter Username" name="username" required>  
-            <label>Password : </label>   
-            <input type="password" placeholder="Enter Password" name="password" required>  
-            <button type="submit">Login</button> 
-            <input type="checkbox" checked="checked"> Remember me   
-            <p>Forgot <a href="#"> password? </a> </p> 
-            <div id="back">  
-                <button type="submit" class="cancelbtn" href="{{ url_for('home') }}" value="Cancel" formnovalidate> 
-                    <a href="{{ url_for('home') }}">Cancel</a>
-                </button>   
-                <button type="submit" class="logbtn" href="{{ url_for('home') }}" value="Cancel" formnovalidate> 
-                    <a href="{{ url_for('signup') }}">Sign-Up</a>
-                </button>   
-            </div>
-        </form>     
-    </div>   
-</body>     
-</html>  
+{% extends "layout.html" %}
+{% block title %} Crazy 8's - Game Admin {% endblock %}
+{% block head %}
+{{ super() }}
+{% endblock %}
+{% block content %}
+<div>
+    <header>
+      <h1>Crazy 8's Login</h1>
+    </header>
+    <main >
+      <form id="start">
+        <input type="text" id="name" placeholder="User Name" required>
+        <br>
+        <input id="pass" type="text" placeholder="Password" required/>
+      </form>
+      <p>
+        Play cards with friends!
+      </p>
+      <a id="join" href="#" onclick="" >Sign-in</a>
+      <a id="create" href="/" >Cancel</a>
+      <p>Don't have an account?</p>
+      <a id="signup" href="/signup" >Sign-Up</a>
+    </main>
+  </div>
+  <footer></footer>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='login.js') }}"></script>
+{% endblock %}
