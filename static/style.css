@@ -207,3 +207,13 @@ footer a:hover {
   margin: .5rem 0;
   text-decoration: none;
 }
+
+#signup {
+  display: inline-block;
+  color: inherit;
+  background: lightblue;
+  padding: .5rem 1rem;
+  border-radius: 50px;
+  margin: .5rem 0;
+  text-decoration: none;
+}

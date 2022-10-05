@@ -27,6 +27,14 @@ def play(room):
 @app.route('/about_us')
 def about_us():
 	return render_template('about_us.html')
+
+@app.route('/login')
+def login():
+	return render_template('login.html')
+
+@app.route('/signup')
+def signup():
+	return render_template('signup.html')
 	
 def is_admin(id, room):
     return rooms[room] == id
