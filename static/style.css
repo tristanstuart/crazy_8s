@@ -112,21 +112,6 @@ button {
   margin-bottom: 1rem;
 }
 
-#buzz {
-  margin: auto;
-  border-radius: 100%;
-  height: 10rem;
-  width: 10rem;
-  border-bottom: .7rem solid #f8c8d0;
-  font-size: 3rem;
-  text-align: center;
-  padding: 0;
-}
-
-#buzz:active {
-  border-bottom-width: 3px;
-}
-
 #state {
   color: rgba(255,255,255, .7);
   font-size: 2.5rem;

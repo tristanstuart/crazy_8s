@@ -24,6 +24,10 @@ def admin():
 def play(room):
     return render_template('#') 
 
+@app.route('/about_us')
+def about_us():
+	return render_template('about_us.html')
+	
 def is_admin(id, room):
     return rooms[room] == id
 
@@ -67,9 +71,6 @@ def on_create(data):
         emit('create', True)
         print(f'created room: {room}')
 
-@app.route('/about_us')
-def about_us():
-	return render_template('about_us.html')
 
 
 if __name__ == '__main__':
