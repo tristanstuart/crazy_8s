@@ -22,7 +22,7 @@ def admin():
 
 @app.route('/<room>')
 def play(room):
-    return render_template('#') 
+    return render_template('play.html') 
 
 @app.route('/about_us')
 def about_us():
