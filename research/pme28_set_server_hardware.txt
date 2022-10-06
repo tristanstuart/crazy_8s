@@ -1,0 +1,1 @@
+This document is here to detail the work done for task FC8-25. The task was to setup the hardware for a Raspberry Pi that will be hosting our Flask-based web application. This task has been completed.
