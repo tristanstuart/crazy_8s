@@ -6,7 +6,7 @@ class Bot(Player):
         super().__init__(name)
 
     def chooseSuit(self):
-        suits = ["Diamonds","Hearts","Spades","Clubs"]
+        suits = ["Diamonds","Hearts","Clubs","Spades"]
         suit = random.choice(suits)
         return suit
     
