@@ -38,13 +38,17 @@
 ## Contributions
 - Marco
     - `Flask Research`
-        * https://bitbucket.org/cs3398f22ferengi/crazy_8s/commits/f041ca2e74ef17511f817b7f779e16be2338e72b
+        * Task: https://cs3398f22ferengi.atlassian.net/browse/FC8-14
+        * Commit: https://bitbucket.org/cs3398f22ferengi/crazy_8s/commits/f041ca2e74ef17511f817b7f779e16be2338e72b
     - `Create WelcomePage.html`
-        * https://bitbucket.org/cs3398f22ferengi/crazy_8s/commits/6049fc8d6a94babfed542ade44071b428561f6a6
+        * Task: https://cs3398f22ferengi.atlassian.net/browse/FC8-2
+        * Commit: https://bitbucket.org/cs3398f22ferengi/crazy_8s/commits/6049fc8d6a94babfed542ade44071b428561f6a6
     - `Clean up repo code to make it function with multiplayer`
-        * https://bitbucket.org/cs3398f22ferengi/crazy_8s/commits/484ce0a426804bb368510b76037625673bc05115
+        * Task: https://cs3398f22ferengi.atlassian.net/browse/FC8-22
+        * Commit: https://bitbucket.org/cs3398f22ferengi/crazy_8s/commits/484ce0a426804bb368510b76037625673bc05115
     - `Created simple Bot`
-        * https://bitbucket.org/cs3398f22ferengi/crazy_8s/commits/5576245612947437ced4fb5ef7acd6d69c4853974
+        * Task: https://cs3398f22ferengi.atlassian.net/browse/FC8-31
+        * Commit https://bitbucket.org/cs3398f22ferengi/crazy_8s/commits/5576245612947437ced4fb5ef7acd6d69c4853974
 - Christian
 - Emmanuel
 - Tristan
