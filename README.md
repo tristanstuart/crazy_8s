@@ -101,6 +101,7 @@
     * making the game playable
 - Emmanuel 
 - Tristan
+    * Work on connectivity between the front-end and back-end
 - Quinn
 	* Implement the login database to our website
 	* Implement the rules of Crazy 8 into our functioning website
