@@ -82,7 +82,15 @@
     - Setup Server Hardware 
         * Task: https://cs3398f22ferengi.atlassian.net/browse/FC8-25?atlOrigin=eyJpIjoiNGY2ZTFkMDQxMjg3NDI4YWIwMjM3Y2UwYzc1Y2ExNWEiLCJwIjoiaiJ9
         * Commit: https://bitbucket.org/cs3398f22ferengi/crazy_8s/commits/bb612ea0586e802b28f73db0b4e3788ff3b10b9d
+
 - Quinn
+    - HTML/CSS Research 
+        * Task: https://cs3398f22ferengi.atlassian.net/jira/software/projects/FC8/boards/2?assignee=6304d77555894b7fbddcc2f3&selectedIssue=FC8-12
+        * Commit: https://bitbucket.org/cs3398f22ferengi/crazy_8s/src/master/research/HTML_CSS%20Research.txt
+    - Multiplayer Implementation Research  
+        * Task: https://cs3398f22ferengi.atlassian.net/jira/software/projects/FC8/boards/2?assignee=6304d77555894b7fbddcc2f3&selectedIssue=FC8-15
+        * Commit: https://bitbucket.org/cs3398f22ferengi/crazy_8s/src/master/research/Game%20Implementation%20Research_qwt2.txt
+
 
 
 ## Next Steps
@@ -93,6 +101,8 @@
 - Emmanuel
 - Tristan
 - Quinn
+	* Implement the login database to our website
+	* Implement the rules of Crazy 8 into our functioning website
 
 ![Alt text](https://img.women.com/images/images/000/179/050/large/screen_shot_2019-04-17_at_1.53.25_pm.png?1555534518 "Crazy 8")
 
