@@ -2,6 +2,11 @@
 
 ## Crazy 8 Card Game ##
 
+## Table of Contents 
+-  [Info](#technologies)
+-  [Features](#features)
+-  [Setup](#setup)
+-  [Sprint 1](#sprint-1)
 # Who you’re working with (you and your team members)? #
 *Team Members Here: Marco Roman, Tristan Stuart, Quinn Templeton, Emmanual Sapolucia, Christian Davis*
 
@@ -50,6 +55,18 @@
         * Task: https://cs3398f22ferengi.atlassian.net/browse/FC8-31
         * Commit https://bitbucket.org/cs3398f22ferengi/crazy_8s/commits/5576245612947437ced4fb5ef7acd6d69c4853974
 - Christian
+    - `Game Implementation Research`
+        * [Task](https://cs3398f22ferengi.atlassian.net/jira/software/projects/FC8/boards/2?assignee=6306a1439278161d1937db38&selectedIssue=FC8-10)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/crazy_8s/commits/849a253d2a6a343d56b4c8fd49c1b327d0760656)
+    - `Multiplayer Server Research`
+        * [Task](https://cs3398f22ferengi.atlassian.net/jira/software/projects/FC8/boards/2?assignee=6306a1439278161d1937db38&selectedIssue=FC8-8)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/crazy_8s/commits/849a253d2a6a343d56b4c8fd49c1b327d0760656)
+    - `Create Game Room Server`
+        * [Task](https://cs3398f22ferengi.atlassian.net/jira/software/projects/FC8/boards/2?assignee=6306a1439278161d1937db38&selectedIssue=FC8-21)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/crazy_8s/commits/7e7f8e34b2026e0884110e79e067757b2efeb133)
+    - `Create sign-in/login pages`
+        * [Task]( https://cs3398f22ferengi.atlassian.net/jira/software/projects/FC8/boards/2?assignee=6306a1439278161d1937db38&selectedIssue=FC8-6)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/crazy_8s/commits/0418e64b920abd118bc2f4cb8b835a2e3caa4b7d)
 - Emmanuel
 - Tristan
     - Create About Us HTML Page 
@@ -78,3 +95,7 @@
 - Quinn
 
 ![Alt text](https://img.women.com/images/images/000/179/050/large/screen_shot_2019-04-17_at_1.53.25_pm.png?1555534518 "Crazy 8")
+
+## Setup
+
+## Sprint 1
