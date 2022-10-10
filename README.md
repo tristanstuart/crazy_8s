@@ -2,6 +2,11 @@
 
 ## Crazy 8 Card Game ##
 
+## Table of Contents 
+-  [Info](#technologies)
+-  [Features](#features)
+-  [Setup](#setup)
+-  [Sprint 1](#sprint-1)
 # Who you’re working with (you and your team members)? #
 *Team Members Here: Marco Roman, Tristan Stuart, Quinn Templeton, Emmanual Sapolucia, Christian Davis*
 
@@ -34,3 +39,7 @@
 * *Tutorial(Emmanuel): Make a mandatory tutorial with the option to access later*
 
 ![Alt text](https://img.women.com/images/images/000/179/050/large/screen_shot_2019-04-17_at_1.53.25_pm.png?1555534518 "Crazy 8")
+
+## Setup
+
+## Sprint 1
