@@ -15,7 +15,7 @@
 *We hope hope to connect loved ones and card game enthusiast alike into one community that who connect through playing crazy 8.*
 
 # Technologies # 
-* *Pyhton*
+* *Python*
 * *JavaScript*
 * *SQL*
 * *Flask*
@@ -48,6 +48,19 @@
 - Christian
 - Emmanuel
 - Tristan
+    - Create About Us HTML Page 
+        * Task: https://cs3398f22ferengi.atlassian.net/browse/FC8-3?atlOrigin=eyJpIjoiZDk0MzE0NGVmMTMyNDI4NWI3OTZhMDFmOGJiMjMwYTUiLCJwIjoiaiJ9
+        * Commit: https://bitbucket.org/cs3398f22ferengi/crazy_8s/commits/4555029ad3c8699e8b2d2a539632b03251579175
+        * Commit: https://bitbucket.org/cs3398f22ferengi/crazy_8s/commits/6b4bc7b0c6eaa6226bbb25c1b1f61ee9e308971a
+    - HTML/CSS Research 
+        * Task: https://cs3398f22ferengi.atlassian.net/browse/FC8-13?atlOrigin=eyJpIjoiM2M5MmYzNGI4NGFmNDEzY2E0ODFmZjM4YmI5ZmQ3NDIiLCJwIjoiaiJ9
+        * Commit: https://bitbucket.org/cs3398f22ferengi/crazy_8s/commits/70e5137bd4df62ed1723771435593de3495d8130
+    - Setup Server Software 
+        * Task: https://cs3398f22ferengi.atlassian.net/browse/FC8-30?atlOrigin=eyJpIjoiMmM3MTIxZjA3Zjc4NDc2ZmFmZmRmMTdhYmI1NjcyM2IiLCJwIjoiaiJ9
+        * Commit: https://bitbucket.org/cs3398f22ferengi/crazy_8s/commits/ff99fc8d5e0b48ecde59942fe6f289964eaf353f
+    - Setup Server Hardware 
+        * Task: https://cs3398f22ferengi.atlassian.net/browse/FC8-25?atlOrigin=eyJpIjoiNGY2ZTFkMDQxMjg3NDI4YWIwMjM3Y2UwYzc1Y2ExNWEiLCJwIjoiaiJ9
+        * Commit: https://bitbucket.org/cs3398f22ferengi/crazy_8s/commits/bb612ea0586e802b28f73db0b4e3788ff3b10b9d
 - Quinn
 
 
