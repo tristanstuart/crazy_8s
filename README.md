@@ -90,7 +90,8 @@
     * make the game function in online multiplayer using socketio
     * Add tests to game logic
 - Christian
-- Emmanuel
+    * making the game playable
+- Emmanuel 
 - Tristan
 - Quinn
 
