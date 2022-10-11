@@ -19,7 +19,8 @@ class Player():
                     valid_play = True
                     if len(deck) > 0:
                         self.cards.append(deck.pop())
-                        print("You drew: " + self.cards[len(self.cards)-1]) 
+                        
+                        print("You drew: " + str(self.cards[len(self.cards)-1])) 
                     else:
                         print("There are no cards left in the deck.")
                     return
