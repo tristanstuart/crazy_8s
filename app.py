@@ -11,30 +11,6 @@ socketio.init_app(app, cors_allowed_origins="*")
 
 
 rooms = {}
-
-@app.route('/')
-def index():
-	return render_template('index.html')
-
-@app.route('/admin')
-def admin():
-    return render_template('admin.html')
-
-@app.route('/<room>')
-def play(room):
-    return render_template('play.html') 
-
-@app.route('/about_us')
-def about_us():
-	return render_template('about_us.html')
-
-@app.route('/login')
-def login():
-	return render_template('login.html')
-
-@app.route('/signup')
-def signup():
-	return render_template('signup.html')
 	
 def is_admin(id, room):
     return rooms[room] == id

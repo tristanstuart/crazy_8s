@@ -8,6 +8,7 @@ import Footer from './components/Footer'
 import AboutUs from "./components/AboutUs";
 import Header from "./components/Header";
 import Home from "./components/Home";
+import CreateGame from "./components/CreateGame";
 import { Route, Routes } from "react-router-dom";
 
 let endPoint = "http://localhost:5000";
@@ -24,7 +25,9 @@ const App = () => {
       <Header />
       <Routes>
         <Route path ='/' element={<JoinGameForm />} />
+        <Route path ='joinGame' element={<JoinGameForm />} />
         <Route path ='about' element={<AboutUs />} />
+        <Route path ='createGame' element={<CreateGame />} />
       </Routes>
       {/* <JoinGameForm /> */}
       {/* <Footer /> */}

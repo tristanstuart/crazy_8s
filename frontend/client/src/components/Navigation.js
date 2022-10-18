@@ -14,10 +14,32 @@ function Navigation(){
             className="fixed bg-white top-0 left-0 w-4/5 h-full shadow p-3 "
         >
             <span className="font-bold block p-3">The Menu</span>
-            <NavLink className={"block p-1"} to="/">
+            <NavLink 
+                className={"block p-1"} 
+                to="/" 
+                onClick={() => setShowMenu(!showMenu)}
+            >
                 Home
             </NavLink>
-            <NavLink className={"block p-1"}  to="/about">
+            <NavLink 
+                className={"block p-1"} 
+                to="joinGame"
+                onClick={() => setShowMenu(!showMenu)}
+            >
+                Join Game
+            </NavLink>
+            <NavLink 
+                className={"block p-1"} 
+                to="createGame"
+                onClick={() => setShowMenu(!showMenu)}
+            >
+                Create Game
+            </NavLink>
+            <NavLink 
+                className={"block p-1"}  
+                to="/about"
+                onClick={() => setShowMenu(!showMenu)}
+            >
                 About
             </NavLink>
         </div>
