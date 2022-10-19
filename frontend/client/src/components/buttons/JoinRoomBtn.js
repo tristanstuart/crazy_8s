@@ -10,7 +10,7 @@ var socket = io.connect(sensorEndpoint, {
 
 
 function JoinRmBtn(props){
-    const data = {room: props.room}
+    
     return (
         <Link to=''>
             <button id="join" 
@@ -18,11 +18,11 @@ function JoinRmBtn(props){
                 p-3
                 text-xl 
                 rounded-full 
-                bg-green-300
                 mt-1
+                bg-green-300
             "
                 onClick={() => {
-                    socket.emit("join", {name: 'test name', room: 'test room'})
+                    socket.emit("join", {name: props.name, room: props.room})
                 }}
             >
                 Join Game
