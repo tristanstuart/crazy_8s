@@ -8,6 +8,7 @@ var socket = io.connect(sensorEndpoint, {
     // transports: ['websocket']
 });
 
+
 function JoinRmBtn(props){
     const data = {room: props.room}
     return (

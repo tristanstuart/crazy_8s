@@ -12,6 +12,7 @@ socketio.init_app(app, cors_allowed_origins="*")
 
 
 rooms = {}
+user={"username":"marco"}
 
 
 def is_admin(id, room):
@@ -28,6 +29,15 @@ def on_admin_disconnect(data):
         if is_admin(request.sid, room):
             del rooms[room]
     emit('leave')
+
+@socketio.on("login")
+def login(data):
+    if user.get("username") != None:
+        print(data["username"],data["password"])
+        return
+    emit("received","user logged in")
+
+
 
 # only emitted by players
 

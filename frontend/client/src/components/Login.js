@@ -1,21 +1,37 @@
-import {useState} from 'react'
+import {useEffect, useState} from 'react'
 import io from 'socket.io-client'
 import {BrowserRouter as Router, Route, Link, Routes} from 'react-router-dom';
 
-
+var sensorEndpoint = "http://127.0.0.1:5000/"
+var socket = io.connect(sensorEndpoint, {
+    // reconnection: true,
+    // transports: ['websocket']
+});
 const Login = () =>{
     document.title = "Login"
     const [username,setUser] = useState("");
     const [password,setPass] = useState("")
     const [warn,setWarning] = useState("");
 
-    const signin =()=>{
-        if(username ==="" || password ===""){
-            setWarning("Cannot leave fields blank")
-        }else{
-            //do stuff with socketio to verify use in database
-            setWarning('setup socketio')
-        }
+    useEffect(()=>{
+      socket.on("received",e=>{
+      console.log(e)
+      })
+      socket.on("error",error=>{
+        setWarning(error)
+
+      })
+    return ()=>{
+      socket.off("received")
+    }},[])  
+  
+
+    const signin = () =>{
+      if(username ==="" || password ===""){
+        setWarning("Cannot leave fields blank")
+        return
+      } 
+      socket.emit("login",{"username":username,"password":password})
     }
 
     return(<div>
@@ -27,14 +43,11 @@ const Login = () =>{
         <input onChange={e=>setUser(e.target.value)} style={{textAlign:'center',}} id="username" type="text" placeholder="User Name" required/>
         <input onChange={e=>setPass(e.target.value)} style={{textAlign:'center',}} id="password" type="text" placeholder="Password" required/>
       </div>
-      <p>{warn}</p>
-        <div style={{display:'grid',justifyContent:'center',margin:'15px'}}>
-            
-            
-        </div>
+      <p style={{display:"flex",justifyContent:'center'}}>{warn}</p>
+      
 
         <div style={{display:'grid',justifyContent:"center",gridTemplateColumns:'repeat(2,max-content)',gap:'15px'}}>
-        <a  style={{backgroundColor:"lightblue",borderRadius:'30px',padding:'10px 15px 10px 15px'}} onClick={signin} >Sign-in</a>
+        <a href="#" style={{backgroundColor:"lightblue",borderRadius:'30px',padding:'10px 15px 10px 15px'}} onClick={signin} >Sign-in</a>
             <Link style={{backgroundColor:"lightcoral",borderRadius:'30px',padding:'10px 15px 10px 15px'}} to="/singup"  >Cancel</Link>
         </div>
       
