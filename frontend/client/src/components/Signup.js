@@ -1,6 +1,6 @@
 import {useState,useEffect} from 'react'
 import io from 'socket.io-client'
-import {BrowserRouter as Router, Route, Link, Routes} from 'react-router-dom';
+import {BrowserRouter as Link} from 'react-router-dom';
 
 var sensorEndpoint = "http://127.0.0.1:5000/"
 var socket = io.connect(sensorEndpoint, {});
@@ -50,7 +50,7 @@ const SignUp = () =>{
             </div>
             <p style={{display:'flex',justifyContent:'center',margin:'15px'}}>{warning}</p>
             <div style={{display:'grid',justifyContent:"center",gridTemplateColumns:'repeat(2,max-content)',gap:'15px'}}>
-                <a id="join" href="#" onClick={create} style={{backgroundColor:"lightblue",borderRadius:'30px',padding:'10px 15px 10px 15px'}}>Create Account!</a>
+                <a id="join" href="null" onClick={create} style={{backgroundColor:"lightblue",borderRadius:'30px',padding:'10px 15px 10px 15px'}}>Create Account!</a>
                 <Link to="/" style={{backgroundColor:"lightcoral",borderRadius:'30px',padding:'10px 15px 10px 15px'}}>Cancel</Link>
             </div>
             </main>

@@ -10,7 +10,7 @@ function JoinGame(){
     const [room,setRoom] = useState("");
 
     useEffect(()=>{
-        socket.on("received",e=>{
+        socket.on("join",e=>{
         console.log(e)
         })
       return ()=>{
