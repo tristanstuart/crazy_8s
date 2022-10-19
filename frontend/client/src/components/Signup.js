@@ -2,24 +2,38 @@ import {useState,useEffect} from 'react'
 import io from 'socket.io-client'
 import {BrowserRouter as Router, Route, Link, Routes} from 'react-router-dom';
 
+var sensorEndpoint = "http://127.0.0.1:5000/"
+var socket = io.connect(sensorEndpoint, {});
+
 const SignUp = () =>{
     document.title = "Sign-Up"
     const [user,setUser] = useState("")
     const [pass,setPass] = useState("")
     const [repass,setRepass] = useState("")
-    const [warning,setWarn] = useState("")
+    const [warning,setWarning] = useState("")
+
+    useEffect(()=>{
+        socket.on("userCreated",message=>{
+            setWarning(message)
+        })
+
+        socket.on("error",error=>{
+            setWarning(error)
+        })
+    },[])
+
     const create = () =>{
         if(user ==="" || pass ==="" || repass ===""){
-            setWarn("Cannot leave fields blamk")
+            setWarning("Cannot leave fields blank")
             return
         }else if(pass !== repass){
-            setWarn("Passwords do not match")
+            setWarning("Passwords do not match")
             return
         }
         //cannot call io in here?
-        setWarn("figure out how to to send this info to socket io")
+        socket.emit("signup",{"username":user,"password":pass})
         
-    }
+    }    
 
     return(
         <div>
@@ -34,7 +48,7 @@ const SignUp = () =>{
                 
                 <input style={{textAlign:'center'}} onChange={e=>setRepass(e.target.value)} type="text" placeholder="Re-Enter Password" required/>
             </div>
-            <p>{warning}</p>
+            <p style={{display:'flex',justifyContent:'center',margin:'15px'}}>{warning}</p>
             <div style={{display:'grid',justifyContent:"center",gridTemplateColumns:'repeat(2,max-content)',gap:'15px'}}>
                 <a id="join" href="#" onClick={create} style={{backgroundColor:"lightblue",borderRadius:'30px',padding:'10px 15px 10px 15px'}}>Create Account!</a>
                 <Link to="/" style={{backgroundColor:"lightcoral",borderRadius:'30px',padding:'10px 15px 10px 15px'}}>Cancel</Link>

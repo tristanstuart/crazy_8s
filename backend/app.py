@@ -12,7 +12,9 @@ socketio.init_app(app, cors_allowed_origins="*")
 
 
 rooms = {}
-user={"username":"marco"}
+
+#delete after database setup
+users=[{"username":"test","password":"test"},{"username":"test2","password":"test2"}]
 
 
 def is_admin(id, room):
@@ -30,14 +32,26 @@ def on_admin_disconnect(data):
             del rooms[room]
     emit('leave')
 
+#login and signup
+
 @socketio.on("login")
 def login(data):
-    if user.get("username") != None:
-        print(data["username"],data["password"])
+    ##edit when we have access to database
+    
+    if data in users:
+        emit("received","user logged in")
         return
-    emit("received","user logged in")
 
+    emit("error","Wrong Username/Password")
 
+@socketio.on("signup")
+def signUp(data):
+    ##edit when we have access to database
+    if data in users:
+        emit("error","Username taken.")
+        return
+    users.append(data)
+    emit("userCreated", "User created. Please log in")
 
 # only emitted by players
 
