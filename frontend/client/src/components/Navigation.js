@@ -42,6 +42,19 @@ function Navigation(){
             >
                 About
             </NavLink>
+            <NavLink to="login" 
+                className={"block p-1"}  
+                onClick={() => setShowMenu(!showMenu)}
+            >
+                Login
+            </NavLink>
+            <NavLink to="signup" 
+                className={"block p-1"}  
+                onClick={() => setShowMenu(!showMenu)}
+            >
+                Sign-Up
+            </NavLink>
+            
         </div>
         menuMask = 
         <div
