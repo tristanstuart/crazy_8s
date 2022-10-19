@@ -19,11 +19,8 @@ import Login from './components/Login'
 
 
 const App = () => {
-
-  
   return (
     <div>
-      
       <Header />
       <Routes>
         <Route path ='/' element={<Home  />} />
@@ -35,12 +32,9 @@ const App = () => {
         <Route path ='about' element={<AboutUs />} />
         <Route path ='createGame' element={<CreateGame />} />
         <Route path ='socketDashboard' element={<SocketDashboard />} />
-
       </Routes>
       <Footer />
     </div>
-      
-    
   );
 }
 
