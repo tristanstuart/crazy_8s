@@ -1,2 +1,0 @@
-This is for assignment 13, for pull requests. I cannot push code because i can not build my codes 
-properly at the moment but will figure that out soon.

@@ -2,13 +2,13 @@ import React from "react";
 
 function CreateGame(){
     return (
-        <div>
-            <form id="start" class="center">
-                <input type="text" id="user" placeholder="User Name" />
+        <div className="flex items-center justify-center h-screen text-xl ">
+            <form id="start">
+                <input type="text" id="user" placeholder="User Name" className="p-3" />
                 <br/>
-                <input id="room" type="text" placeholder="Room Name" />
+                <input id="room" type="text" placeholder="Room Name" className="p-3"/>
                 <br/>
-                <input id="create" type="button" onclick="createRoom()" value="Create Game" />
+                <button className="p-3">Create Game</button>
             </form>
         </div>
     )
