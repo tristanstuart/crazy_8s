@@ -59,14 +59,18 @@ def exists(data):
 
 @socketio.on('create')
 def on_create(data):
+    name = data['username']
     room = data['room']
-    if (room in rooms or len(room) < 3):
+    print(type(room), room)
+    if (room in rooms ): #or len(room) < 3
         emit('create', False)
+        print('room not created')
     else:
         join_room(room)
         rooms[room] = request.sid
         emit('create', True)
         print(f'created room: {room}')
+    
 
 
 
