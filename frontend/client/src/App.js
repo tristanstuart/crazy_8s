@@ -11,18 +11,9 @@ import Home from "./components/Home";
 import CreateGame from "./components/CreateGame";
 import { Route, Routes } from "react-router-dom";
 import SocketDashboard from "./components/SocketDashboard"
-
-// let endPoint = "http://127.0.0.1:5000";
-// let socket = io.connect(`${endPoint}`);
-import Page from './components/Card'
-import Login from './components/Login'
 import SignUp from './components/Signup'
-
-import Page from './components/Card'
 import Login from './components/Login'
-import SignUp from './components/Signup'
 
-import SocketDashboard from "./components/SocketDashboard"
 
 
 // let endPoint = "http://127.0.0.1:5000";
@@ -38,7 +29,6 @@ const App = () => {
       <Header />
       <Routes>
         <Route path ='/' element={<Home  />} />
-        <Route path ='joinGame' element={<JoinGameForm />} />
         <Route path ='about' element={<AboutUs />} />
         <Route path ='createGame' element={<CreateGame />} />
         <Route path="login" element={<Login/>}/>
