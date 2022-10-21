@@ -2,13 +2,14 @@ class Player():
     def __init__(self,name) -> None:
         self.name = name;
         self.cards = []
+        self.coco = {"cards":{1:"AH"}}
 
     def player_turn(self,up_card,deck,pile,activeSuit):
         valid_play = False
         is_eight = False
         print( "\nYour hand: ")
         for card in self.cards:
-            print("   " + card.short_name)
+            print("   " + card.shortname)
 
         print("What do you want to do?")
         response = input("Type a card to play or 'Draw' to take a card: ")
@@ -26,7 +27,7 @@ class Player():
                     return
                 else:
                     for card in self.cards:
-                        if response.upper() == card.short_name:
+                        if response.upper() == card.shortname:
                             selected_card = card
                     if selected_card == None:
                         response = input("You don't have that card. Try again: ")

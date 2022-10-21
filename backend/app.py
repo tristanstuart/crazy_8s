@@ -1,17 +1,15 @@
-from urllib import response
-from flask import Flask, render_template, request, url_for
-from flask_socketio import SocketIO, emit, join_room, send
+from flask import Flask, request
+from flask_socketio import SocketIO, emit, join_room
 import os
 
 from logic.game import Game
+from _thread import *
 
 app = Flask(__name__)
 SECRET_KEY = os.urandom(32)
 app.config['SECRET_KEY'] = SECRET_KEY
 socketio = SocketIO(app,cors_allowed_origins="*")
 socketio.init_app(app, cors_allowed_origins="*")
-
-
 
 rooms = {}
 
@@ -70,6 +68,14 @@ def on_join(data):
 def exists(data):
     room = data['room']
     emit('exists', room in rooms)
+
+@socketio.on("begin game")
+def beginGame(data):
+    Game(data).gameStart(),()
+    # try:
+    #     start_new_thread(Game(data).gameStart(),())
+    # except:
+    #     emit("error","there was an error starting the game")
 
 # only emitted by admin
 

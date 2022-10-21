@@ -1,11 +1,10 @@
 import {useEffect, useState} from 'react'
-import io from 'socket.io-client'
 import JoinRmBtn from "./buttons/JoinRoomBtn";
 
-var sensorEndpoint = "http://127.0.0.1:5000/"
-var socket = io.connect(sensorEndpoint);
 
-function JoinGame(){
+function JoinGame(props){
+
+    const socket = props.socket
     const [username,setUser] = useState("");
     const [room,setRoom] = useState("");
 
@@ -34,7 +33,7 @@ function JoinGame(){
                                 type="text" 
                                 placeholder="Enter Room Code" 
                                 className="p-3 text-2xl rounded-full mt-1"
-                                input onChange={e=>setRoom(e.target.value)}
+                                onChange={e=>setRoom(e.target.value)}
                                   
                             />
                         </form>

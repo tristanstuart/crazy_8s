@@ -1,9 +1,8 @@
 import {useEffect, useState} from 'react'
-import {BrowserRouter as Router, Route, Link, Routes} from 'react-router-dom';
+import {BrowserRouter as  Route, Link, Routes} from 'react-router-dom';
 
 const Login = props =>{
     document.title = "Login"
-    // const [socket,setSock] = useState(props.socket)
     const socket = props.socket
     const [username,setUser] = useState("");
     const [password,setPass] = useState("")

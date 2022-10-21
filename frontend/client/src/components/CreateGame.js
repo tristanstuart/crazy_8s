@@ -1,18 +1,16 @@
 import {useEffect, useState} from 'react'
-import io from 'socket.io-client'
 import AlertBox from './AlertBox';
 
-var sensorEndpoint = "http://127.0.0.1:5000/"
-var socket = io.connect(sensorEndpoint);
-
-function CreateGame(){
+function CreateGame(props){
     const [username,setUser] = useState("");
     const [room,setRoom] = useState("");
     const [error, setError] = useState(false)
 
+    const socket = props.socket
+
     useEffect(()=>{
         socket.on("create",e=>{
-            if (e == false) {
+            if (e === false) {
                 console.log('room taken')
                 setError(true)
                 

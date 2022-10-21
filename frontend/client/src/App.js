@@ -22,13 +22,12 @@ const App = () => {
     <div>
       <Header />
       <Routes>
-        <Route path ='/' element={<Home  />} />
+        <Route path ='/' element={<Home/>} />
         <Route path ='about' element={<AboutUs />} />
-        <Route path ='createGame' element={<CreateGame />} />
+        <Route path ='createGame' element={<CreateGame socket={socket}/>} />
         <Route path="login" element={<Login socket={socket}/>}/>
         <Route path="signup" element={<SignUp socket={socket}/>}/>
-        <Route path ='joinGame' element={<JoinGame />} />
-        <Route path ='about' element={<AboutUs />} />
+        <Route path ='joinGame' element={<JoinGame socket={socket}/>} />
         <Route path ='createGame' element={<CreateGame />} />
         <Route path ='socketDashboard' element={<SocketDashboard />} />
         <Route path='gameroom' element={<Room socket={socket}/>}/>
