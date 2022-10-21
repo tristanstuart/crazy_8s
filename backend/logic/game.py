@@ -1,8 +1,8 @@
 from random import shuffle
-from cards import Card
-from deck import Deck
-from player import Player
-from bot import Bot
+from logic.cards import Card
+from logic.deck import Deck
+from logic.player import Player
+from logic.bot import Bot
 
 class Game():
     def __init__(self) -> None:

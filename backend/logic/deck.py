@@ -1,4 +1,4 @@
-from cards import Card
+from logic.cards import Card
 
 class Deck():
     def __init__(self) -> None:

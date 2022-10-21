@@ -3,6 +3,8 @@ from flask import Flask, render_template, request, url_for
 from flask_socketio import SocketIO, emit, join_room, send
 import os
 
+from logic.game import Game
+
 app = Flask(__name__)
 SECRET_KEY = os.urandom(32)
 app.config['SECRET_KEY'] = SECRET_KEY

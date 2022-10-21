@@ -1,23 +1,27 @@
 import {useState,useEffect} from 'react'
-import io from 'socket.io-client'
 import {BrowserRouter as Router, Route, Link, Routes} from 'react-router-dom';
 
-var sensorEndpoint = "http://127.0.0.1:5000/"
-var socket = io.connect(sensorEndpoint, {});
 
-const SignUp = () =>{
-    document.title = "Sign-Up"
+const SignUp = props =>{
+    
     const [user,setUser] = useState("")
     const [pass,setPass] = useState("")
     const [repass,setRepass] = useState("")
     const [warning,setWarning] = useState("")
+    
+    const socket = props.socket
+    
+    document.title = "Sign-Up"
+    
 
     useEffect(()=>{
         socket.on("userCreated",message=>{
+            console.log(message)
             setWarning(message)
         })
 
         socket.on("error",error=>{
+            console.log(error)
             setWarning(error)
         })
     },[])
@@ -30,9 +34,7 @@ const SignUp = () =>{
             setWarning("Passwords do not match")
             return
         }
-        //cannot call io in here?
         socket.emit("signup",{"username":user,"password":pass})
-        
     }    
 
     return(
@@ -50,7 +52,7 @@ const SignUp = () =>{
             </div>
             <p style={{display:'flex',justifyContent:'center',margin:'15px'}}>{warning}</p>
             <div style={{display:'grid',justifyContent:"center",gridTemplateColumns:'repeat(2,max-content)',gap:'15px'}}>
-                <a id="join" href="#" onClick={create} style={{backgroundColor:"lightblue",borderRadius:'30px',padding:'10px 15px 10px 15px'}}>Create Account!</a>
+                <button id="join" onClick={create} style={{backgroundColor:"lightblue",borderRadius:'30px',padding:'10px 15px 10px 15px'}}>Create Account!</button>
                 <Link to="/" style={{backgroundColor:"lightcoral",borderRadius:'30px',padding:'10px 15px 10px 15px'}}>Cancel</Link>
             </div>
             </main>

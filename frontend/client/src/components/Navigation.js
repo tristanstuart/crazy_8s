@@ -64,6 +64,13 @@ function Navigation(){
                 Socket Dashboard
             </NavLink>
 
+            <NavLink to="gameroom" 
+                className={"block p-3"}  
+                onClick={() => setShowMenu(!showMenu)}
+            >
+                Game Room
+            </NavLink>
+
         </div>
         menuMask = 
         <div

@@ -1,5 +1,5 @@
 import random
-from player import Player
+from logic.player import Player
 
 class Bot(Player):
     def __init__(self, name):

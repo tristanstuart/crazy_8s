@@ -10,13 +10,12 @@ import { Route, Routes } from "react-router-dom";
 import SocketDashboard from "./components/SocketDashboard"
 import SignUp from './components/Signup'
 import Login from './components/Login'
+import Room from "./components/Room";
 
+import io from "socket.io-client";
 
-
-// import io from "socket.io-client";
-// let endPoint = "http://127.0.0.1:5000";
-// let socket = io.connect(`${endPoint}`);
-
+var sensorEndpoint = "http://127.0.0.1:5000/"
+var socket = io.connect(sensorEndpoint, {});
 
 const App = () => {
   return (
@@ -26,12 +25,13 @@ const App = () => {
         <Route path ='/' element={<Home  />} />
         <Route path ='about' element={<AboutUs />} />
         <Route path ='createGame' element={<CreateGame />} />
-        <Route path="login" element={<Login/>}/>
-        <Route path="signup" element={<SignUp/>}/>
+        <Route path="login" element={<Login socket={socket}/>}/>
+        <Route path="signup" element={<SignUp socket={socket}/>}/>
         <Route path ='joinGame' element={<JoinGame />} />
         <Route path ='about' element={<AboutUs />} />
         <Route path ='createGame' element={<CreateGame />} />
         <Route path ='socketDashboard' element={<SocketDashboard />} />
+        <Route path='gameroom' element={<Room socket={socket}/>}/>
       </Routes>
       <Footer />
     </div>

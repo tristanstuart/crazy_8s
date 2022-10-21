@@ -1,11 +1,10 @@
 import {useEffect, useState} from 'react'
-import io from 'socket.io-client'
 import {BrowserRouter as Router, Route, Link, Routes} from 'react-router-dom';
 
-var sensorEndpoint = "http://127.0.0.1:5000/"
-var socket = io.connect(sensorEndpoint, {});
-const Login = () =>{
+const Login = props =>{
     document.title = "Login"
+    // const [socket,setSock] = useState(props.socket)
+    const socket = props.socket
     const [username,setUser] = useState("");
     const [password,setPass] = useState("")
     const [warning,setWarning] = useState("");
