@@ -1,8 +1,5 @@
 import React, {useState, useEffect} from "react";
-// import io from "socket.io-client";
-
 import './index.css';
-// import './App.css'
 import JoinGame from "./components/JoinGame";
 import Footer from './components/Footer'
 import AboutUs from "./components/AboutUs";
@@ -16,16 +13,14 @@ import Login from './components/Login'
 
 
 
+// import io from "socket.io-client";
 // let endPoint = "http://127.0.0.1:5000";
 // let socket = io.connect(`${endPoint}`);
 
 
 const App = () => {
-
-  
   return (
     <div>
-      
       <Header />
       <Routes>
         <Route path ='/' element={<Home  />} />
@@ -37,12 +32,9 @@ const App = () => {
         <Route path ='about' element={<AboutUs />} />
         <Route path ='createGame' element={<CreateGame />} />
         <Route path ='socketDashboard' element={<SocketDashboard />} />
-
       </Routes>
       <Footer />
     </div>
-      
-    
   );
 }
 

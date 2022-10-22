@@ -13,6 +13,9 @@ socketio.init_app(app, cors_allowed_origins="*")
 
 rooms = {}
 
+#delete after database setup
+users=[{"username":"test","password":"test"},{"username":"test2","password":"test2"}]
+
 
 def is_admin(id, room):
     return rooms[room] == id
@@ -28,6 +31,27 @@ def on_admin_disconnect(data):
         if is_admin(request.sid, room):
             del rooms[room]
     emit('leave')
+
+#login and signup
+
+@socketio.on("login")
+def login(data):
+    ##edit when we have access to database
+    
+    if data in users:
+        emit("received","user logged in")
+        return
+
+    emit("error","Wrong Username/Password")
+
+@socketio.on("signup")
+def signUp(data):
+    ##edit when we have access to database
+    if data in users:
+        emit("error","Username taken.")
+        return
+    users.append(data)
+    emit("userCreated", "User created. Please log in")
 
 # only emitted by players
 
@@ -49,14 +73,18 @@ def exists(data):
 
 @socketio.on('create')
 def on_create(data):
+    name = data['username']
     room = data['room']
-    if (room in rooms or len(room) < 3):
+    print(type(room), room)
+    if (room in rooms ): #or len(room) < 3
         emit('create', False)
+        print('room not created')
     else:
         join_room(room)
         rooms[room] = request.sid
         emit('create', True)
         print(f'created room: {room}')
+    
 
 
 
