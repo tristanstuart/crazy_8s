@@ -1,6 +1,6 @@
 class Player():
-    def __init__(self,name) -> None:
-        self.name = name;
+    def __init__(self, info) -> None:
+        self.info = info
         self.cards = []
 
     def player_turn(self,up_card,deck,pile,activeSuit):
@@ -80,3 +80,12 @@ class Player():
                 print ("Not a valid suit. Try again.")
         print ("You picked "+ activeSuit)
         return activeSuit
+
+    def __repr__(self):
+        return self.getName() + " (" + self.getSID() + ")"
+
+    def getName(self):
+        return self.info['name']
+
+    def getSID(self):
+        return self.info['sid']
