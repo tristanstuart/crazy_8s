@@ -1,5 +1,6 @@
 import {useEffect, useState} from 'react'
 import {useLocation} from 'react-router-dom'
+import Loading from './WaitBanner'
 
 
 function WaitingRoom({ socket }) {
@@ -37,15 +38,18 @@ function WaitingRoom({ socket }) {
       }},[socket])
 
     return (
-        <div className="grid items-center justify-center h-screen text-xl bg-green-300 ">
-            <div className='flex-initial flex-wrap'>
-				{!gameIsStarted && <LobbyDisplay socket={socket} players={players} isAdmin={isAdmin} room={room}/>}
-                {gameIsStarted && <div>
-                    <CardHand hand={hand}/>
-                    <div>Current turn: {turn}</div>
-                    <UpcardDisplay card={upcard}/>
-                    <OpponentCards opponents={opponentCards}/>
-                    </div>}
+        <div>
+            <div className="grid items-center justify-center h-screen text-xl bg-green-300 ">
+                <div className='flex-initial flex-wrap'>
+                {!gameIsStarted && <Loading />}
+                    {!gameIsStarted && <LobbyDisplay socket={socket} players={players} isAdmin={isAdmin} room={room}/>}
+                    {gameIsStarted && <div>
+                        <CardHand hand={hand}/>
+                        <div>Current turn: {turn}</div>
+                        <UpcardDisplay card={upcard}/>
+                        <OpponentCards opponents={opponentCards}/>
+                        </div>}
+                </div>
             </div>
         </div>
     )
@@ -59,7 +63,7 @@ function LobbyDisplay(props)
             {props.players.map(data => (<li>{data}</li>))}
         </ul>
         {props.isAdmin && (<button 
-        className="p-2 rounded-full bg-blue-400 mt-1"
+        className="p-2 rounded-full bg-blue-400 mt-20"
         onClick={() => {
             props.socket.emit("start_game", props.room);
         }}>
