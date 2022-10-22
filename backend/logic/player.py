@@ -1,9 +1,17 @@
+from flask_socketio import *
+
 class Player():
     def __init__(self,name) -> None:
         self.name = name;
         self.cards = []
-        self.coco = {"cards":{1:"AH"}}
-
+    def returnCards(self):
+        cards = {
+            "cards":[]
+        }
+        for card in self.cards:
+            cards["cards"].append(card.shortname)
+        return cards
+    #only used by Bot.py
     def player_turn(self,up_card,deck,pile,activeSuit):
         valid_play = False
         is_eight = False
@@ -52,14 +60,14 @@ class Player():
                 #
                 for i in range(len(self.cards)):
                     if self.cards[i] == selected_card:
-                        pile.insert(0,self.cards.pop(i));
-                        break;
+                        pile.insert(0,self.cards.pop(i))
+                        break
                 
                 print("You played " + pile[0].long_name)
             if not valid_play:
                 response = input("That's not a legal play. Try again: ")
-        
 
+    #could get rid off if client chooses the suit on their end
     def get_new_suit(self):
         activeSuit = ""
         got_suit = False
@@ -81,3 +89,4 @@ class Player():
                 print ("Not a valid suit. Try again.")
         print ("You picked "+ activeSuit)
         return activeSuit
+

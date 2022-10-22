@@ -1,7 +1,5 @@
 from random import shuffle
 
-from flask import jsonify
-
 from logic.cards import Card
 from logic.deck import Deck
 from logic.player import Player
@@ -9,51 +7,79 @@ from logic.bot import Bot
 
 from flask_socketio import *
 
-import json
-
-import pickle
-
 class Game():
     def __init__(self,data) -> None:
         self.deck = Deck().init_cards().copy()
         self.pile = []
-        self.players = {"players":self.getPlayers(data)}
+        self.players = self.getPlayers(data)
         self.upCard = None
         self.activeSuit = ""
+        self.nextPlayer = 0
+
 
     def getPlayers(self,data):
-        playerList ={}
+        
+        playerList =[]
         print("here are your players",data)
-        for player in data["players"]:
+        for player in data:
             print(player["username"])
-            playerList[player["username"]] = (Player(player["username"]))
+            playerList.append(Player(player["username"]))
 
         if len(playerList) < 2:
-            playerList["Bot"] = Bot("Bot")
+            playerList.append(Bot("Bot"))
+        self.nextPlayer = 0
 
         return playerList
-             
+    
+    def status(self):
+        players = {}
+        for player in self.players:
+            players[player.name] = player.returnCards()
+
+        deckcards = []
+        for card in self.deck:
+            deckcards.append(card.shortname)
+
+        players["deck"] = deckcards
+
+        deckcards = []
+        for card in self.pile:
+            deckcards.append(card.shortname)
+        
+        players["pile"] = deckcards
+
+        players["upCard"] = self.upCard.shortname
+        players["activeSuit"] = self.activeSuit[0]
+
+        return players
+
 
     def shuffleDeck(self):
         shuffle(self.deck)
 
     def dealCards(self):
         cards =[]
-        print("dealCards",self.players["players"]["marco"])
-        for player in self.players["players"]:
+    
+        self.pile.insert(0,self.deck.pop())
+        self.upCard = self.pile[0]
+        self.activeSuit = self.upCard.suit
+
+        emit("newDisplay",{
+            "upCard":self.upCard.shortname,
+            "activeSuit":self.activeSuit[0]
+        })
+
+        for player in self.players:
             for i in range(5):
                 cards.append(self.deck.pop())
-            self.players["players"][player].cards = cards.copy()
+            player.cards = cards.copy()
             cards.clear()
-        print("imoverhere")
+            
+            #return cards to specific player specified by name
+            emit(player.name,player.returnCards())
+
+        emit("status",self.status())
         
-        print(len(self.players["players"]["marco"].coco))
-        # # jsonstring = jsonify(useranme="stuff")
-        # emit("response",str(self.players["players"]["marco"].cards[0]))
-        cards = ""
-        for card in self.players["players"]["marco"].cards:
-            cards += card.shortname + " "
-        emit("dealtCards",cards)
 
     def reShuffle(self):
         
@@ -70,39 +96,99 @@ class Game():
 
         return False;
 
-    def gameStart(self):
-        
-        done = False
+    def start(self):
         self.shuffleDeck()
         self.dealCards()
+        return self.getPlayers()
 
-        print(self.players)
-        self.pile.insert(0,self.deck.pop())
-        self.activeSuit = self.pile[0].suit
+    
+
+
+    # def gameStart(self):
+    #     print("hello")
+    #     done = False
+    #     self.shuffleDeck()
+    #     self.dealCards()
         
-        while not done:
-
-            for player in self.players["players"]:
-               
-                self.upCard = self.pile[0];
-                self.activeSuit = self.upCard.suit;
-
-                print("   Up card:", self.upCard.long_name)
-                print("   Suit is " + self.activeSuit)
-
-                self.players["players"][player].player_turn(self.upCard,self.deck,self.pile,self.activeSuit)
+    #     print(self.players)
+    #     self.pile.insert(0,self.deck.pop())
+    #     self.activeSuit = self.pile[0].suit
+    #     # emit("response",self.status())
+        
+    #     while not done:
+    #         for player in self.players:
+    #             self.upCard = self.pile[0]
+    #             self.activeSuit = self.upCard.suit
+    #             print("   Up card:", self.upCard.long_name)
+    #             print("   Suit is " + self.activeSuit)
                 
-                if len(self.players["players"][player].cards) == 0:
-                    print(self.players["players"][player].name + " Won!")
-                    done = True;
-                    break;
+    #             emit("newDisplay",{
+    #                 "upCard":self.upCard.shortname,
+    #                 "activeSuit":self.activeSuit[0]
+    #             })
 
-                if len(self.deck) == 0:
-                    done = self.reShuffle();
-                    if done:
-                        print("No one wins")
-                        break;
+    #             self.players[player].player_turn(self.upCard,self.deck,self.pile,self.activeSuit)
                 
-                    
+    #             if len(self.players[player].cards) == 0:
+    #                 print(self.players[player].name + " Won!")
+    #                 done = True
+    #                 break
+
+    #             if len(self.deck) == 0:
+    #                 done = self.reShuffle()
+    #                 if done:
+    #                     print("No one wins")
+    #                     break
+
+    def gameStart(self):
+        print("gameStart")
+        self.shuffleDeck()
+        self.dealCards()
+    
+    def nextTurn(self):
+        if self.nextPlayer + 1>= len(self.players):
+            self.nextPlayer = 0
+        else:
+            self.nextPlayer += 1
+        
+    def draw(self):
+        self.players[self.nextPlayer].cards.append(self.deck.pop())
+        print(self.players[self.nextPlayer].returnCards())
+
+    def deal(self):
+        #needs to be finished
+        pass
 
 
+    def action(self,user,action,card):
+        if self.players[self.nextPlayer].name == user:
+            if action == "draw":
+                print(action)
+                self.draw()
+                emit(self.players[self.nextPlayer].name,self.players[self.nextPlayer].returnCards())
+                
+                self.nextTurn()
+                
+                if self.players[self.nextPlayer].name == "Bot":
+                    self.players[self.nextPlayer].player_turn(self.upCard,self.deck,self.pile,self.activeSuit)
+                
+                self.upCard = self.pile[0]
+                self.activeSuit = self.upCard.suit
+                
+                emit("newDisplay",{
+                     "upCard":self.upCard.shortname,
+                     "activeSuit":self.activeSuit[0]
+                })
+                self.nextTurn()
+            
+            elif action == "deal":
+                #needs to be finished
+                print("finish deal function")    
+                pass
+
+
+            emit("status",self.status())
+            
+        else:
+            print(user,"it is not your turn")
+    

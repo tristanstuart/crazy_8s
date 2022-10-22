@@ -30,6 +30,8 @@ const App = () => {
         <Route path ='joinGame' element={<JoinGame socket={socket}/>} />
         <Route path ='createGame' element={<CreateGame />} />
         <Route path ='socketDashboard' element={<SocketDashboard />} />
+        
+        {/* get rid of, just testing out stuff*/}
         <Route path='gameroom' element={<Room socket={socket}/>}/>
       </Routes>
       <Footer />

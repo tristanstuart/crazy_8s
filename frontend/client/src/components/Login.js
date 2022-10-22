@@ -10,13 +10,18 @@ const Login = props =>{
 
     //needed so you dont receive the same data multiple times 
     useEffect(()=>{
+      
       socket.on("received",e=>{
-      setWarning(e)
+        localStorage.setItem("username",e)
+        setWarning(localStorage.getItem("username"))
+        console.log(localStorage.getItem("username"))
       })
+      
       socket.on("error",error=>{
         setWarning(error)
       })
-    },[])  
+
+    }, [])  
   
     const login = () =>{
       if(username ==="" || password ===""){

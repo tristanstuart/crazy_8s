@@ -3,7 +3,6 @@ from flask_socketio import SocketIO, emit, join_room
 import os
 
 from logic.game import Game
-from _thread import *
 
 app = Flask(__name__)
 SECRET_KEY = os.urandom(32)
@@ -13,9 +12,28 @@ socketio.init_app(app, cors_allowed_origins="*")
 
 rooms = {}
 
-#delete after database setup
-users=[{"username":"test","password":"test"},{"username":"test2","password":"test2"}]
+games = {}
 
+#delete after database setup
+users=[{"username":"test","password":"test"},{"username":"marco","password":"marco"}]
+
+@socketio.on("begin game")
+def beginGame(data):
+    
+    if games.get(data["gameroom"]):
+        print("game already exists")
+        emit("error","Game already exists")
+        return
+    try:
+        games[data["gameroom"]] = Game(data["players"])
+        games[data["gameroom"]].gameStart()
+    except:
+        emit("error","there was an issue starting your game")
+
+@socketio.on("action")
+def action(data):
+    print(data)
+    games[data["gameroom"]].action(data["username"],data["action"],data["card"])
 
 def is_admin(id, room):
     return rooms[room] == id
@@ -37,9 +55,10 @@ def on_admin_disconnect(data):
 @socketio.on("login")
 def login(data):
     ##edit when we have access to database
-    
+    print()
+
     if data in users:
-        emit("received","user logged in")
+        emit("received",data["username"])
         return
 
     emit("error","Wrong Username/Password")
@@ -69,16 +88,6 @@ def exists(data):
     room = data['room']
     emit('exists', room in rooms)
 
-@socketio.on("begin game")
-def beginGame(data):
-    Game(data).gameStart(),()
-    # try:
-    #     start_new_thread(Game(data).gameStart(),())
-    # except:
-    #     emit("error","there was an error starting the game")
-
-# only emitted by admin
-
 @socketio.on('create')
 def on_create(data):
     name = data['username']
@@ -93,8 +102,5 @@ def on_create(data):
         emit('create', True)
         print(f'created room: {room}')
     
-
-
-
 if __name__ == '__main__':
 	socketio.run(app, debug=True,port=3000) 

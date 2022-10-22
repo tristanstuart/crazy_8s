@@ -19,7 +19,7 @@ class Bot(Player):
                 
                 pile.insert(0,self.cards.pop(i))
                 
-                print("   Computer played " + pile[0].short_name)
+                print("   Computer played " + pile[0].shortname)
                 activeSuit = self.chooseSuit()
                 pile[0].suit = activeSuit
 
@@ -39,7 +39,7 @@ class Bot(Player):
                     break;
             
             activeSuit = pile[0].suit
-            print("   Computer played " + pile[0].short_name)
+            print("   Computer played " + pile[0].shortname)
             return
         else:
             if len(deck) > 0:
