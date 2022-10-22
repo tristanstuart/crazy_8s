@@ -42,3 +42,6 @@ class Card():
 
     def __str__(self):
         return  self.long_name
+
+    def toDict(self):
+        return {'suit':self.suit, 'rank':self.rank}

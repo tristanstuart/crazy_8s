@@ -2,6 +2,8 @@ from urllib import response
 from flask import Flask, render_template, request, url_for
 from flask_socketio import SocketIO, emit, join_room, send
 import os
+import logging
+from logic.game import Game
 
 app = Flask(__name__)
 SECRET_KEY = os.urandom(32)
@@ -9,6 +11,8 @@ app.config['SECRET_KEY'] = SECRET_KEY
 socketio = SocketIO(app,cors_allowed_origins="*")
 socketio.init_app(app, cors_allowed_origins="*")
 
+log = logging.getLogger('werkzeug')
+log.disabled = True
 
 
 rooms = {}
@@ -18,7 +22,7 @@ users=[{"username":"test","password":"test"},{"username":"test2","password":"tes
 
 
 def is_admin(id, room):
-    return rooms[room] == id
+    return rooms[room].getAdmin()['sid'] == id
 
 @socketio.on('connection')
 def on_connect(data):
@@ -59,9 +63,19 @@ def signUp(data):
 def on_join(data):
     name = data['name']
     room = data['room']
-    join_room(room)
-    emit('join', data, room=room)
-    print(f'{name} joined {room}')
+    playerInfo = {}
+    playerInfo['sid'] = request.sid
+    playerInfo['name'] = name
+
+    if rooms[room].playerExists(playerInfo):
+        emit('user_already_in_room', to=request.sid) #read by client in JoinGame.js
+        print(f"{playerInfo['name']}({playerInfo['sid']}) was denied to join room: {repr(rooms[room])}")
+    else:
+        join_room(room)
+        rooms[room].addPlayer(playerInfo)
+        emit('player_joined', rooms[room].playerList(), to=room) #read by players in WaitingRoom.js
+        
+        print(f'{name} joined room {room}: {repr(rooms[room])}')
     # print(data)
 
 @socketio.on('exists')
@@ -75,16 +89,33 @@ def exists(data):
 def on_create(data):
     name = data['username']
     room = data['room']
-    print(type(room), room)
+    #print(type(room), room)
     if (room in rooms ): #or len(room) < 3
-        emit('create', False)
+        emit('create', False) #read by client in JoinGame.js
         print('room not created')
     else:
         join_room(room)
-        rooms[room] = request.sid
-        emit('create', True)
-        print(f'created room: {room}')
+        adminInfo = {}
+        adminInfo['sid'] = request.sid
+        adminInfo['name'] = name
+        newGame = Game(adminInfo)
+        rooms[room] = newGame
+        emit('create', True) #read by client in CreateGame.js
+        print(f'created room: {room}{repr(rooms[room])}') #repr() calls __repr__() in whatever object you pass it, in this case game.py
+
+@socketio.on('start_game')
+def on_start_game(data):
+    room = data
+    rooms[room].gameStart()
+    print(f"starting game! {rooms[room].getPlayerTurn().getName()} goes first. Upcard is {rooms[room].upcard().long_name}")
     
+    turnData = rooms[room].getPlayerTurn().getName()
+    upcardData = rooms[room].upcard().toDict()
+
+    for p in rooms[room].players:
+        playerCards, opponentCards = rooms[room].getCardState(p)
+        emit('move_to_game_start', {'turn':turnData, 'upcard':upcardData, 'hand':playerCards, 'opponents':opponentCards}, to=p.getSID())
+        print("sent info to " + p.getName())
 
 
 
