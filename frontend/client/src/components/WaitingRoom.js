@@ -99,15 +99,18 @@ function OpponentCards(props)
     props.opponents.forEach(person => {
         handStr.push(<div>
             <p className='text-4xl flex justify-center'>{person['name']}</p>
-            <div className='relative flex justify-center text-9xl p-3'>
+            <div className='relative flex justify-center p-3'>
                 {deckImg}
                 <div className='text-8xl absolute'>{person['count']}</div>
             </div>
         </div>)
     })
 
-    return (<div className='flex flex-grow justify-center mt-5'>
-        {handStr}
+    return (<div className='container mx-auto md:max-w-xl'>
+        <div className='flex justify-center text-6xl'>Opponent Hands</div>
+        <div className='flex flex-grow justify-center'>
+            {handStr}
+        </div>
     </div>)
 }
 
