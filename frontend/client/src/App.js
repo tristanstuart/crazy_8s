@@ -42,7 +42,9 @@ function App() {
         <Route path ='Sandbox' element={<SandBox socket={socket}/>} />
       </Routes>
 	) : <div>Connecting...</div>}
-      <Footer />
+      {/* <div className="className='bg-grey-200 absolute bottom-0 text-s text-center w-full">
+        <Footer />
+      </div> */}
     </div>
   );
 }

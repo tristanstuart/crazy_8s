@@ -5,7 +5,8 @@ module.exports = {
   ],
   theme: {
     fontSize: {
-      '9xl': '10rem'
+      '9xl': '10rem',
+      '8xl': '3rem'
     },
     extend: {
       backgroundColor:{
