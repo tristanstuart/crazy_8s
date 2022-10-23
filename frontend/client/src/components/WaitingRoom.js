@@ -1,10 +1,12 @@
 import {useEffect, useState} from 'react'
 import {useLocation} from 'react-router-dom'
+import Loading from './WaitBanner'
+import Card from './Card'
 
 
 function WaitingRoom({ socket }) {
 	const location = useLocation()
-	const username = location.state.user
+	// const username = location.state.user
 	const room = location.state.room
     const isAdmin = location.state.isAdmin
     const [gameIsStarted, startGame] = useState(false)
@@ -37,29 +39,35 @@ function WaitingRoom({ socket }) {
       }},[socket])
 
     return (
-        <div className="grid items-center justify-center h-screen text-xl bg-green-300 ">
-            <div className='flex-initial flex-wrap'>
-				{!gameIsStarted && <LobbyDisplay socket={socket} players={players} isAdmin={isAdmin} room={room}/>}
-                {gameIsStarted && <div>
-                    <CardHand hand={hand}/>
-                    <div>Current turn: {turn}</div>
-                    <UpcardDisplay card={upcard}/>
-                    <OpponentCards opponents={opponentCards}/>
-                    </div>}
+        <div>
+            <div >
+                <div>
+                {!gameIsStarted && <Loading />}
+                    {!gameIsStarted && <LobbyDisplay socket={socket} players={players} isAdmin={isAdmin} room={room}/>}
+                    {gameIsStarted && <div>
+                        <div className='flex items-center justify-center text-8xl text-red-500/100'>Current turn-{turn}</div>
+                            <div className='container mx-auto shadow-md bg-green-300 md:max-w-xl'>
+                                <UpcardDisplay card={upcard}/>
+                            </div>
+                            <CardHand hand={hand}/>
+                            <OpponentCards opponents={opponentCards}/>
+                        </div>}
+                </div>
             </div>
         </div>
     )
 }
-
+// className="flex items-center justify-center h-screen text-xl bg-green-300 "
 function LobbyDisplay(props)
 {
-    return (<div>
+    return (
+    <div >
         <u>Player List</u>
         <ul>
             {props.players.map(data => (<li>{data}</li>))}
         </ul>
         {props.isAdmin && (<button 
-        className="p-2 rounded-full bg-blue-400 mt-1"
+        className="p-2 rounded-full bg-blue-400 mt-20"
         onClick={() => {
             props.socket.emit("start_game", props.room);
         }}>
@@ -69,14 +77,16 @@ function LobbyDisplay(props)
 
 function CardHand(props)
 {
-    let handStr = ""
-    props.hand.forEach(card => {
-        handStr += card['rank'] + " of " + card['suit'] + ", "
-    })
+    let playerHand = []
+        props.hand.forEach(card => {
+            playerHand.push(<Card rank={card['rank']} suit={card['suit']} key={card['rank']+ card['suit']} />)
+        })
+    return (
+        <div className='flex flex-grow justify-center mt-5'>
+            {playerHand}
+        </div>
+    )
 
-    return (<div>
-        Hand: {handStr}
-    </div>)
 }
 
 function OpponentCards(props)
@@ -94,9 +104,20 @@ function OpponentCards(props)
 function UpcardDisplay(props)
 {
     console.log(JSON.stringify(props.card))
-    return (<div>
-        Current upcard: {props.card.rank} of {props.card.suit}
-    </div>)
+    const deckImg = <img 
+                      src="../../cards/1B.svg"
+                      className="w-35 h-40"
+                    />                      
+    return (
+        <div>
+             <p className='flex justify-center'>Current upcard:</p>
+            <div className='flex items-center justify-center'>
+                <Card suit={props.card.suit} rank={props.card.rank} />
+                <div className='text-9xl p-3'>{deckImg}</div>
+            </div>
+        </div>
+    )
+    
 }
 
 export default WaitingRoom;

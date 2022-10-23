@@ -67,7 +67,10 @@ def on_join(data):
     playerInfo['sid'] = request.sid
     playerInfo['name'] = name
 
-    if rooms[room].playerExists(playerInfo):
+    if room not in rooms:
+        emit('room_does_not_exist', room)
+        print('The room: \''+ room +'\' does not exist')
+    elif rooms[room].playerExists(playerInfo):
         emit('user_already_in_room', to=request.sid) #read by client in JoinGame.js
         print(f"{playerInfo['name']}({playerInfo['sid']}) was denied to join room: {repr(rooms[room])}")
     else:
@@ -120,4 +123,4 @@ def on_start_game(data):
 
 
 if __name__ == '__main__':
-	socketio.run(app, debug=True,port=3000) 
+	socketio.run(app, debug=True) 

@@ -1,18 +1,62 @@
-import {useState} from 'react'
-//assuming card svg's are stored in public/cards
-//takes in a string named type that declares the type of Card
-//Ex AD - Ace of Diamonds etc.
-const Card = (props) =>{
-    //gives errors, too many renders?
-    // const [rank,setRank] = useState("");
-    // const [suit,setSuit] = useState('')
-    // setRank(props.type[0])
-    // setSuit(props.type[1])
-    return (
-        <div id={props.type} >
-            <img src={`/cards/${props.type}.svg`} style={{width:'100px'}}/>
-        </div>
-    )
+const rankMap = new Map([
+  ["ace", "A"],
+  ["Ace", "A"],
+  ["1", "A"],
+  ['two', "2"],
+  ['Two', "2"],
+  ['2', '2'],
+  ["three", "3"],
+  ["Three", "3"],
+  ["3", "3"],
+  ["four", "4"],
+  ["Four", "4"],
+  ["4", "4"],
+  ["five", "5"],
+  ["Five", "5"],
+  ["5", "5"],
+  ["six", "6"],
+  ["Six", "6"],
+  ["6", "6"],
+  ["seven", "7"],
+  ["Seven", "7"],
+  ["7", "7"],
+  ["eight", "8"],
+  ["Eight", "8"],
+  ["8", "8"],
+  ["nine", "9"],
+  ["Nine", "9"],
+  ["9", "9"],
+  ["ten" , "T"],
+  ["Ten" , "T"],
+  ["10" , "T"],
+  ["jack" , "J"],
+  ["Jack" , "J"],
+  ["11" , "J"],
+  ["queen" , "Q"],
+  ["Queen" , "Q"],
+  ["12" , "Q"],
+  ["king" , "K"],
+  ["King" , "K"],
+  ["13" , "K"],
+]);
+
+const suitMap = new Map([
+  ["Hearts", 'H'],
+  ['Diamonds', 'D'],
+  ['Clubs', 'C'],
+  ["Spades", 'S'],
+]);
+
+function Card({rank, suit}) {
+  return (
+    <div style={{display:'grid',justifyContent:'center'}}>
+      <img
+        alt={rank + 'of' + suit} 
+        src={`/cards/${rankMap.get(rank)}${suitMap.get(suit)}.svg`} 
+        style={{width:'120px'}} 
+      />
+    </div>
+   )
 }
 
 export default Card;

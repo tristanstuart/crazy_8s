@@ -12,6 +12,7 @@ import SocketDashboard from "./components/SocketDashboard"
 import SignUp from './components/Signup'
 import Login from './components/Login'
 import WaitingRoom from "./components/WaitingRoom";
+import SandBox from "./components/SandBox"
 
 //referenced this article for setting up a single global socket:
 //https://developer.okta.com/blog/2021/07/14/socket-io-react-tutorial
@@ -20,7 +21,7 @@ function App() {
 	const [socket, setSocket] = useState(null)
 
 	useEffect(() =>{
-		const newSocket = io("http://127.0.0.1:5000") //change this to whatever server is
+		const newSocket = io("http://127.0.0.1:8000") //change this to whatever server is
 		setSocket(newSocket)
 		return() => newSocket.close();
 	}, [setSocket]);
@@ -38,9 +39,12 @@ function App() {
         <Route path ='createGame' element={<CreateGame socket={socket}/>} />
         <Route path ='socketDashboard' element={<SocketDashboard socket={socket}/>} />
         <Route path ='waitingRoom' element={<WaitingRoom socket={socket}/>} />
+        <Route path ='Sandbox' element={<SandBox socket={socket}/>} />
       </Routes>
 	) : <div>Connecting...</div>}
-      <Footer />
+      {/* <div className="className='bg-grey-200 absolute bottom-0 text-s text-center w-full">
+        <Footer />
+      </div> */}
     </div>
   );
 }

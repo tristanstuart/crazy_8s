@@ -44,15 +44,15 @@ class Game():
         if len(self.pile) == 1:
             return True
         
-        topCard = self.pile[0];
+        topCard = self.pile[0]
         for i in range(1,len(self.pile)):
             self.deck.append(self.pile[i])
         
         self.pile.clear()
         self.pile.append(topCard)
-        self.shuffleDeck();
+        self.shuffleDeck()
 
-        return False;
+        return False
 
     def gameStart(self):
 
