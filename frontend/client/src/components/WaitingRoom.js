@@ -49,8 +49,8 @@ function WaitingRoom({ socket }) {
                             <div className='container mx-auto shadow-md bg-green-300 md:max-w-xl'>
                                 <UpcardDisplay card={upcard}/>
                             </div>
-                        <CardHand hand={hand}/>
-                        <OpponentCards opponents={opponentCards}/>
+                            <CardHand hand={hand}/>
+                            <OpponentCards opponents={opponentCards}/>
                         </div>}
                 </div>
             </div>
@@ -82,7 +82,7 @@ function CardHand(props)
             playerHand.push(<Card rank={card['rank']} suit={card['suit']} key={card['rank']+ card['suit']} />)
         })
     return (
-        <div className='flex flex-grow justify-center mt-6'>
+        <div className='flex flex-grow justify-center mt-5'>
             {playerHand}
         </div>
     )
