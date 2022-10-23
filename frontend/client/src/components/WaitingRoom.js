@@ -1,11 +1,12 @@
 import {useEffect, useState} from 'react'
 import {useLocation} from 'react-router-dom'
 import Loading from './WaitBanner'
+import Card from './Card'
 
 
 function WaitingRoom({ socket }) {
 	const location = useLocation()
-	const username = location.state.user
+	// const username = location.state.user
 	const room = location.state.room
     const isAdmin = location.state.isAdmin
     const [gameIsStarted, startGame] = useState(false)
@@ -39,14 +40,14 @@ function WaitingRoom({ socket }) {
 
     return (
         <div>
-            <div className="grid items-center justify-center h-screen text-xl bg-green-300 ">
-                <div className='flex-initial flex-wrap'>
+            <div className="flex items-center justify-center h-screen text-xl bg-green-300 ">
+                <div>
                 {!gameIsStarted && <Loading />}
                     {!gameIsStarted && <LobbyDisplay socket={socket} players={players} isAdmin={isAdmin} room={room}/>}
                     {gameIsStarted && <div>
+                        <UpcardDisplay card={upcard}/>
                         <CardHand hand={hand}/>
                         <div>Current turn: {turn}</div>
-                        <UpcardDisplay card={upcard}/>
                         <OpponentCards opponents={opponentCards}/>
                         </div>}
                 </div>
@@ -98,9 +99,17 @@ function OpponentCards(props)
 function UpcardDisplay(props)
 {
     console.log(JSON.stringify(props.card))
-    return (<div>
-        Current upcard: {props.card.rank} of {props.card.suit}
-    </div>)
+    const deckImg = '🂠'
+    return (
+        <div>
+            <div className='flex items-center'>
+                <p>Current upcard:</p>
+                <Card suite={props.card.suit} rank={props.card.rank} />
+                <div className='text-9xl'>{deckImg}</div>
+            </div>
+        </div>
+    )
+    
 }
 
 export default WaitingRoom;
