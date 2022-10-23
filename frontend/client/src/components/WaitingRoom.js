@@ -40,14 +40,16 @@ function WaitingRoom({ socket }) {
 
     return (
         <div>
-            <div className="flex items-center justify-center h-screen text-xl bg-green-300 ">
+            <div >
                 <div>
                 {!gameIsStarted && <Loading />}
                     {!gameIsStarted && <LobbyDisplay socket={socket} players={players} isAdmin={isAdmin} room={room}/>}
                     {gameIsStarted && <div>
-                        <UpcardDisplay card={upcard}/>
+                        <div className='flex items-center justify-center text-8xl text-red-500/100'>Current turn-{turn}</div>
+                            <div className='container mx-auto shadow-md bg-green-300 md:max-w-xl'>
+                                <UpcardDisplay card={upcard}/>
+                            </div>
                         <CardHand hand={hand}/>
-                        <div>Current turn: {turn}</div>
                         <OpponentCards opponents={opponentCards}/>
                         </div>}
                 </div>
@@ -55,10 +57,11 @@ function WaitingRoom({ socket }) {
         </div>
     )
 }
-
+// className="flex items-center justify-center h-screen text-xl bg-green-300 "
 function LobbyDisplay(props)
 {
-    return (<div>
+    return (
+    <div >
         <u>Player List</u>
         <ul>
             {props.players.map(data => (<li>{data}</li>))}
@@ -74,14 +77,16 @@ function LobbyDisplay(props)
 
 function CardHand(props)
 {
-    let handStr = ""
-    props.hand.forEach(card => {
-        handStr += card['rank'] + " of " + card['suit'] + ", "
-    })
+    let playerHand = []
+        props.hand.forEach(card => {
+            playerHand.push(<Card rank={card['rank']} suit={card['suit']} key={card['rank']+ card['suit']} />)
+        })
+    return (
+        <div className='flex flex-grow justify-center mt-6'>
+            {playerHand}
+        </div>
+    )
 
-    return (<div>
-        Hand: {handStr}
-    </div>)
 }
 
 function OpponentCards(props)
@@ -99,13 +104,16 @@ function OpponentCards(props)
 function UpcardDisplay(props)
 {
     console.log(JSON.stringify(props.card))
-    const deckImg = '🂠'
+    const deckImg = <img 
+                      src="../../cards/1B.svg"
+                      className="w-35 h-40"
+                    />                      
     return (
         <div>
-            <div className='flex items-center'>
-                <p>Current upcard:</p>
-                <Card suite={props.card.suit} rank={props.card.rank} />
-                <div className='text-9xl'>{deckImg}</div>
+             <p className='flex justify-center'>Current upcard:</p>
+            <div className='flex items-center justify-center'>
+                <Card suit={props.card.suit} rank={props.card.rank} />
+                <div className='text-9xl p-3'>{deckImg}</div>
             </div>
         </div>
     )
