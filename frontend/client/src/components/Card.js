@@ -1,150 +1,46 @@
-const heartsMap = new Map([
-  ["ace", "🂱"],
-  ["1", "🂱"],
-  ["two", "🂲"],
-  ["2", "🂲"],
-  ["three", "🂳"],
-  ["3", "🂳"],
-  ["four", "🂴"],
-  ["4", "🂴"],
-  ["five", "🂵"],
-  ["5", "🂵"],
-  ["six", "🂶"],
-  ["6", "🂶"],
-  ["seven", "🂷"],
-  ["7", "🂷"],
-  ["eight", "🂸"],
-  ["8", "🂸"],
-  ["nine", "🂹"],
-  ["9", "🂹"],
-  ["ten", "🂺"],
-  ["10", "🂺"],
-  ["jack", "🂻"],
-  ["11", "🂻"],
-  ["queen", "🂽"],
-  ["12", "🂽"],
-  ["king", "🂾"],
-  ["13", "🂾"],
+const rankMap = new Map([
+  ["ace", "A"],
+  ["1", "A"],
+  ['two', "2"],
+  ['2', '2'],
+  ["three", "3"],
+  ["3", "3"],
+  ["four", "4"],
+  ["4", "4"],
+  ["five", "5"],
+  ["5", "5"],
+  ["six", "6"],
+  ["6", "6"],
+  ["seven", "7"],
+  ["7", "7"],
+  ["eight", "8"],
+  ["8", "8"],
+  ["nine", "9"],
+  ["9", "9"],
+  ["ten" , "T"],
+  ["10" , "T"],
+  ["jack" , "J"],
+  ["11" , "J"],
+  ["queen" , "Q"],
+  ["12" , "Q"],
+  ["king" , "K"],
+  ["13" , "K"],
 ]);
 
-const diamondsMap = new Map([
-  ["ace", "🃁"],
-  ["1", "🃁"],
-  ["two", "🃂"],
-  ["2", "🃂"],
-  ["three", "🃃"],
-  ["3", "🃃"],
-  ["four", "🃄"],
-  ["4", "🃄"],
-  ["five", "🃅"],
-  ["5", "🃅"],
-  ["six", "🃆"],
-  ["6", "🃆"],
-  ["seven", "🃇"],
-  ["7", "🃇"],
-  ["eight", "🃈"],
-  ["8", "🃈"],
-  ["nine", "🃉"],
-  ["9", "🃉"],
-  ["ten", "🃊"],
-  ["10", "🃊"],
-  ["jack", "🃋"],
-  ["11", "🃋"],
-  ["queen", "🃍"],
-  ["12", "🃍"],
-  ["king", "🃎"],
-  ["13", "🃎"],
+const suitMap = new Map([
+  ['hearts', 'H'],
+  ['diamonds', 'D'],
+  ['clubs', 'C'],
+  ['spades', 'S'],
 ]);
 
-const spadesMap = new Map([
-  ["ace", "🂡"],
-  ["1", "🂡"],
-  ["two", "🂢"],
-  ["2", "🂢"],
-  ["three", "🂣"],
-  ["3", "🂣"],
-  ["four", "🂤"],
-  ["4", "🂤"],
-  ["five", "🂥"],
-  ["5", "🂥"],
-  ["six", "🂦"],
-  ["6", "🂦"],
-  ["seven", "🂧"],
-  ["7", "🂧"],
-  ["eight", "🂨"],
-  ["8", "🂨"],
-  ["nine", "🂩"],
-  ["9", "🂩"],
-  ["ten", "🂪"],
-  ["10", "🂪"],
-  ["jack", "🂫"],
-  ["11", "🂫"],
-  ["queen", "🂭"],
-  ["12", "🂭"],
-  ["king", "🂮"],
-  ["13", "🂮"],
-]);
-
-const clubsMap = new Map([
-  ["ace", "🃑"],
-  ["1", "🃑"],
-  ['two', "🃒"],
-  ['2', "🃒"],
-  ["three", "🃓"],
-  ["3", "🃓"],
-  ["four", "🃔"],
-  ["4", "🃔"],
-  ["five", "🃕"],
-  ["5", "🃕"],
-  ["six", "🃖"],
-  ["6", "🃖"],
-  ["seven", "🃗"],
-  ["7", "🃗"],
-  ["eight", "🃘"],
-  ["8", "🃘"],
-  ["nine", "🃙"],
-  ["9", "🃙"],
-  ["ten" , "🃚"],
-  ["10" , "🃚"],
-  ["jack" , "🃛"],
-  ["11" , "🃛"],
-  ["queen" , "🃝"],
-  ["12" , "🃝"],
-  ["king" , "🃞"],
-  ["13" , "🃞"],
-]);
-
-function getCharacterMapBySuite(suite) {
-  switch (suite) {
-    case "diamonds":
-      return diamondsMap;
-    case "spades":
-      return spadesMap;
-    case "clubs":
-      return clubsMap;
-    case "hearts":
-    default:
-      return heartsMap;
-  }
-}
-
-function color(suite){
-  var c;
-  if((suite === "hearts") || (suite === "diamonds")){
-    c = "text-red-500 text-9xl"
-  }
-  else {
-    c = "text-9xl"
-  }
-  return c;
-}
-
-function Card({rank, suite}) {
-  const map = getCharacterMapBySuite(suite);
-  const c = color(suite);
+function Card({rank, suits}) {
   return (
-    <div className={c}>
-        {map.get(rank)}
+    <div style={{display:'grid',justifyContent:'center'}}>
+      <img  
+        src={`/cards/${rankMap.get(rank.toLowerCase())}${suitMap.get(suits.toLowerCase())}.svg`} 
+        style={{width:'120px'}} 
+      />
     </div>
    )
 }
