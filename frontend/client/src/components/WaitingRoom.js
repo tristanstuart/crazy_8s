@@ -45,12 +45,12 @@ function WaitingRoom({ socket }) {
                 {!gameIsStarted && <Loading />}
                     {!gameIsStarted && <LobbyDisplay socket={socket} players={players} isAdmin={isAdmin} room={room}/>}
                     {gameIsStarted && <div>
-                        <div className='flex items-center justify-center text-8xl text-red-500/100'>Current turn-{turn}</div>
+                        <OpponentCards opponents={opponentCards}/>
+                        <div className='flex items-center justify-center text-8xl text-red-500/100'>Current turn: {turn}</div>
                             <div className='container mx-auto shadow-md bg-green-300 md:max-w-xl'>
                                 <UpcardDisplay card={upcard}/>
                             </div>
                             <CardHand hand={hand}/>
-                            <OpponentCards opponents={opponentCards}/>
                         </div>}
                 </div>
             </div>
@@ -91,13 +91,23 @@ function CardHand(props)
 
 function OpponentCards(props)
 {
-    let handStr = ""
+    //referenced https://css-tricks.com/text-blocks-over-image/ for displaying text over the card image
+    
+    const deckImg = <img src="../../cards/1B.svg" className="w-35 h-40"/>
+    
+    let handStr = []
     props.opponents.forEach(person => {
-        handStr += person['name'] + ": " + person['count'] + ", "
+        handStr.push(<div>
+            <p className='text-4xl flex justify-center'>{person['name']}</p>
+            <div className='relative flex justify-center text-9xl p-3'>
+                {deckImg}
+                <div className='text-8xl absolute'>{person['count']}</div>
+            </div>
+        </div>)
     })
 
-    return (<div>
-        Hand: {handStr}
+    return (<div className='flex flex-grow justify-center mt-5'>
+        {handStr}
     </div>)
 }
 
