@@ -1,5 +1,4 @@
 import {useEffect, useState} from 'react'
-import io from 'socket.io-client'
 import {BrowserRouter as Link} from 'react-router-dom';
 
 function Login({ socket }) {
@@ -16,7 +15,7 @@ function Login({ socket }) {
       socket.on("error",error=>{
         setWarning(error)
       })
-    },[])  
+    },[socket])  
   
     const login = () =>{
       if(username ==="" || password ===""){

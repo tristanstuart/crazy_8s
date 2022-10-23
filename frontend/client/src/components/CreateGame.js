@@ -23,7 +23,7 @@ function CreateGame({ socket }){
         })
       return ()=>{
         socket.off("create")
-      }},[socket]) 
+      }},[socket, navigate]) 
 
     const handleChange = (e) =>{
         setRoom(e.target.value);

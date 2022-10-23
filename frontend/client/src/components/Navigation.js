@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, {useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faBars } from '@fortawesome/free-solid-svg-icons'
 import { NavLink } from "react-router-dom";
-import {useTransition, animated} from 'react-spring'
 
 function Navigation(){
     const [showMenu, setShowMenu] = useState(false);
@@ -62,6 +61,13 @@ function Navigation(){
                 onClick={() => setShowMenu(!showMenu)}
             >
                 Socket Dashboard
+            </NavLink>
+            <NavLink 
+                className={"block p-3"}  
+                to="SandBox"
+                onClick={() => setShowMenu(!showMenu)}
+            >
+                SandBox
             </NavLink>
 
         </div>

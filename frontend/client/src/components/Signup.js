@@ -1,5 +1,5 @@
 import {useState,useEffect} from 'react'
-import {BrowserRouter as Router, Route, Link, Routes} from 'react-router-dom';
+import {BrowserRouter as Link} from 'react-router-dom';
 
 function SignUp({ socket }) {
     document.title = "Sign-Up"
@@ -16,7 +16,7 @@ function SignUp({ socket }) {
         socket.on("error",error=>{
             setWarning(error)
         })
-    },[])
+    },[socket])
 
     const create = () =>{
         if(user ==="" || pass ==="" || repass ===""){
