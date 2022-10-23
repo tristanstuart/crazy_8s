@@ -12,6 +12,7 @@ import SocketDashboard from "./components/SocketDashboard"
 import SignUp from './components/Signup'
 import Login from './components/Login'
 import WaitingRoom from "./components/WaitingRoom";
+import SandBox from "./components/SandBox"
 
 //referenced this article for setting up a single global socket:
 //https://developer.okta.com/blog/2021/07/14/socket-io-react-tutorial
@@ -38,6 +39,7 @@ function App() {
         <Route path ='createGame' element={<CreateGame socket={socket}/>} />
         <Route path ='socketDashboard' element={<SocketDashboard socket={socket}/>} />
         <Route path ='waitingRoom' element={<WaitingRoom socket={socket}/>} />
+        <Route path ='Sandbox' element={<SandBox socket={socket}/>} />
       </Routes>
 	) : <div>Connecting...</div>}
       <Footer />
