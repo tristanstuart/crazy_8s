@@ -36,17 +36,15 @@ function WaitingRoom({ socket }) {
             console.log("game is starting!")
             startGame(true)
         })
+
+        socket.on("error",error=>{
+            console.log(error)
+        })
         
       return ()=>{
         socket.off("player_joined")
         socket.off("move_to_game_start")
       }},[socket])
-      useEffect(()=>{
-        socket.on("error",error=>{
-            console.log(error)
-        })
-      },[socket])
-
 
     return (
         <div>
@@ -58,7 +56,7 @@ function WaitingRoom({ socket }) {
                         <OpponentCards opponents={opponentCards}/>
                         <div className='flex items-center justify-center text-8xl text-red-500/100'>Current turn: {turn}</div>
                             <div className='container mx-auto shadow-md bg-green-300 md:max-w-xl'>
-                                <UpcardDisplay card={upcard}/>
+                                <UpcardDisplay card={upcard} username={username} socket={socket} room={room}/>
                             </div>
                             <CardHand user={username} hand={hand} room={room} socket={socket}/>
                         </div>}
@@ -139,11 +137,26 @@ function OpponentCards(props)
 function UpcardDisplay(props)
 {
     console.log(JSON.stringify(props.card))
-    const deckImg = <img 
-                        alt="1B"
-                        src="../../cards/1B.svg"
-                        className="w-35 h-40"
-                    />                      
+
+    const drawCard = () =>{
+        console.log(props.username,"wawnts to draw")
+        props.socket.emit("action",{
+                "action":"draw",
+                "player":props.username,
+                "room":props.room
+        })
+
+    }
+
+    const deckImg = (
+        <div onClick={drawCard}>
+            <img 
+                alt="1B"
+                src="../../cards/1B.svg"
+                className="w-35 h-40"
+            />
+        </div>
+    )                      
     return (
         <div>
              <p className='flex justify-center'>Current upcard:</p>

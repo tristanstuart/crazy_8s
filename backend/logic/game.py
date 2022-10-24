@@ -14,6 +14,7 @@ class Game():
         self.admin = admin
         self.activeSuit = ""
         self.playerTurn = None
+        self.index = None
 
     def shuffleDeck(self):
         shuffle(self.deck)
@@ -50,7 +51,8 @@ class Game():
         self.pile.insert(0,self.deck.pop())
         self.activeSuit = self.pile[0].suit
         print(f"roll random between 0 and {len(self.players) - 1} to determine starting player")
-        self.playerTurn = self.players[randint(0, len(self.players) - 1)]
+        self.index = randint(0, len(self.players) - 1)
+        self.playerTurn = self.players[self.index]
     
     def upcard(self):
         return self.pile[0]
@@ -94,13 +96,47 @@ class Game():
     def getPlayerTurn(self):
         return self.playerTurn
 
+    def drawCard(self):
+        print(len(self.playerTurn.cards))
+        if len(self.deck) == 0:
+            if self.reShuffle():
+                print("gameOver")
+                return
+        
+        self.playerTurn.cards.append(self.deck.pop)
+        print(len(self.playerTurn.cards))
+
+    def deal(self,data):
+        print("in self deal",data)
+        print(data["card"])
+        if data["card"]["rank"] == self.upcard().rank:
+            print(data["card"]["rank"],"matches up card",self.upcard().rank)
+        elif data["card"]["suit"] == self.upcard().suit:
+            print(data["card"]["suit"],"matches up card",self.upcard().suit)
+        else:
+            print(data["card"]["rank"],data["card"]["suit"], " does not match",self.upcard().shortname)
+
+    def nextTurn(self):
+        if self.index + 1 == len(self.players):
+            self.index = 0
+        else:
+            self.index +=1
+        self.playerTurn = self.players[self.index]
+
+    
+
+
     def action(self,data):
         print("heya cunfadsfa",self.playerTurn.getName())
         if self.playerTurn.getName() == data["player"]:
             print("data in action",data)
             if data["action"] == "draw":
+                self.drawCard()
+                self.nextTurn()                
                 print(data["player"],"wants to draw")
+                print("next player",self.playerTurn.getName())
             elif data["action"] == "deal":
+                self.deal(data)
                 print(data["player"],"wants to deal")
             else:
                 print("unknown action")

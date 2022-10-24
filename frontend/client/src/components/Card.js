@@ -60,7 +60,7 @@ function Card({rank, suit,user,room,socket}) {
       console.log("room",room)
       console.log(user)
       socket.emit("action",{
-        "action":"draw",
+        "action":"deal",
         "player":user,
         "card":{
           "rank":rank,
