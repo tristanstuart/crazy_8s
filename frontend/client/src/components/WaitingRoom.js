@@ -2,7 +2,7 @@ import {useEffect, useState} from 'react'
 import {useLocation} from 'react-router-dom'
 import Loading from './WaitBanner'
 import Card from './Card'
-
+import ChooseSuit from './ChooseSuit'
 
 function WaitingRoom({ socket }) {
 	const location = useLocation()
@@ -69,7 +69,6 @@ function WaitingRoom({ socket }) {
 
         socket.on("choose suit",data=>{
             if(data === true){
-                console.log("make pop up box to choose suit")
                 setSuit(true)
             }
         })
@@ -99,51 +98,6 @@ function WaitingRoom({ socket }) {
                 </div>
             </div>
         </div>
-    )
-}
-// className="flex items-center justify-center h-screen text-xl bg-green-300 "
-const ChooseSuit = props =>{
-    const suits = ["Hearts",'Diamonds', 'Clubs',"Spades"]
-    console.log("choose suit prompt,",props)
-    const suitButtons = suits.map(suit=>
-            <Suit
-                key={suit}
-                suit={suit}
-                user={props.user}
-                room={props.room}
-                socket={props.socket}
-                setSuit={props.setSuit}
-                />
-        )
-    return (
-        <div style={{display:"flex",justifyContent:"center"}}>
-            <div style={{width:"fit-content",backgroundColor:"lightblue",padding:"15px",borderRadius:"30px"}}>
-                <h1 style={{margin:"15px",textAlign:"center"}}>Choose Suit</h1>    
-                <div className='flex flex-grow justify-center mt-5 gap-x-3'>
-                    {suitButtons}
-                </div>
-            </div>
-        </div>
-    )
-}
-
-const Suit = props =>{
-    
-    const handleClick = () =>{
-        props.socket.emit("action",{
-            "action":"choose suit",
-            "suit":props.suit,
-            "room":props.room,
-            "player":props.user
-        })
-        props.setSuit(false)
-    }
-    return (
-        <button
-            onClick={handleClick}
-            style={{backgroundColor:"lightgreen",borderRadius:"25px",padding:"10px"}}>
-            {props.suit}
-        </button>
     )
 }
 
