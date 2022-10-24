@@ -1,3 +1,4 @@
+from turtle import update
 from urllib import response
 from flask import Flask, render_template, request, url_for
 from flask_socketio import SocketIO, emit, join_room, send
@@ -10,6 +11,8 @@ SECRET_KEY = os.urandom(32)
 app.config['SECRET_KEY'] = SECRET_KEY
 socketio = SocketIO(app,cors_allowed_origins="*")
 socketio.init_app(app, cors_allowed_origins="*")
+log = logging.getLogger("werkzeug")
+log.disabled = True
 
 rooms = {}
 
@@ -31,8 +34,6 @@ def on_admin_disconnect(data):
         if is_admin(request.sid, room):
             del rooms[room]
     emit('leave')
-
-#login and signup
 
 @socketio.on("login")
 def login(data):
@@ -111,7 +112,6 @@ def on_start_game(data):
     
     turnData = rooms[room].getPlayerTurn().getName()
     upcardData = rooms[room].upcard().toDict()
- 
 
     for p in rooms[room].players:
         playerCards, opponentCards = rooms[room].getCardState(p)
@@ -142,13 +142,9 @@ def action(data):
         
     elif result == "noCards":
         emit("error",message,to=data["room"])
-
-    # elif result == "drawed":
-    #     emit(data["player"],message["userCards"])
-    #     emit('updateDisplay', message["updateDisplay"], to=data["room"])
-    #     rooms[data["room"]].nextTurn()
     
     elif result == "next":
+        print()
         emit(data["player"],message["userCards"])
         emit('updateDisplay', message["updateDisplay"], to=data["room"])
         rooms[data["room"]].nextTurn()
@@ -157,8 +153,6 @@ def action(data):
         emit(data["player"],message["data"]["userCards"])
         emit('updateDisplay', message["data"]["updateDisplay"], to=data["room"])
         emit('end', message["winner"], to=data["room"])
-
-
 
 if __name__ == '__main__':
 	socketio.run(app, debug=True,port=5000) 
