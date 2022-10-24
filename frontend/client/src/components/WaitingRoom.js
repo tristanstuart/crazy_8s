@@ -17,6 +17,7 @@ function WaitingRoom({ socket }) {
     const [turn, setTurn] = useState("")
     const [upcard, setUpcard] = useState({})
     const [opponentCards, setOpponentCards] = useState([])
+    const [chooseSuit,setSuit] = useState(false)
     
     useEffect(()=>{
         socket.on('player_joined',e=>{
@@ -68,8 +69,9 @@ function WaitingRoom({ socket }) {
         })
 
         socket.on("choose suit",data=>{
-            if(data){
+            if(data === true){
                 console.log("make pop up box to choose suit")
+                setSuit(true)
             }
         })
         
@@ -86,6 +88,7 @@ function WaitingRoom({ socket }) {
                     {!gameIsStarted && <LobbyDisplay socket={socket} players={players} isAdmin={isAdmin} room={room}/>}
                     {gameIsStarted && <div>
                         <OpponentCards opponents={opponentCards}/>
+                        {chooseSuit === true?<ChooseSuit setSuit={setSuit} user={username} room={room} socket= {socket}/>:<div/>}
                         <div className='flex items-center justify-center text-8xl text-red-500/100'>Current turn: {turn}</div>
                             <div className='container mx-auto shadow-md bg-green-300 md:max-w-xl'>
                                 <UpcardDisplay card={upcard} username={username} socket={socket} room={room}/>
@@ -98,6 +101,51 @@ function WaitingRoom({ socket }) {
     )
 }
 // className="flex items-center justify-center h-screen text-xl bg-green-300 "
+const ChooseSuit = ({user,room,socket,setSuit}) =>{
+    const suits = ["Hearts",'Diamonds', 'Clubs',"Spades"]
+    
+    const suitButtons = suits.map(suit=>
+            <Suit
+                key={suit}
+                suit={suit}
+                user={user}
+                room={room}
+                socket={socket}
+                setSuit={setSuit}
+                />
+        )
+    return (
+        <div style={{display:"flex",justifyContent:"center"}}>
+            <div style={{width:"fit-content",backgroundColor:"lightblue",padding:"15px",borderRadius:"30px"}}>
+                <h1 style={{margin:"15px",textAlign:"center"}}>Choose Suit</h1>    
+                <div className='flex flex-grow justify-center mt-5 gap-x-3'>
+                    {suitButtons}
+                </div>
+            </div>
+        </div>
+    )
+}
+
+const Suit =({suit,user,room,socket,setSuit}) =>{
+    
+    const handleClick = () =>{
+        socket.emit("choose suit",{
+            "action":"choose suit",
+            "suit":suit,
+            "room":room,
+            "player":user
+        })
+        setSuit(false)
+    }
+    return (
+        <button
+            onClick={handleClick}
+            style={{backgroundColor:"lightgreen",borderRadius:"25px",padding:"10px"}}>
+            {suit}
+        </button>
+    )
+}
+
 function LobbyDisplay(props)
 {
     return (
