@@ -52,7 +52,9 @@ class Game():
         self.activeSuit = self.pile[0].suit
         print(f"roll random between 0 and {len(self.players) - 1} to determine starting player")
         self.index = randint(0, len(self.players) - 1)
+        print(self.index)
         self.playerTurn = self.players[self.index]
+
     
     def upcard(self):
         return self.pile[0]
@@ -103,18 +105,43 @@ class Game():
                 print("gameOver")
                 return
         
-        self.playerTurn.cards.append(self.deck.pop)
+        self.playerTurn.cards.append(self.deck.pop())
         print(len(self.playerTurn.cards))
 
-    def deal(self,data):
-        print("in self deal",data)
-        print(data["card"])
-        if data["card"]["rank"] == self.upcard().rank:
-            print(data["card"]["rank"],"matches up card",self.upcard().rank)
-        elif data["card"]["suit"] == self.upcard().suit:
-            print(data["card"]["suit"],"matches up card",self.upcard().suit)
-        else:
-            print(data["card"]["rank"],data["card"]["suit"], " does not match",self.upcard().shortname)
+    def deal(self,rank,suit):
+        
+        if  rank == "8" or rank == self.upcard().rank or suit == self.upcard().suit:
+            print(rank,suit,"matches up card",self.upcard())
+            for i in range(len(self.playerTurn.cards)):
+                if self.playerTurn.cards[i].rank == rank and self.playerTurn.cards[i].suit == suit:
+                    self.pile.insert(0,self.playerTurn.cards.pop(i))
+                    if rank =="8":
+                        return "choose suit"
+                    
+                    self.activeSuit = self.pile[0].suit
+                    break
+
+            return "next"
+        
+        return "error"
+
+    def update(self):
+        return {
+            "upcard":{
+                "rank":self.upcard().rank,
+                "suit":self.upcard().suit
+                },
+            "turn":self.getNext()
+        }
+    
+    def getNext(self):
+        if self.index + 1 == len(self.players):
+            return self.players[0].getName()
+        return self.players[self.index+1].getName()        
+
+
+    def render(self):
+        return {"updateDisplay":self.update(),"userCards":self.playerTurn.getCards()}
 
     def nextTurn(self):
         if self.index + 1 == len(self.players):
@@ -123,23 +150,48 @@ class Game():
             self.index +=1
         self.playerTurn = self.players[self.index]
 
-    
+    def endGame(self):
+        if len(self.playerTurn.cards) == 0:
+            return True
+        return False
 
-
+    #spilt this up
+    #implement choosing suit func for crazy eight
     def action(self,data):
+        print(self.upcard())
         print("heya cunfadsfa",self.playerTurn.getName())
         if self.playerTurn.getName() == data["player"]:
-            print("data in action",data)
+            
             if data["action"] == "draw":
-                self.drawCard()
-                self.nextTurn()                
-                print(data["player"],"wants to draw")
-                print("next player",self.playerTurn.getName())
+            
+                self.drawCard()               
+                return "drawed",self.render()
+
             elif data["action"] == "deal":
-                self.deal(data)
-                print(data["player"],"wants to deal")
+            
+                result = self.deal(data["card"]["rank"],data["card"]["suit"]) 
+                
+                if  result == "next":
+
+                    if self.endGame():
+                        return "end",data["player"] + "won"
+
+                    return "next",self.render()
+                
+                elif result == "choose suit":
+                    print("player neesds to choose suit")
+                    return "choose suit","player needs to choose a suit"
+                    
+                elif result == "error":
+                    return "error","cards do not match"
+            
+            elif data["action"] == "choose suit":
+                print("implement choosing suit")
+            
             else:
                 print("unknown action")
+        
         else:
-            return 
-            print(data["player"],"it is not your turn")
+            return "error","it is not your turn"
+            
+            
