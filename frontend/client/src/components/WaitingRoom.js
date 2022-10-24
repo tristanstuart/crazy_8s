@@ -17,8 +17,6 @@ function WaitingRoom({ socket }) {
     const [turn, setTurn] = useState("")
     const [upcard, setUpcard] = useState({})
     const [opponentCards, setOpponentCards] = useState([])
-    console.log(location.state.room)
-    console.log("user",location.state.user)
     
     useEffect(()=>{
         socket.on('player_joined',e=>{
@@ -26,10 +24,38 @@ function WaitingRoom({ socket }) {
 			console.log("player joined " + e)
         })
 
+        socket.on("updateDisplay", data=>{
+            console.log(data)
+            setUpcard(data['upcard'])
+            setTurn(data['turn'])
+        })
+        
+        socket.on(username,data=>{
+            console.log("data in cards")
+            setHand(data["hand"].map(e=>
+                    <Card key={e["rank"]+e["suit"]}
+                        user={username} 
+                        rank={e["rank"]} 
+                        suit={e["suit"]} 
+                        room={room}
+                        socket={socket}
+                    />
+                ))
+        })
+
         socket.on('move_to_game_start', data =>{
             console.log(JSON.stringify(data))
             console.log(data)
-            setHand(data['hand'])
+            
+            setHand(data['hand'].map(e=>
+                <Card key={e["rank"]+e["suit"]}
+                    user={username} 
+                    rank={e["rank"]} 
+                    suit={e["suit"]} 
+                    room={room}
+                    socket={socket}
+                />
+            ))
             setTurn(data['turn'])
             setUpcard(data['upcard'])
             setOpponentCards(data['opponents'])
@@ -39,6 +65,12 @@ function WaitingRoom({ socket }) {
 
         socket.on("error",error=>{
             console.log(error)
+        })
+
+        socket.on("choose suit",data=>{
+            if(data){
+                console.log("make pop up box to choose suit")
+            }
         })
         
       return ()=>{
@@ -85,23 +117,11 @@ function LobbyDisplay(props)
 
 function CardHand(props){
 
+    console.log("props in cardhand",props)
     
-
-    let playerHand = []
-        console.log("playerhand",props)
-        props.hand.forEach(card => {
-            playerHand.push(
-                <Card user={props.user} rank={card['rank']} suit={card['suit']} 
-                key={card['rank']+ card['suit']} 
-                room={props.room}
-                socket={props.socket}
-                />
-            
-                )
-        })
     return (
         <div className='flex flex-grow justify-center mt-5 gap-x-3'>
-            {playerHand}
+            {props.hand}
         </div>
     )
 
