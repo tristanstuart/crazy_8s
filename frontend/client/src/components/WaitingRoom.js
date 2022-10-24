@@ -102,17 +102,17 @@ function WaitingRoom({ socket }) {
     )
 }
 // className="flex items-center justify-center h-screen text-xl bg-green-300 "
-const ChooseSuit = ({user,room,socket,setSuit}) =>{
+const ChooseSuit = props =>{
     const suits = ["Hearts",'Diamonds', 'Clubs',"Spades"]
-    
+    console.log("choose suit prompt,",props)
     const suitButtons = suits.map(suit=>
             <Suit
                 key={suit}
                 suit={suit}
-                user={user}
-                room={room}
-                socket={socket}
-                setSuit={setSuit}
+                user={props.user}
+                room={props.room}
+                socket={props.socket}
+                setSuit={props.setSuit}
                 />
         )
     return (
@@ -127,22 +127,24 @@ const ChooseSuit = ({user,room,socket,setSuit}) =>{
     )
 }
 
-const Suit =({suit,user,room,socket,setSuit}) =>{
+const Suit =props =>{
     
     const handleClick = () =>{
-        socket.emit("choose suit",{
+        console.log("do i not know this?",props.suit,"user",props.user,"room",props.room)
+        console.log("i clicked the suit")
+        props.socket.emit("choose suit",{
             "action":"choose suit",
-            "suit":suit,
-            "room":room,
-            "player":user
+            "suit":props.suit,
+            "room":props.room,
+            "player":props.user
         })
-        setSuit(false)
+        props.setSuit(false)
     }
     return (
         <button
             onClick={handleClick}
             style={{backgroundColor:"lightgreen",borderRadius:"25px",padding:"10px"}}>
-            {suit}
+            {props.suit}
         </button>
     )
 }
