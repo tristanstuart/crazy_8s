@@ -12,19 +12,19 @@
       <form id="start">
         <input type="text" id="name" placeholder="User Name" required>
         <br>
-        <input id="pass" type="text" placeholder="Password" required/>
+        <input id="pass1" type="text" placeholder="Password" required/>
+        <br>
+        <input id="pass2" type="text" placeholder="Re-Enter Password" required/>
       </form>
       <p>
         Play cards with friends!
       </p>
-      <a id="join" href="#" onclick="" >Sign-in</a>
+      <a id="join" href="#" onclick="" >Create Account!</a>
       <a id="create" href="/" >Cancel</a>
-      <p>Don't have an account?</p>
-      <a id="signup" href="/signup" >Sign-Up</a>
     </main>
   </div>
   <footer></footer>
 {% endblock %}
 {% block scripts %}
-<script src="{{ url_for('static', filename='login.js') }}"></script>
+<script src="{{ url_for('static', filename='signup.js') }}"></script>
 {% endblock %}
