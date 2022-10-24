@@ -43,7 +43,7 @@ function App() {
       </Routes>
 	) : <div>Connecting...</div>}
       {/* <div className="className='bg-grey-200 absolute bottom-0 text-s text-center w-full">
-        <Footer />
+        <Footer/>
         
       </div> */}
     </div>
