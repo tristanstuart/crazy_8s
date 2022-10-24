@@ -7,7 +7,6 @@ from .bot import Bot
 
 class Game():
     def __init__(self, admin) -> None:
-        print("admin",admin)
         self.deck = Deck().init_cards().copy()
         self.pile = []
         self.players = [Player(admin)]
@@ -44,8 +43,6 @@ class Game():
         return False
 
     def gameStart(self):
-        print("players in gameStart",self.players)
-        print("")
         self.shuffleDeck()
         self.dealCards()
 
@@ -53,7 +50,6 @@ class Game():
         self.activeSuit = self.pile[0].suit
         print(f"roll random between 0 and {len(self.players) - 1} to determine starting player")
         self.index = randint(0, len(self.players) - 1)
-        print(self.index)
         self.playerTurn = self.players[self.index]
 
     
@@ -82,7 +78,6 @@ class Game():
         allPlayers = []
         for p in self.players:
             allPlayers.append(p.getName())
-        print(allPlayers)
         return allPlayers
 
     def getCardState(self, player):
@@ -100,23 +95,23 @@ class Game():
         return self.playerTurn
 
     def drawCard(self):
-        print(len(self.playerTurn.cards))
         if len(self.deck) == 0:
             if self.reShuffle():
                 print("gameOver")
                 return False
         
         self.playerTurn.cards.append(self.deck.pop())
-        print(len(self.playerTurn.cards))
         return True
 
     def deal(self,rank,suit):
         
-        if  rank == "8" or rank == self.upcard().rank or suit == self.upcard().suit:
-            print(rank,suit,"matches up card",self.upcard())
+        if  rank == "8" or rank == self.upcard().rank or suit == self.activeSuit:
+            
             for i in range(len(self.playerTurn.cards)):
+            
                 if self.playerTurn.cards[i].rank == rank and self.playerTurn.cards[i].suit == suit:
                     self.pile.insert(0,self.playerTurn.cards.pop(i))
+            
                     if rank =="8":
                         self.needSuit = True
                         return "choose suit"
@@ -168,14 +163,15 @@ class Game():
     #spilt this up
     #implement choosing suit func for crazy eight
     def action(self,data):
-       
+        print("data in actionfdafda",data["action"])
         if self.playerTurn.getName() == data["player"]:
             
             if data["action"] == "draw":
             
                 if self.drawCard() == False:
-                    return "noCards","there are no more cards to draw"               
-                return "drawed",self.render()
+                    return "noCards","there are no more cards to draw"     
+
+                return "next",self.render()
 
             elif data["action"] == "deal":
             
@@ -201,12 +197,10 @@ class Game():
             
             elif data["action"] == "choose suit":
                 self.setSuit(data["suit"])
-                print("am i in here")
-                print(self.render())
                 return "next",self.render()
             
             else:
-                print("unknown action")
+                return "error", "unknown action"
         
         else:
             return "error","it is not your turn"

@@ -127,12 +127,10 @@ const ChooseSuit = props =>{
     )
 }
 
-const Suit =props =>{
+const Suit = props =>{
     
     const handleClick = () =>{
-        console.log("do i not know this?",props.suit,"user",props.user,"room",props.room)
-        console.log("i clicked the suit")
-        props.socket.emit("choose suit",{
+        props.socket.emit("action",{
             "action":"choose suit",
             "suit":props.suit,
             "room":props.room,
