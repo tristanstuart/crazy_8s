@@ -110,23 +110,17 @@ def on_start_game(data):
     print(f"starting game! {rooms[room].getPlayerTurn().getName()} goes first. Upcard is {rooms[room].upcard().long_name}")
     
     turnData = rooms[room].getPlayerTurn().getName()
-    print("turnData:",turnData)
     upcardData = rooms[room].upcard().toDict()
-    print("upcarddata",upcardData)
+ 
 
     for p in rooms[room].players:
         playerCards, opponentCards = rooms[room].getCardState(p)
-        print("playerCards",playerCards)
-        print("o0",opponentCards)
         emit('move_to_game_start', {'turn':turnData, 'upcard':upcardData, 'hand':playerCards, 'opponents':opponentCards}, to=p.getSID())
         print("sent info to " + p.getName())
 
 @socketio.on("action")
 def action(data):
-    print("before this")
-    print(data)
-    print(rooms[data["room"]])
-    print("attempting to take action",rooms[data["room"]].getPlayerTurn().getName())
+    
     if not data["room"] in rooms:
         print("room does not exist")
         return
@@ -134,9 +128,25 @@ def action(data):
     if(data["player"] != rooms[data["room"]].getPlayerTurn().getName()):
         emit("error","it is not your turn")
         return
-
     
-    rooms[data["room"]].action(data)
+    result,message = rooms[data["room"]].action(data)
+
+    #split this all up
+    
+    if result == "error":
+        emit(result,message)
+    elif result == "choose suit":
+        emit(result,True)
+    elif result == "drawed":
+        emit(data["player"],message["userCards"])
+        emit('updateDisplay', message["updateDisplay"], to=data["room"])
+        rooms[data["room"]].nextTurn()
+    elif result == "next":
+        emit(data["player"],message["userCards"])
+        emit('updateDisplay', message["updateDisplay"], to=data["room"])
+        rooms[data["room"]].nextTurn()
+    elif result == "end":
+        emit('end', message, to=data["room"])
 
 
 
