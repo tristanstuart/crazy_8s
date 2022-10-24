@@ -1,7 +1,10 @@
+from .cards import Card
 class Player():
     def __init__(self, info) -> None:
+        print("info",info)
         self.info = info
         self.cards = []
+
 
     def player_turn(self,up_card,deck,pile,activeSuit):
         valid_play = False
@@ -89,3 +92,14 @@ class Player():
 
     def getSID(self):
         return self.info['sid']
+
+    def getCards(self):
+        cards = {"hand":[]}
+        for card in self.cards:
+            cards["hand"].append({
+                "rank":card.rank,
+                "suit":card.suit
+            })
+
+        print("cards in getcards")
+        return cards
