@@ -1,7 +1,9 @@
 class Player():
     def __init__(self, info) -> None:
+        print("info",info)
         self.info = info
         self.cards = []
+
 
     def player_turn(self,up_card,deck,pile,activeSuit):
         valid_play = False

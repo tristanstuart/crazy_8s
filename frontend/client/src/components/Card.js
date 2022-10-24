@@ -1,3 +1,7 @@
+import {useLocation} from 'react-router-dom'
+import { Socket } from 'socket.io-client';
+	
+
 const rankMap = new Map([
   ["ace", "A"],
   ["Ace", "A"],
@@ -47,9 +51,33 @@ const suitMap = new Map([
   ["Spades", 'S'],
 ]);
 
-function Card({rank, suit}) {
+function Card({rank, suit,user,room,socket}) {
+
+  const handleClick = () =>{
+    
+    if(room !== undefined){
+      console.log(user,"clicked", rank,suit)
+      console.log("room",room)
+      console.log(user)
+      socket.emit("action",{
+        "action":"draw",
+        "player":user,
+        "card":{
+          "rank":rank,
+          "suit":suit
+        },
+        "room":room
+      })
+    }
+    else
+      console.log("user is undefined")  
+    
+    
+  }
+
   return (
-    <div style={{display:'grid',justifyContent:'center'}}>
+    <div style={{display:'grid',justifyContent:'center'}}
+        onClick={handleClick}>
       <img
         alt={rank + 'of' + suit} 
         src={`/cards/${rankMap.get(rank)}${suitMap.get(suit)}.svg`} 

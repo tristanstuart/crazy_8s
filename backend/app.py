@@ -11,10 +11,6 @@ app.config['SECRET_KEY'] = SECRET_KEY
 socketio = SocketIO(app,cors_allowed_origins="*")
 socketio.init_app(app, cors_allowed_origins="*")
 
-log = logging.getLogger('werkzeug')
-log.disabled = True
-
-
 rooms = {}
 
 #delete after database setup
@@ -108,19 +104,41 @@ def on_create(data):
 
 @socketio.on('start_game')
 def on_start_game(data):
+    print("data",data)
     room = data
     rooms[room].gameStart()
     print(f"starting game! {rooms[room].getPlayerTurn().getName()} goes first. Upcard is {rooms[room].upcard().long_name}")
     
     turnData = rooms[room].getPlayerTurn().getName()
+    print("turnData:",turnData)
     upcardData = rooms[room].upcard().toDict()
+    print("upcarddata",upcardData)
 
     for p in rooms[room].players:
         playerCards, opponentCards = rooms[room].getCardState(p)
+        print("playerCards",playerCards)
+        print("o0",opponentCards)
         emit('move_to_game_start', {'turn':turnData, 'upcard':upcardData, 'hand':playerCards, 'opponents':opponentCards}, to=p.getSID())
         print("sent info to " + p.getName())
+
+@socketio.on("action")
+def action(data):
+    print("before this")
+    print(data)
+    print(rooms[data["room"]])
+    print("attempting to take action",rooms[data["room"]].getPlayerTurn().getName())
+    if not data["room"] in rooms:
+        print("room does not exist")
+        return
+    
+    if(data["player"] != rooms[data["room"]].getPlayerTurn().getName()):
+        emit("error","it is not your turn")
+        return
+
+    
+    rooms[data["room"]].action(data)
 
 
 
 if __name__ == '__main__':
-	socketio.run(app, debug=True) 
+	socketio.run(app, debug=True,port=5000) 

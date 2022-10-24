@@ -30,6 +30,7 @@ function JoinGame({ socket }){
             setErrorMsg('please join an existing game or create your own')
             setError(true)
         })
+
       return ()=>{
         socket.off("user_already_in_room")
       }},[socket, navigate, room, username])  
@@ -52,7 +53,7 @@ function JoinGame({ socket }){
                             type="text" 
                             placeholder="Enter Room Code" 
                             className="p-3 text-2xl rounded-full mt-1 grid items-center justify-center"
-                            input onChange={e=>setRoom(e.target.value)}
+                            onChange={e=>setRoom(e.target.value)}
                                 
                         />
                     </form>
