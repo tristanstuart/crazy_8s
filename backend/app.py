@@ -120,6 +120,8 @@ def on_start_game(data):
 
 @socketio.on("action")
 def action(data):
+
+    print(data)
     
     if not data["room"] in rooms:
         print("room does not exist")
@@ -136,7 +138,11 @@ def action(data):
     if result == "error":
         emit(result,message)
     elif result == "choose suit":
-        emit(result,True)
+        emit(data["player"],message["userCards"])
+        emit('updateDisplay', message["updateDisplay"], to=data["room"])
+        emit("choose suit",True)
+    elif result == "noCards":
+        emit("error",message,to=data["room"])
     elif result == "drawed":
         emit(data["player"],message["userCards"])
         emit('updateDisplay', message["updateDisplay"], to=data["room"])
@@ -146,7 +152,9 @@ def action(data):
         emit('updateDisplay', message["updateDisplay"], to=data["room"])
         rooms[data["room"]].nextTurn()
     elif result == "end":
-        emit('end', message, to=data["room"])
+        emit(data["player"],message["data"]["userCards"])
+        emit('updateDisplay', message["data"]["updateDisplay"], to=data["room"])
+        emit('end', message["winner"], to=data["room"])
 
 
 

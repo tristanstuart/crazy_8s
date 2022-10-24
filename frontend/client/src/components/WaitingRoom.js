@@ -22,17 +22,18 @@ function WaitingRoom({ socket }) {
     useEffect(()=>{
         socket.on('player_joined',e=>{
     		setPlayers(e)
-			console.log("player joined " + e)
+        })
+
+        socket.on("end",message=>{
+            console.log(message)
         })
 
         socket.on("updateDisplay", data=>{
-            console.log(data)
             setUpcard(data['upcard'])
             setTurn(data['turn'])
         })
         
         socket.on(username,data=>{
-            console.log("data in cards")
             setHand(data["hand"].map(e=>
                     <Card key={e["rank"]+e["suit"]}
                         user={username} 
@@ -45,9 +46,7 @@ function WaitingRoom({ socket }) {
         })
 
         socket.on('move_to_game_start', data =>{
-            console.log(JSON.stringify(data))
-            console.log(data)
-            
+    
             setHand(data['hand'].map(e=>
                 <Card key={e["rank"]+e["suit"]}
                     user={username} 
@@ -88,12 +87,14 @@ function WaitingRoom({ socket }) {
                     {!gameIsStarted && <LobbyDisplay socket={socket} players={players} isAdmin={isAdmin} room={room}/>}
                     {gameIsStarted && <div>
                         <OpponentCards opponents={opponentCards}/>
-                        {chooseSuit === true?<ChooseSuit setSuit={setSuit} user={username} room={room} socket= {socket}/>:<div/>}
+                        
                         <div className='flex items-center justify-center text-8xl text-red-500/100'>Current turn: {turn}</div>
                             <div className='container mx-auto shadow-md bg-green-300 md:max-w-xl'>
-                                <UpcardDisplay card={upcard} username={username} socket={socket} room={room}/>
+                            <UpcardDisplay card={upcard} username={username} socket={socket} room={room} turn={turn}/>
+                                
                             </div>
-                            <CardHand user={username} hand={hand} room={room} socket={socket}/>
+                            {chooseSuit === true?<ChooseSuit setSuit={setSuit} user={username} room={room} socket={socket}/>:<CardHand user={username} hand={hand} room={room} socket={socket}/>}
+                            
                         </div>}
                 </div>
             </div>
@@ -164,8 +165,6 @@ function LobbyDisplay(props)
 }
 
 function CardHand(props){
-
-    console.log("props in cardhand",props)
     
     return (
         <div className='flex flex-grow justify-center mt-5 gap-x-3'>
@@ -180,8 +179,6 @@ function OpponentCards(props)
     //referenced https://css-tricks.com/text-blocks-over-image/ for displaying text over the card image
     
     const deckImg = <img alt="1B" src="../../cards/1B.svg" className="w-35 h-40"/>
-    
-    console.log(props)
 
     let handStr = []
     props.opponents.forEach(person => {
@@ -204,9 +201,11 @@ function OpponentCards(props)
 
 function UpcardDisplay(props)
 {
-    console.log(JSON.stringify(props.card))
-
     const drawCard = () =>{
+        if (props.turn !== props.username){
+            console.log("it is not your turn",props.turn)
+            return
+        }
         console.log(props.username,"wawnts to draw")
         props.socket.emit("action",{
                 "action":"draw",
