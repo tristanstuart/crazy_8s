@@ -11,9 +11,10 @@ class Game():
         self.pile = []
         self.players = [Player(admin)]
         self.admin = admin
-        #self.upCard = None     # always equals pile[0], replaced with function upcard()
         self.activeSuit = ""
         self.playerTurn = None
+        self.index = None
+        self.needSuit = False
 
     def shuffleDeck(self):
         shuffle(self.deck)
@@ -25,19 +26,6 @@ class Game():
                 cards.append(self.deck.pop())
             player.cards = cards.copy()
             cards.clear()
-
-    """def getPlayers(self):
-        numPlayers = input("How many players will play? ")
-        while not numPlayers.isnumeric():
-            numPlayers = input("Input a valid player amount: ")
-
-        numPlayers = int(numPlayers)
-        for i in range(1,1+numPlayers):
-            name = input("   Player " + str(i) + "'s name: ")
-            self.players.append(Player(name));
-
-        if numPlayers == 1:
-            self.players.append(Bot("Bot"))"""
 
     def reShuffle(self):
         
@@ -55,41 +43,15 @@ class Game():
         return False
 
     def gameStart(self):
-
-        done = False
-    
-        #self.getPlayers()
         self.shuffleDeck()
         self.dealCards()
 
         self.pile.insert(0,self.deck.pop())
         self.activeSuit = self.pile[0].suit
-        #pick a random player to start
         print(f"roll random between 0 and {len(self.players) - 1} to determine starting player")
-        self.playerTurn = self.players[randint(0, len(self.players) - 1)]
-        
-        """while not done:
+        self.index = randint(0, len(self.players) - 1)
+        self.playerTurn = self.players[self.index]
 
-            for player in self.players:
-               
-                self.upCard = self.pile[0];
-                self.activeSuit = self.upCard.suit;
-
-                print("   Up card:", self.upCard.long_name)
-                print("   Suit is " + self.activeSuit)
-
-                player.player_turn(self.upCard,self.deck,self.pile,self.activeSuit)
-                
-                if len(player.cards) == 0:
-                    print(player.name + " Won!")
-                    done = True;
-                    break;
-
-                if len(self.deck) == 0:
-                    done = self.reShuffle();
-                    if done:
-                        print("No one wins")
-                        break;"""
     
     def upcard(self):
         return self.pile[0]
@@ -116,7 +78,6 @@ class Game():
         allPlayers = []
         for p in self.players:
             allPlayers.append(p.getName())
-        print(allPlayers)
         return allPlayers
 
     def getCardState(self, player):
@@ -132,3 +93,116 @@ class Game():
     
     def getPlayerTurn(self):
         return self.playerTurn
+
+    def drawCard(self):
+        if len(self.deck) == 0:
+            if self.reShuffle():
+                print("gameOver")
+                return False
+        
+        self.playerTurn.cards.append(self.deck.pop())
+        return True
+
+    def deal(self,rank,suit):
+        
+        if  rank == "8" or rank == self.upcard().rank or suit == self.activeSuit:
+            
+            for i in range(len(self.playerTurn.cards)):
+            
+                if self.playerTurn.cards[i].rank == rank and self.playerTurn.cards[i].suit == suit:
+                    self.pile.insert(0,self.playerTurn.cards.pop(i))
+            
+                    if rank =="8":
+                        self.needSuit = True
+                        return "choose suit"
+                    
+                    self.activeSuit = self.pile[0].suit
+                    break
+
+            return "next"
+        
+        return "error"
+
+    def update(self):
+        return {
+            "upcard":{
+                "rank":self.upcard().rank,
+                "suit":self.upcard().suit
+                },
+            "turn":self.getNext()
+        }
+    
+    def getNext(self):
+        if self.needSuit == True:
+            return self.playerTurn.getName()
+        if self.index + 1 == len(self.players):
+            return self.players[0].getName()
+        return self.players[self.index+1].getName()        
+
+
+    def render(self):
+        return {"updateDisplay":self.update(),"userCards":self.playerTurn.getCards()}
+
+    def nextTurn(self):
+        if self.index + 1 == len(self.players):
+            self.index = 0
+        else:
+            self.index +=1
+        self.playerTurn = self.players[self.index]
+
+    def endGame(self):
+        if len(self.playerTurn.cards) == 0:
+            return True
+        return False
+
+    def setSuit(self,suit):
+        self.needSuit = False
+        self.activeSuit = suit
+        
+
+    #spilt this up
+    #implement choosing suit func for crazy eight
+    def action(self,data):
+        print("data in actionfdafda",data["action"])
+        if self.playerTurn.getName() == data["player"]:
+            
+            if data["action"] == "draw":
+            
+                if self.drawCard() == False:
+                    return "noCards","there are no more cards to draw"     
+
+                return "next",self.render()
+
+            elif data["action"] == "deal":
+            
+                result = self.deal(data["card"]["rank"],data["card"]["suit"]) 
+                
+                if  result == "next":
+
+                    if self.endGame():
+                        message = {
+                            "winner":data["player"],
+                            "data":self.render()
+                        }
+                        return "end",message
+
+                    return "next",self.render()
+                
+                elif result == "choose suit":
+                    
+                    return "choose suit", self.render()
+                    
+                elif result == "error":
+                    return "error","cards do not match"
+            
+            elif data["action"] == "choose suit":
+                self.setSuit(data["suit"])
+                return "next",self.render()
+            
+            else:
+                return "error", "unknown action"
+        
+        else:
+            return "error","it is not your turn"
+            
+            

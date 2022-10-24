@@ -2,11 +2,11 @@ import {useEffect, useState} from 'react'
 import {useLocation} from 'react-router-dom'
 import Loading from './WaitBanner'
 import Card from './Card'
-
+import ChooseSuit from './ChooseSuit'
 
 function WaitingRoom({ socket }) {
 	const location = useLocation()
-	// const username = location.state.user
+	const username = location.state.user
 	const room = location.state.room
     const isAdmin = location.state.isAdmin
     const [gameIsStarted, startGame] = useState(false)
@@ -17,22 +17,62 @@ function WaitingRoom({ socket }) {
     const [turn, setTurn] = useState("")
     const [upcard, setUpcard] = useState({})
     const [opponentCards, setOpponentCards] = useState([])
-
+    const [chooseSuit,setSuit] = useState(false)
+    
     useEffect(()=>{
         socket.on('player_joined',e=>{
     		setPlayers(e)
-			console.log("player joined " + e)
+        })
+
+        socket.on("end",message=>{
+            console.log(message)
+        })
+
+        socket.on("updateDisplay", data=>{
+            setUpcard(data['upcard'])
+            setTurn(data['turn'])
+        })
+        
+        socket.on(username,data=>{
+            setHand(data["hand"].map(e=>
+                    <Card key={e["rank"]+e["suit"]}
+                        user={username} 
+                        rank={e["rank"]} 
+                        suit={e["suit"]} 
+                        room={room}
+                        socket={socket}
+                    />
+                ))
         })
 
         socket.on('move_to_game_start', data =>{
-            console.log(JSON.stringify(data))
-            setHand(data['hand'])
+    
+            setHand(data['hand'].map(e=>
+                <Card key={e["rank"]+e["suit"]}
+                    user={username} 
+                    rank={e["rank"]} 
+                    suit={e["suit"]} 
+                    room={room}
+                    socket={socket}
+                />
+            ))
             setTurn(data['turn'])
             setUpcard(data['upcard'])
             setOpponentCards(data['opponents'])
             console.log("game is starting!")
             startGame(true)
         })
+
+        socket.on("error",error=>{
+            console.log(error)
+        })
+
+        socket.on("choose suit",data=>{
+            if(data === true){
+                setSuit(true)
+            }
+        })
+        
       return ()=>{
         socket.off("player_joined")
         socket.off("move_to_game_start")
@@ -46,25 +86,28 @@ function WaitingRoom({ socket }) {
                     {!gameIsStarted && <LobbyDisplay socket={socket} players={players} isAdmin={isAdmin} room={room}/>}
                     {gameIsStarted && <div>
                         <OpponentCards opponents={opponentCards}/>
+                        
                         <div className='flex items-center justify-center text-8xl text-red-500/100'>Current turn: {turn}</div>
                             <div className='container mx-auto shadow-md bg-green-300 md:max-w-xl'>
-                                <UpcardDisplay card={upcard}/>
+                            <UpcardDisplay card={upcard} username={username} socket={socket} room={room} turn={turn}/>
+                                
                             </div>
-                            <CardHand hand={hand}/>
+                            {chooseSuit === true?<ChooseSuit setSuit={setSuit} user={username} room={room} socket={socket}/>:<CardHand user={username} hand={hand} room={room} socket={socket}/>}
+                            
                         </div>}
                 </div>
             </div>
         </div>
     )
 }
-// className="flex items-center justify-center h-screen text-xl bg-green-300 "
+
 function LobbyDisplay(props)
 {
     return (
     <div >
         <u>Player List</u>
         <ul>
-            {props.players.map(data => (<li>{data}</li>))}
+            {props.players.map(data => (<li key={data}>{data}</li>))}
         </ul>
         {props.isAdmin && (<button 
         className="p-2 rounded-full bg-blue-400 mt-20"
@@ -75,15 +118,11 @@ function LobbyDisplay(props)
     </div>)
 }
 
-function CardHand(props)
-{
-    let playerHand = []
-        props.hand.forEach(card => {
-            playerHand.push(<Card rank={card['rank']} suit={card['suit']} key={card['rank']+ card['suit']} />)
-        })
+function CardHand(props){
+    
     return (
-        <div className='flex flex-grow justify-center mt-5'>
-            {playerHand}
+        <div className='flex flex-grow justify-center mt-5 gap-x-3'>
+            {props.hand}
         </div>
     )
 
@@ -93,11 +132,11 @@ function OpponentCards(props)
 {
     //referenced https://css-tricks.com/text-blocks-over-image/ for displaying text over the card image
     
-    const deckImg = <img src="../../cards/1B.svg" className="w-35 h-40"/>
-    
+    const deckImg = <img alt="1B" src="../../cards/1B.svg" className="w-35 h-40"/>
+
     let handStr = []
     props.opponents.forEach(person => {
-        handStr.push(<div>
+        handStr.push(<div key={person.name}>
             <p className='text-4xl flex justify-center'>{person['name']}</p>
             <div className='relative flex justify-center p-3'>
                 {deckImg}
@@ -116,11 +155,29 @@ function OpponentCards(props)
 
 function UpcardDisplay(props)
 {
-    console.log(JSON.stringify(props.card))
-    const deckImg = <img 
-                      src="../../cards/1B.svg"
-                      className="w-35 h-40"
-                    />                      
+    const drawCard = () =>{
+        if (props.turn !== props.username){
+            console.log("it is not your turn",props.turn)
+            return
+        }
+        console.log(props.username,"wawnts to draw")
+        props.socket.emit("action",{
+                "action":"draw",
+                "player":props.username,
+                "room":props.room
+        })
+
+    }
+
+    const deckImg = (
+        <div onClick={drawCard}>
+            <img 
+                alt="1B"
+                src="../../cards/1B.svg"
+                className="w-35 h-40"
+            />
+        </div>
+    )                      
     return (
         <div>
              <p className='flex justify-center'>Current upcard:</p>
