@@ -3,6 +3,7 @@ import {useLocation} from 'react-router-dom'
 import Loading from './WaitBanner'
 import Card from './Card'
 import ChooseSuit from './ChooseSuit'
+import PlayerLayout from './PlayerLayout'
 
 function WaitingRoom({ socket }) {
 	const location = useLocation()
@@ -41,6 +42,7 @@ function WaitingRoom({ socket }) {
                         suit={e["suit"]} 
                         room={room}
                         socket={socket}
+                        class_={'transition ease-in-out delay-150 bg-blue-500 hover:-translate-y-10 hover:scale-110 duration-300'}
                     />
                 ))
         })
@@ -54,6 +56,7 @@ function WaitingRoom({ socket }) {
                     suit={e["suit"]} 
                     room={room}
                     socket={socket}
+                    class_={'transition ease-in-out delay-150 bg-blue-500 hover:-translate-y-10 hover:scale-110 duration-300'}
                 />
             ))
             setTurn(data['turn'])
@@ -76,25 +79,46 @@ function WaitingRoom({ socket }) {
       return ()=>{
         socket.off("player_joined")
         socket.off("move_to_game_start")
-      }},[socket])
-
+      }},[socket,room, username])
     return (
         <div>
             <div >
                 <div>
                 {!gameIsStarted && <Loading />}
                     {!gameIsStarted && <LobbyDisplay socket={socket} players={players} isAdmin={isAdmin} room={room}/>}
-                    {gameIsStarted && <div>
-                        <OpponentCards opponents={opponentCards}/>
-                        
-                        <div className='flex items-center justify-center text-8xl text-red-500/100'>Current turn: {turn}</div>
-                            <div className='container mx-auto shadow-md bg-green-300 md:max-w-xl'>
-                            <UpcardDisplay card={upcard} username={username} socket={socket} room={room} turn={turn}/>
-                                
+                    {gameIsStarted && 
+                        <div className='bg-purple-200'>
+                            <div className='flex  items-center justify-center'>
+                                <PlayerLayout opponents={opponentCards} players={players}/>
                             </div>
-                            {chooseSuit === true?<ChooseSuit setSuit={setSuit} user={username} room={room} socket={socket}/>:<CardHand user={username} hand={hand} room={room} socket={socket}/>}
+                            {/* <div className='flex items-center justify-center text-8xl text-red-500/100'>
+                                Current turn: {turn}
+                            </div> */}
                             
-                        </div>}
+                            <div className='container mx-auto shadow-md bg-green-300 rounded-full w-1/2'>
+                                <UpcardDisplay 
+                                    card={upcard} 
+                                    username={username} 
+                                    socket={socket} 
+                                    room={room} 
+                                    turn={turn}/>
+                                {chooseSuit === true ? 
+                                    <ChooseSuit 
+                                        setSuit={setSuit} 
+                                        user={username} 
+                                        room={room} 
+                                        socket={socket}/>
+                                        :
+                                    <CardHand 
+                                        user={username} 
+                                        hand={hand} 
+                                        room={room} 
+                                        socket={socket}/>
+                                }
+                            </div>
+                            
+                        </div>
+                    }
                 </div>
             </div>
         </div>
@@ -122,36 +146,12 @@ function CardHand(props){
     
     return (
         <div className='flex flex-grow justify-center mt-5 gap-x-3'>
-            {props.hand}
+            {props.hand }
         </div>
     )
-
-}
-
-function OpponentCards(props)
-{
-    //referenced https://css-tricks.com/text-blocks-over-image/ for displaying text over the card image
     
-    const deckImg = <img alt="1B" src="../../cards/1B.svg" className="w-35 h-40"/>
-
-    let handStr = []
-    props.opponents.forEach(person => {
-        handStr.push(<div key={person.name}>
-            <p className='text-4xl flex justify-center'>{person['name']}</p>
-            <div className='relative flex justify-center p-3'>
-                {deckImg}
-                <div className='text-8xl absolute'>{person['count']}</div>
-            </div>
-        </div>)
-    })
-
-    return (<div className='container mx-auto md:max-w-xl'>
-        <div className='flex justify-center text-6xl'>Opponent Hands</div>
-        <div className='flex flex-grow justify-center'>
-            {handStr}
-        </div>
-    </div>)
 }
+
 
 function UpcardDisplay(props)
 {
@@ -180,9 +180,8 @@ function UpcardDisplay(props)
     )                      
     return (
         <div>
-             <p className='flex justify-center'>Current upcard:</p>
-            <div className='flex items-center justify-center'>
-                <Card suit={props.card.suit} rank={props.card.rank} />
+            <div className='flex items-center justify-center '>
+                <Card  suit={props.card.suit} rank={props.card.rank} class_='' />
                 <div className='text-9xl p-3'>{deckImg}</div>
             </div>
         </div>
