@@ -170,7 +170,7 @@ function UpcardDisplay(props)
     }
 
     const deckImg = (
-        <div onClick={drawCard}>
+        <div>
             <img 
                 alt="1B"
                 src="../../cards/1B.svg"
@@ -183,7 +183,14 @@ function UpcardDisplay(props)
             <div className='flex items-center justify-center '>
                 <Card  suit={props.card.suit} rank={props.card.rank} class_='' />
                 <div className='text-9xl p-3'>{deckImg}</div>
+                <button 
+                    onClick={drawCard}
+                    className='flex items-center justify-center rounded-full bg-red-400 w-20'
+                >
+                    Draw
+                </button>
             </div>
+
         </div>
     )
     
