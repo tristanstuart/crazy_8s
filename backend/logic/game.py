@@ -15,6 +15,7 @@ class Game():
         self.playerTurn = None
         self.index = None
         self.needSuit = False
+        self.over = False;
 
     def status(self):
         status = {
@@ -26,6 +27,9 @@ class Game():
         status["deck"] = len(self.deck)
         status["pile"] = len(self.pile)
         status["chooseSuit"] = self.needSuit
+        status["currentTurn"] = self.playerTurn.getName()
+        status["nextTurn"] = self.getNext()
+        
         return status
 
 
@@ -142,7 +146,8 @@ class Game():
                 "rank":self.upcard().rank,
                 "suit":self.upcard().suit
                 },
-            "turn":self.getNext(),
+            "currentTurn":self.playerTurn.getName(),
+            "nextTurn":self.getNext(),
             "activeSuit":self.activeSuit
         }
     
@@ -174,21 +179,18 @@ class Game():
         self.needSuit = False
         self.activeSuit = suit
         
-
-    #spilt this up
-    #implement choosing suit func for crazy eight
     def action(self,data):
         print(self.status())
         
 
         if self.playerTurn.getName() == data["player"]:
             
-            #############33go in side first statemetna
             if self.needSuit == False:
                 if data["action"] == "draw":
-                
+                    
+                    #cant decide if this should end the game or not
                     if self.drawCard() == False:
-                        return "noCards","there are no more cards to draw"     
+                        return "end","there are no more cards to draw"     
 
                     return "next",self.render()
 
@@ -203,6 +205,7 @@ class Game():
                                 "winner":data["player"],
                                 "data":self.render()
                             }
+                            self.over = True;
                             return "end",message
 
                         return "next",self.render()
@@ -216,12 +219,11 @@ class Game():
                 else:
                     return "error", "unknown action"
 
-        ##############go inside first if
             else:
                 if data["action"] != "choose suit":
                     return "error","i need a suit first"
 
-                print("ime hre fad")
+            
                 self.setSuit(data["suit"])
                 return "next",self.render()
         else:
