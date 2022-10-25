@@ -29,7 +29,11 @@ def on_connect(data):
 
 @socketio.on('disconnected')
 def on_admin_disconnect(data):
+
     print('user disconnected')
+    # need to implement a method in game.py that 
+    # returns a players cards back to the deck 
+    # if they happen to leave during a game
     for room in rooms:
         if is_admin(request.sid, room):
             del rooms[room]
@@ -77,9 +81,6 @@ def on_join(data):
         
         print(f'{name} joined room {room}: {repr(rooms[room])}')
 
-    
-    # print(data)
-
 @socketio.on('exists')
 def exists(data):
     room = data['room']
@@ -91,7 +92,7 @@ def exists(data):
 def on_create(data):
     name = data['username']
     room = data['room']
-    #print(type(room), room)
+    
     if (room in rooms ): #or len(room) < 3
         emit('create', False) #read by client in JoinGame.js
         print('room not created')
@@ -134,34 +135,58 @@ def action(data):
     # need to delete game associated with Room? or just make a reset function
     # on game.py and make a @socket.on("reset")
     # if the admin in the room wants another game with curr players
-    if rooms[data["room"]].over == True:
+    if rooms[data["room"]].gameOver == True:
         emit("error","sorry the game is over")
         return
 
+    #based on the result emit the message , could be a string or dict
     result,message = rooms[data["room"]].action(data)
 
     #split this all up
     
+    #player didnt choose a matching suit/rank
     if result == "error":
-        emit(result,message)
+        emit(result,message,to=request.sid)
         return
-
+    #player played an eight card, and now they need to choose a suit
     elif result == "choose suit":
         emit("choose suit",True,to=request.sid)
+
+    # no more cards in the deck, assmuming players are hoarding cards, dont know if 
+    # this should end the game, probably just choose a random player to discard a random card
     elif result == "noCards":
         emit("error",message,to=data["room"])
+    # a deal/draw/setting a suit from an eight card was succesful, 
+    # set the next expected player in game.py
     elif result == "next":
         rooms[data["room"]].nextTurn()
+    # someone has won
     elif result == "end":
         emit("updateHand",message["data"]["userCards"],to=request.sid)
         emit('updateDisplay', message["data"]["updateDisplay"], to=data["room"])
         emit('end', message["winner"], to=data["room"])
         return
 
+    # updates the specific players hand display
     emit("updateHand",message["userCards"],to=request.sid)
+    # updates the upCard,activeSuit, and whose current turn it is
+    # the current turn may return the same name because,
+    # a person dealing an eight card may attept to deal/draw , when setting the suit is expected
     emit('updateDisplay', message["updateDisplay"], to=data["room"])
 
+    #returns the entire status of this particular game session
     emit("status",rooms[data["room"]].status(),to=request.sid)
+
+@socketio.on("draw")
+def draw(data):
+    pass
+@socketio.on("deal")
+def deal(data):
+    pass
+@socketio.on("setSuit")
+def setSuit(data):
+    pass
+
 
 if __name__ == '__main__':
 	socketio.run(app, debug=True,port=5000) 
