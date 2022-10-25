@@ -167,7 +167,6 @@ class Game():
             self.index = 0
         else:
             self.index +=1
-        print("next turn called")
         self.playerTurn = self.players[self.index]
 
     def endGame(self):
@@ -180,8 +179,6 @@ class Game():
         self.activeSuit = suit
         
     def action(self,data):
-        print(self.status())
-        
 
         if self.playerTurn.getName() == data["player"]:
             
