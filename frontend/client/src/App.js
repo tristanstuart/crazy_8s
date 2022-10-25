@@ -21,7 +21,7 @@ function App() {
 	const [socket, setSocket] = useState(null)
 
 	useEffect(() =>{
-		const newSocket = io("http://127.0.0.1:8000") //change this to whatever server is
+		const newSocket = io("http://127.0.0.1:5000") //change this to whatever server is
 		setSocket(newSocket)
 		return() => newSocket.close();
 	}, [setSocket]);
@@ -43,7 +43,8 @@ function App() {
       </Routes>
 	) : <div>Connecting...</div>}
       {/* <div className="className='bg-grey-200 absolute bottom-0 text-s text-center w-full">
-        <Footer />
+        <Footer/>
+        
       </div> */}
     </div>
   );

@@ -1,3 +1,4 @@
+from turtle import update
 from urllib import response
 from flask import Flask, render_template, request, url_for
 from flask_socketio import SocketIO, emit, join_room, send
@@ -10,10 +11,8 @@ SECRET_KEY = os.urandom(32)
 app.config['SECRET_KEY'] = SECRET_KEY
 socketio = SocketIO(app,cors_allowed_origins="*")
 socketio.init_app(app, cors_allowed_origins="*")
-
-log = logging.getLogger('werkzeug')
+log = logging.getLogger("werkzeug")
 log.disabled = True
-
 
 rooms = {}
 
@@ -35,8 +34,6 @@ def on_admin_disconnect(data):
         if is_admin(request.sid, room):
             del rooms[room]
     emit('leave')
-
-#login and signup
 
 @socketio.on("login")
 def login(data):
@@ -108,6 +105,7 @@ def on_create(data):
 
 @socketio.on('start_game')
 def on_start_game(data):
+    print("data",data)
     room = data
     rooms[room].gameStart()
     print(f"starting game! {rooms[room].getPlayerTurn().getName()} goes first. Upcard is {rooms[room].upcard().long_name}")
@@ -120,7 +118,41 @@ def on_start_game(data):
         emit('move_to_game_start', {'turn':turnData, 'upcard':upcardData, 'hand':playerCards, 'opponents':opponentCards}, to=p.getSID())
         print("sent info to " + p.getName())
 
+@socketio.on("action")
+def action(data):
+    
+    if not data["room"] in rooms:
+        print("room does not exist")
+        return
+    
+    if(data["player"] != rooms[data["room"]].getPlayerTurn().getName()):
+        emit("error","it is not your turn")
+        return
+    
+    result,message = rooms[data["room"]].action(data)
 
+    #split this all up
+    
+    if result == "error":
+        emit(result,message)
+    elif result == "choose suit":
+        emit(data["player"],message["userCards"])
+        emit('updateDisplay', message["updateDisplay"], to=data["room"])
+        emit("choose suit",True)
+        
+    elif result == "noCards":
+        emit("error",message,to=data["room"])
+    
+    elif result == "next":
+        print()
+        emit(data["player"],message["userCards"])
+        emit('updateDisplay', message["updateDisplay"], to=data["room"])
+        rooms[data["room"]].nextTurn()
+    
+    elif result == "end":
+        emit(data["player"],message["data"]["userCards"])
+        emit('updateDisplay', message["data"]["updateDisplay"], to=data["room"])
+        emit('end', message["winner"], to=data["room"])
 
 if __name__ == '__main__':
-	socketio.run(app, debug=True) 
+	socketio.run(app, debug=True,port=5000) 

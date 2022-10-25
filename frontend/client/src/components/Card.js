@@ -1,3 +1,7 @@
+import {useLocation} from 'react-router-dom'
+import { Socket } from 'socket.io-client';
+	
+
 const rankMap = new Map([
   ["ace", "A"],
   ["Ace", "A"],
@@ -29,14 +33,14 @@ const rankMap = new Map([
   ["ten" , "T"],
   ["Ten" , "T"],
   ["10" , "T"],
-  ["jack" , "J"],
   ["Jack" , "J"],
+  ["jack" , "J"],
   ["11" , "J"],
-  ["queen" , "Q"],
   ["Queen" , "Q"],
+  ["queen" , "Q"],
   ["12" , "Q"],
-  ["king" , "K"],
   ["King" , "K"],
+  ["king" , "K"],
   ["13" , "K"],
 ]);
 
@@ -47,9 +51,35 @@ const suitMap = new Map([
   ["Spades", 'S'],
 ]);
 
-function Card({rank, suit}) {
+function Card({rank, suit,user,room,socket,class_}) {
+  console.log(class_)
+  const handleClick = () =>{
+    
+    if(room !== undefined){
+      console.log(user,"clicked", rank,suit)
+      console.log("room",room)
+      console.log(user)
+      socket.emit("action",{
+        "action":"deal",
+        "player":user,
+        "card":{
+          "rank":rank,
+          "suit":suit
+        },
+        "room":room
+      })
+    }
+    else
+      console.log("user is undefined")  
+    
+    
+  }
+
   return (
-    <div style={{display:'grid',justifyContent:'center'}}>
+    <div 
+        className={class_}
+        style={{display:'grid',justifyContent:'center'}}
+        onClick={handleClick}>
       <img
         alt={rank + 'of' + suit} 
         src={`/cards/${rankMap.get(rank)}${suitMap.get(suit)}.svg`} 
