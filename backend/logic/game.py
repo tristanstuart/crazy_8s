@@ -16,6 +16,17 @@ class Game():
         self.index = None
         self.needSuit = False
 
+    def status(self):
+        status = {
+            "players":[],
+        }
+        for player in self.players:
+            status["players"].append({player.getName():player.getCards()})       
+        status["update"] = self.update()
+        status["deck"] = len(self.deck)
+        status["pile"] = len(self.pile)
+        return status
+
     def shuffleDeck(self):
         shuffle(self.deck)
 
@@ -129,7 +140,8 @@ class Game():
                 "rank":self.upcard().rank,
                 "suit":self.upcard().suit
                 },
-            "turn":self.getNext()
+            "turn":self.getNext(),
+            "activeSuit":self.activeSuit
         }
     
     def getNext(self):
@@ -148,6 +160,7 @@ class Game():
             self.index = 0
         else:
             self.index +=1
+        print("next turn called")
         self.playerTurn = self.players[self.index]
 
     def endGame(self):
@@ -196,6 +209,7 @@ class Game():
                     return "error","cards do not match"
             
             elif data["action"] == "choose suit":
+                print("ime hre fad")
                 self.setSuit(data["suit"])
                 return "next",self.render()
             
