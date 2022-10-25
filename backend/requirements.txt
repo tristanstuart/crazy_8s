@@ -26,3 +26,4 @@ Werkzeug==2.2.2
 zipp==3.8.1
 zope.event==4.4
 zope.interface==5.1.0
+snowflake-connector-python==2.8.0

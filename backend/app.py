@@ -5,6 +5,8 @@ from flask_socketio import SocketIO, emit, join_room, send
 import os
 import logging
 from logic.game import Game
+import json
+import snowflake.connector
 
 app = Flask(__name__)
 SECRET_KEY = os.urandom(32)
@@ -13,6 +15,36 @@ socketio = SocketIO(app,cors_allowed_origins="*")
 socketio.init_app(app, cors_allowed_origins="*")
 log = logging.getLogger("werkzeug")
 log.disabled = True
+
+with open('creds.json') as f:
+    data = json.load(f)
+    username = data['username']
+    password = data['password']
+    SF_ACCOUNT = data["account"]
+    SF_WH = data["warehouse"]
+
+
+ctx = snowflake.connector.connect(
+    user=username,
+    password=password,
+    account=SF_ACCOUNT
+    )
+cs = ctx.cursor()
+try:
+    #validate that we are reading from the data base and also test the login query with the sample user
+    cs.execute("SELECT current_version()")
+    one_row = cs.fetchone()
+    print(one_row[0])
+    cs.execute("use warehouse {0}".format(SF_WH))
+    cs.execute("select * from login where username='{0}' and password = hash('{1}')".format("testuser", "foo"))
+    one_row = cs.fetchone()
+    print(one_row[0])
+except:
+    print("no user was found")
+finally:
+    cs.close()
+#ctx.close()
+
 
 rooms = {}
 
@@ -42,13 +74,34 @@ def on_admin_disconnect(data):
 @socketio.on("login")
 def login(data):
     ##edit when we have access to database
+    cs = ctx.cursor()
+    authenticated = FALSE
+
+    username = data["username"]
+    password = data["password"]
+    query = "select * from login where username='{0}' and password = hash('{1}')".format(username, password)
+    print(query)
+
+    try:
+        cs.execute(query)
+        one_row = cs.fetchone()
+        print(one_row[0])
+        #if at least one row is found the user authenticated
+        authenticated = TRUE
+        #add this data object to the users list
+        users.append(data)
+    except:
+    	print("no user was found")
+    finally:
+        cs.close()
+
     
+    #can user data in users or the authenticatesd flag set above
     if data in users:
         emit("received","user logged in")
         return
 
     emit("error","Wrong Username/Password")
-
 @socketio.on("signup")
 def signUp(data):
     ##edit when we have access to database
