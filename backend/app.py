@@ -91,7 +91,7 @@ def login(data):
         #add this data object to the users list
         users.append(data)
     except:
-    	print("no user was found")
+        print("no user was found")
     finally:
         cs.close()
 
@@ -182,7 +182,7 @@ def action(data):
         return
 
     if(request.sid != rooms[data["room"]].getPlayerTurn().getSID()):
-        emit("error","it is not your turn",to=request.sid)
+        emit("error","Please wait",to=request.sid)
         return
 
     # need to delete game associated with Room? or just make a reset function

@@ -195,7 +195,7 @@ class Game():
                 # if its false then there are no more cards in the deck and the pile only has one card
                 # assuming players are hoarding cards
                 if self.drawCard() == False:
-                    return "end","there are no more cards to draw"     
+                    return "end","There are no more cards to draw"     
                 
                 #update userCards, and center display
                 return "next",self.render()
@@ -224,7 +224,7 @@ class Game():
                     return "choose suit", self.render()
                 # current user dealt a card with no matching rank/suit
                 elif result == "error":
-                    return "error","cards do not match"
+                    return "error","Cards do not match"
             #being passed an unknown action
             else:
                 return "error", "unknown action"
@@ -232,7 +232,7 @@ class Game():
         else:
             #if the user decided to deal/draw, when a suit is expected: return this error message
             if data["action"] != "choose suit":
-                return "error","i need a suit first"
+                return "error","Please select a suit"
             
             self.setSuit(data["suit"])
             return "next",self.render()

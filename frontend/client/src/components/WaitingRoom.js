@@ -20,6 +20,7 @@ function WaitingRoom({ socket }) {
     const [opponentCards, setOpponentCards] = useState([])
     const [chooseSuit,setSuit] = useState(false)
     const [activeSuit,setActiveSuit] = useState("")
+    const [warning,setWarning] = useState("");
     //delete this
     document.title = "User: " + username
 
@@ -33,7 +34,10 @@ function WaitingRoom({ socket }) {
         })
 
         socket.on("updateDisplay", data=>{
-            console.log(data)
+            if(turn !== data["nextTurn"]){
+                setWarning("")
+                console.log("yeah its true fadsfasfa")
+            }
             setUpcard(data['upcard'])
             setTurn(data['nextTurn'])
             setActiveSuit(data["activeSuit"])
@@ -54,6 +58,7 @@ function WaitingRoom({ socket }) {
 
         socket.on("error",error=>{
             console.log(error)
+            setWarning(error)
         })
 
         socket.on("choose suit",data=>{
@@ -62,6 +67,7 @@ function WaitingRoom({ socket }) {
             }
         })
 
+        //uncomment to display status
         socket.on("status",status=>{
             console.log(JSON.stringify(status,null, 2))
         })
@@ -83,6 +89,10 @@ function WaitingRoom({ socket }) {
                                 <PlayerLayout opponents={opponentCards} players={players}/>
                             </div>
                             <CurrentSuit suit={activeSuit}/>
+                            <div style={{textAlign:"center",color:"red",fontSize:"25px",margin:"15px"}}>
+                                {warning}
+                            </div>
+                            
                             <div style={{display:"center",justifyContent:"center"}}>
                                 <UpcardDisplay 
                                     card={upcard} 
@@ -115,6 +125,8 @@ function WaitingRoom({ socket }) {
         </div>
     )
 }
+
+
 const Popup = props =>{
 
     return(
@@ -207,14 +219,14 @@ function UpcardDisplay(props)
             <img 
                 alt="1B"
                 src="../../cards/1B.svg"
-                className="w-35 h-40"
+                width="120px"
             />
         </div>
     )                      
     return (
         <div>
             <div className='flex items-center justify-center '>
-                <Card  suit={props.card.suit} rank={props.card.rank} class_='' />
+                <Card  suit={props.card.suit} rank={props.card.rank} />
                 <div className='text-9xl p-3'>{deckImg}</div>
                 <button 
                     onClick={drawCard}
