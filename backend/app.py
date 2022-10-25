@@ -126,37 +126,42 @@ def action(data):
     if not data["room"] in rooms:
         print("room does not exist")
         return
-    
-    if(data["player"] != rooms[data["room"]].getPlayerTurn().getName()):
-        emit("error","it is not your turn")
+
+    if(request.sid != rooms[data["room"]].getPlayerTurn().getSID()):
+        emit("error","it is not your turn",to=request.sid)
         return
-    
+
+    # need to delete game associated with Room? or just make a reset function
+    # on game.py and make a @socket.on("reset")
+    # if the admin in the room wants another game with curr players
+    if rooms[data["room"]].over == True:
+        emit("error","sorry the game is over")
+        return
+
     result,message = rooms[data["room"]].action(data)
 
     #split this all up
     
     if result == "error":
         emit(result,message)
+        return
 
     elif result == "choose suit":
-        emit(data["player"],message["userCards"])
-        emit('updateDisplay', message["updateDisplay"], to=data["room"])
-        emit("choose suit",True)
-        
+        emit("choose suit",True,to=request.sid)
     elif result == "noCards":
         emit("error",message,to=data["room"])
-    
     elif result == "next":
-        emit(data["player"],message["userCards"])
-        emit('updateDisplay', message["updateDisplay"], to=data["room"])
         rooms[data["room"]].nextTurn()
-    
     elif result == "end":
-        emit(data["player"],message["data"]["userCards"])
+        emit("updateHand",message["data"]["userCards"],to=request.sid)
         emit('updateDisplay', message["data"]["updateDisplay"], to=data["room"])
         emit('end', message["winner"], to=data["room"])
+        return
 
-    emit("status",rooms[data["room"]].status())
+    emit("updateHand",message["userCards"],to=request.sid)
+    emit('updateDisplay', message["updateDisplay"], to=data["room"])
+
+    emit("status",rooms[data["room"]].status(),to=request.sid)
 
 if __name__ == '__main__':
 	socketio.run(app, debug=True,port=5000) 
