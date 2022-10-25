@@ -176,7 +176,7 @@ class Game():
     #spilt this up
     #implement choosing suit func for crazy eight
     def action(self,data):
-        print("data in actionfdafda",data["action"])
+        print("data in action",data["action"])
         if self.playerTurn.getName() == data["player"]:
             
             if data["action"] == "draw":

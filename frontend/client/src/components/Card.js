@@ -33,14 +33,14 @@ const rankMap = new Map([
   ["ten" , "T"],
   ["Ten" , "T"],
   ["10" , "T"],
-  ["jack" , "J"],
   ["Jack" , "J"],
+  ["jack" , "J"],
   ["11" , "J"],
-  ["queen" , "Q"],
   ["Queen" , "Q"],
+  ["queen" , "Q"],
   ["12" , "Q"],
-  ["king" , "K"],
   ["King" , "K"],
+  ["king" , "K"],
   ["13" , "K"],
 ]);
 
@@ -51,8 +51,8 @@ const suitMap = new Map([
   ["Spades", 'S'],
 ]);
 
-function Card({rank, suit,user,room,socket}) {
-
+function Card({rank, suit,user,room,socket,class_}) {
+  console.log(class_)
   const handleClick = () =>{
     
     if(room !== undefined){
@@ -76,7 +76,9 @@ function Card({rank, suit,user,room,socket}) {
   }
 
   return (
-    <div style={{display:'grid',justifyContent:'center'}}
+    <div 
+        className={class_}
+        style={{display:'grid',justifyContent:'center'}}
         onClick={handleClick}>
       <img
         alt={rank + 'of' + suit} 
