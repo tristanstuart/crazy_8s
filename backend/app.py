@@ -76,6 +76,8 @@ def on_join(data):
         emit('player_joined', rooms[room].playerList(), to=room) #read by players in WaitingRoom.js
         
         print(f'{name} joined room {room}: {repr(rooms[room])}')
+
+    
     # print(data)
 
 @socketio.on('exists')
@@ -135,6 +137,7 @@ def action(data):
     
     if result == "error":
         emit(result,message)
+
     elif result == "choose suit":
         emit(data["player"],message["userCards"])
         emit('updateDisplay', message["updateDisplay"], to=data["room"])
@@ -144,7 +147,6 @@ def action(data):
         emit("error",message,to=data["room"])
     
     elif result == "next":
-        print()
         emit(data["player"],message["userCards"])
         emit('updateDisplay', message["updateDisplay"], to=data["room"])
         rooms[data["room"]].nextTurn()
@@ -153,6 +155,8 @@ def action(data):
         emit(data["player"],message["data"]["userCards"])
         emit('updateDisplay', message["data"]["updateDisplay"], to=data["room"])
         emit('end', message["winner"], to=data["room"])
+
+    emit("status",rooms[data["room"]].status())
 
 if __name__ == '__main__':
 	socketio.run(app, debug=True,port=5000) 

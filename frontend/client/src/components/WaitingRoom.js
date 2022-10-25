@@ -19,7 +19,8 @@ function WaitingRoom({ socket }) {
     const [upcard, setUpcard] = useState({})
     const [opponentCards, setOpponentCards] = useState([])
     const [chooseSuit,setSuit] = useState(false)
-    
+    const [activeSuit,setActiveSuit] = useState("")
+
     useEffect(()=>{
         socket.on('player_joined',e=>{
     		setPlayers(e)
@@ -30,13 +31,15 @@ function WaitingRoom({ socket }) {
         })
 
         socket.on("updateDisplay", data=>{
+            console.log("updateDisplay",JSON.stringify(data,null,2))
             setUpcard(data['upcard'])
             setTurn(data['turn'])
+            setActiveSuit(data["activeSuit"])
         })
         
         socket.on(username,data=>{
             setHand(data["hand"].map(e=>
-                    <Card key={e["rank"]+e["suit"]}
+                    <Card key={e["rank"]+" "+e["suit"]}
                         user={username} 
                         rank={e["rank"]} 
                         suit={e["suit"]} 
@@ -48,9 +51,8 @@ function WaitingRoom({ socket }) {
         })
 
         socket.on('move_to_game_start', data =>{
-    
             setHand(data['hand'].map(e=>
-                <Card key={e["rank"]+e["suit"]}
+                <Card key={e["rank"]+ " " +e["suit"]}
                     user={username} 
                     rank={e["rank"]} 
                     suit={e["suit"]} 
@@ -62,7 +64,7 @@ function WaitingRoom({ socket }) {
             setTurn(data['turn'])
             setUpcard(data['upcard'])
             setOpponentCards(data['opponents'])
-            console.log("game is starting!")
+            setActiveSuit(data["upcard"]["suit"])
             startGame(true)
         })
 
@@ -74,6 +76,10 @@ function WaitingRoom({ socket }) {
             if(data === true){
                 setSuit(true)
             }
+        })
+
+        socket.on("status",status=>{
+            console.log(JSON.stringify(status,null, 2))
         })
         
       return ()=>{
@@ -121,6 +127,32 @@ function WaitingRoom({ socket }) {
                     }
                 </div>
             </div>
+        </div>
+    )
+}
+const Popup = props =>{
+
+    return(
+        <div style={{display:"grid",justifyContent:"center",gridTemplateColumns:"auto auto",gap:"15px",padding:"15px"}}>
+            <ChooseSuit setSuit={props.setSuit} user={props.username} room={props.room} socket={props.socket}/>
+            <MiniCards hand={props.hand}/>
+        </div>
+    )
+}
+
+const MiniCards = hand =>{
+    console.log(hand)
+    return(
+        <div style={{padding:"30px"}}>
+            <span style={{display:"flex",justifyContent:"center"}}>Hey cards go here</span>
+        </div>
+    )
+}
+
+const CurrentSuit = props =>{    
+    return(
+        <div style={{display:"flex",justifyContent:"center"}}>
+            Active Suit: {props.suit}
         </div>
     )
 }
