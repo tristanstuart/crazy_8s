@@ -25,7 +25,9 @@ class Game():
         status["update"] = self.update()
         status["deck"] = len(self.deck)
         status["pile"] = len(self.pile)
+        status["chooseSuit"] = self.needSuit
         return status
+
 
     def shuffleDeck(self):
         shuffle(self.deck)
@@ -176,46 +178,52 @@ class Game():
     #spilt this up
     #implement choosing suit func for crazy eight
     def action(self,data):
-        print("data in action",data["action"])
+        print(self.status())
+        
+
         if self.playerTurn.getName() == data["player"]:
             
-            if data["action"] == "draw":
-            
-                if self.drawCard() == False:
-                    return "noCards","there are no more cards to draw"     
-
-                return "next",self.render()
-
-            elif data["action"] == "deal":
-            
-                result = self.deal(data["card"]["rank"],data["card"]["suit"]) 
+            #############33go in side first statemetna
+            if self.needSuit == False:
+                if data["action"] == "draw":
                 
-                if  result == "next":
-
-                    if self.endGame():
-                        message = {
-                            "winner":data["player"],
-                            "data":self.render()
-                        }
-                        return "end",message
+                    if self.drawCard() == False:
+                        return "noCards","there are no more cards to draw"     
 
                     return "next",self.render()
+
+                elif data["action"] == "deal":
                 
-                elif result == "choose suit":
+                    result = self.deal(data["card"]["rank"],data["card"]["suit"]) 
                     
-                    return "choose suit", self.render()
+                    if  result == "next":
+
+                        if self.endGame():
+                            message = {
+                                "winner":data["player"],
+                                "data":self.render()
+                            }
+                            return "end",message
+
+                        return "next",self.render()
                     
-                elif result == "error":
-                    return "error","cards do not match"
-            
-            elif data["action"] == "choose suit":
+                    elif result == "choose suit":
+                        
+                        return "choose suit", self.render()
+                        
+                    elif result == "error":
+                        return "error","cards do not match"
+                else:
+                    return "error", "unknown action"
+
+        ##############go inside first if
+            else:
+                if data["action"] != "choose suit":
+                    return "error","i need a suit first"
+
                 print("ime hre fad")
                 self.setSuit(data["suit"])
                 return "next",self.render()
-            
-            else:
-                return "error", "unknown action"
-        
         else:
             return "error","it is not your turn"
             
