@@ -12,7 +12,7 @@ function WaitingRoom({ socket }) {
     const isAdmin = location.state.isAdmin
     const [gameIsStarted, startGame] = useState(false)
 	const [players, setPlayers] = useState(location.state.playerList)
-
+    
     // gameplay state stuff starts here
     const [hand, setHand] = useState([])
     const [turn, setTurn] = useState("")
@@ -20,6 +20,8 @@ function WaitingRoom({ socket }) {
     const [opponentCards, setOpponentCards] = useState([])
     const [chooseSuit,setSuit] = useState(false)
     const [activeSuit,setActiveSuit] = useState("")
+    //delete this
+    document.title = "User: " + username
 
     useEffect(()=>{
         socket.on('player_joined',e=>{
@@ -31,36 +33,18 @@ function WaitingRoom({ socket }) {
         })
 
         socket.on("updateDisplay", data=>{
-            console.log("updateDisplay",JSON.stringify(data,null,2))
+            console.log(data)
             setUpcard(data['upcard'])
-            setTurn(data['turn'])
+            setTurn(data['nextTurn'])
             setActiveSuit(data["activeSuit"])
         })
         
-        socket.on(username,data=>{
-            setHand(data["hand"].map(e=>
-                    <Card key={e["rank"]+" "+e["suit"]}
-                        user={username} 
-                        rank={e["rank"]} 
-                        suit={e["suit"]} 
-                        room={room}
-                        socket={socket}
-                        class_={'transition ease-in-out delay-150 bg-blue-500 hover:-translate-y-10 hover:scale-110 duration-300'}
-                    />
-                ))
+        socket.on("updateHand",data=>{
+            setHand(makeCards(username,room,socket,chooseSuit,data['hand']))
         })
 
         socket.on('move_to_game_start', data =>{
-            setHand(data['hand'].map(e=>
-                <Card key={e["rank"]+ " " +e["suit"]}
-                    user={username} 
-                    rank={e["rank"]} 
-                    suit={e["suit"]} 
-                    room={room}
-                    socket={socket}
-                    class_={'transition ease-in-out delay-150 bg-blue-500 hover:-translate-y-10 hover:scale-110 duration-300'}
-                />
-            ))
+            setHand(makeCards(username,room,socket,chooseSuit,data['hand']))
             setTurn(data['turn'])
             setUpcard(data['upcard'])
             setOpponentCards(data['opponents'])
@@ -94,14 +78,12 @@ function WaitingRoom({ socket }) {
                     {!gameIsStarted && <LobbyDisplay socket={socket} players={players} isAdmin={isAdmin} room={room}/>}
                     {gameIsStarted && 
                         <div className='bg-purple-200'>
+                            <div style={{textAlign:"center"}}>Current Turn:{turn}</div>
                             <div className='flex  items-center justify-center'>
                                 <PlayerLayout opponents={opponentCards} players={players}/>
                             </div>
-                            {/* <div className='flex items-center justify-center text-8xl text-red-500/100'>
-                                Current turn: {turn}
-                            </div> */}
-                            
-                            <div className='container mx-auto shadow-md bg-green-300 rounded-full w-1/2'>
+                            <CurrentSuit suit={activeSuit}/>
+                            <div style={{display:"center",justifyContent:"center"}}>
                                 <UpcardDisplay 
                                     card={upcard} 
                                     username={username} 
@@ -109,18 +91,21 @@ function WaitingRoom({ socket }) {
                                     room={room} 
                                     turn={turn}/>
                                 {chooseSuit === true ? 
-                                    <ChooseSuit 
+                                    <Popup
                                         setSuit={setSuit} 
                                         user={username} 
                                         room={room} 
-                                        socket={socket}/>
-                                        :
-                                    <CardHand 
+                                        socket={socket}
+                                        hand={hand}/>
+                                        :<div/>
+                                }
+                                <CardHand 
                                         user={username} 
                                         hand={hand} 
                                         room={room} 
-                                        socket={socket}/>
-                                }
+                                        socket={socket}
+                                        chooseSuit={chooseSuit}/>
+                                
                             </div>
                             
                         </div>
@@ -134,19 +119,24 @@ const Popup = props =>{
 
     return(
         <div style={{display:"grid",justifyContent:"center",gridTemplateColumns:"auto auto",gap:"15px",padding:"15px"}}>
-            <ChooseSuit setSuit={props.setSuit} user={props.username} room={props.room} socket={props.socket}/>
-            <MiniCards hand={props.hand}/>
+            <ChooseSuit 
+                setSuit={props.setSuit} 
+                user={props.user} 
+                room={props.room} 
+                socket={props.socket}/>
         </div>
     )
 }
 
-const MiniCards = hand =>{
-    console.log(hand)
-    return(
-        <div style={{padding:"30px"}}>
-            <span style={{display:"flex",justifyContent:"center"}}>Hey cards go here</span>
-        </div>
-    )
+function makeCards(username,room,socket,chooseSuit,cards){
+    return cards.map(e=><Card key={e["rank"]+ " " +e["suit"]}
+    user={username} 
+    rank={e["rank"]} 
+    suit={e["suit"]} 
+    room={room}
+    socket={socket}
+    chooseSuit={chooseSuit}
+    class_={'transition ease-in-out delay-150 bg-blue-500 hover:-translate-y-10 hover:scale-110 duration-300'}/>)
 }
 
 const CurrentSuit = props =>{    
@@ -157,21 +147,34 @@ const CurrentSuit = props =>{
     )
 }
 
+
 function LobbyDisplay(props)
 {
     return (
-    <div >
-        <u>Player List</u>
-        <ul>
-            {props.players.map(data => (<li key={data}>{data}</li>))}
+    <div style={{display:"grid",justifyContent:"center",gap:"5px"}}>
+        
+        <div style={{display:"flex",justifyContent:"center",backgroundColor:"lightgreen",width:"max-content",padding:"20px 15px 20px 15px",borderRadius:"30px"}}>
+            <div style={{display:"grid",justifyContent:"center"}}>
+
+        <u style={{textAlign:"center"}}>Player List</u>
+        <ul style={{display:"grid",justifyContent:"center",gridTemplateColumns:"max-content"}}>
+            {props.players.map(data => (<li style={{display:"flex",justifyContent:"center"}}key={data}>{data}</li>))}
         </ul>
-        {props.isAdmin && (<button 
-        className="p-2 rounded-full bg-blue-400 mt-20"
+        
+        
+        </div>
+
+    </div>
+    {props.isAdmin && (<button 
+        className="p-2 rounded-full bg-blue-400"
         onClick={() => {
             props.socket.emit("start_game", props.room);
         }}>
         Start Game</button>)}
-    </div>)
+
+    </div>
+    
+    )
 }
 
 function CardHand(props){
@@ -189,10 +192,8 @@ function UpcardDisplay(props)
 {
     const drawCard = () =>{
         if (props.turn !== props.username){
-            console.log("it is not your turn",props.turn)
             return
         }
-        console.log(props.username,"wawnts to draw")
         props.socket.emit("action",{
                 "action":"draw",
                 "player":props.username,
