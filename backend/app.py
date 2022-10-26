@@ -240,6 +240,13 @@ def deal(data):
 def setSuit(data):
     pass
 
+@socketio.on("reset")
+def reset(data):
+    if not data["room"] in rooms:
+        print("room does not exist")
+        return
+    rooms[data["room"]].reset()
+
 
 if __name__ == '__main__':
 	socketio.run(app, debug=True,port=5000) 
