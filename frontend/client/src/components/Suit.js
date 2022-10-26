@@ -12,8 +12,8 @@ const Suit = props =>{
     return (
         <button
             onClick={handleClick}
-            style={{backgroundColor:"lightgreen",borderRadius:"25px",padding:"10px"}}>
-            {props.suit}
+            style={{backgroundColor:"white",borderRadius:"50%",padding:"10px"}}>
+            <img style={{width:"30px"}} alt={props.suit} src={`/suits/${props.suit}.svg`}/>
         </button>
     )
 }
