@@ -14,7 +14,6 @@ function JoinGame({ socket }){
 
     useEffect(()=>{
         socket.on("user_already_in_room",e=>{
-            console.log(username + "failed to join room")
             setErrorTitle('Username is not available')
             setErrorMsg('Someone with this username is already in this room')
             setError(true)
@@ -25,7 +24,6 @@ function JoinGame({ socket }){
 			navigate('/waitingRoom', {state:{room:roomState.room, playerList:e, user:roomState.user, isAdmin:false}}) //go to waiting room
         })
         socket.on('room_does_not_exist', e=>{
-            console.log('The room: '+ room +'does not exist')
             setErrorTitle('This room does not exist')
             setErrorMsg('please join an existing game or create your own')
             setError(true)
@@ -46,14 +44,20 @@ function JoinGame({ socket }){
                             type="text"  
                             placeholder="Enter Username" 
                             className="p-3 text-2xl rounded-full grid items-center justify-center mt-2"
-                            onChange= {e => setUser(e.target.value)}
+                            onChange= {e => {
+                                setError(false)
+                                setUser(e.target.value.trim())
+                            }}
                         />
                         <input 
                             id="room" 
                             type="text" 
                             placeholder="Enter Room Code" 
                             className="p-3 text-2xl rounded-full mt-1 grid items-center justify-center"
-                            onChange={e=>setRoom(e.target.value)}
+                            onChange={e=>{
+                                setError(false)
+                                setRoom(e.target.value.trim())
+                            }}
                                 
                         />
                     </form>
@@ -61,6 +65,18 @@ function JoinGame({ socket }){
                     <button id="join" 
                     className="p-3 text-xl rounded-full mt-1 bg-green-300"
                     onClick={() => {
+                        if(room === "" ||username ===""){
+                            setErrorTitle('Error')
+                            setErrorMsg("Cannot leave fields blank")
+                            setError(true)
+                            return
+                        } 
+                        if (room.includes(" ")){
+                            setErrorTitle('Error')
+                            setErrorMsg("Room code cannot include spaces")
+                            setError(true)
+                            return
+                        }
                         socket.emit("join", {name: username, room: room})
 						roomState = {room: room, user: username}
                     }}> 
