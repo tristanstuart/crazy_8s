@@ -83,8 +83,8 @@ function WaitingRoom({ socket }) {
                 {!gameIsStarted && <Loading />}
                     {!gameIsStarted && <LobbyDisplay socket={socket} players={players} isAdmin={isAdmin} room={room}/>}
                     {gameIsStarted && 
-                        <div className='bg-purple-200'>
-                            <div style={{textAlign:"center"}}>Current Turn:{turn}</div>
+                        <div className='bg-purple-200 h-screen '>
+                            <div style={{textAlign:"center"}}>Current Turn: {turn}</div>
                             <div className='flex  items-center justify-center'>
                                 <PlayerLayout opponents={opponentCards} players={players}/>
                             </div>
@@ -92,33 +92,34 @@ function WaitingRoom({ socket }) {
                             <div style={{textAlign:"center",color:"red",fontSize:"25px",margin:"15px"}}>
                                 {warning}
                             </div>
-                            
-                            <div style={{display:"center",justifyContent:"center"}}>
-                                <UpcardDisplay 
-                                    card={upcard} 
-                                    username={username} 
-                                    socket={socket} 
-                                    room={room} 
-                                    turn={turn}/>
+                            {/* style={{ display:"center",justifyContent:"center" }} */}
+                                <div className='container mx-auto shadow-md bg-green-300 rounded-full w-1/2' >
+                                    <UpcardDisplay 
+                                        card={upcard} 
+                                        username={username} 
+                                        socket={socket} 
+                                        room={room} 
+                                        turn={turn}/> 
+                                </div>
+                            <div className='bg-purple-200 h-full'>
                                 {chooseSuit === true ? 
                                     <Popup
-                                        setSuit={setSuit} 
-                                        user={username} 
-                                        room={room} 
-                                        socket={socket}
-                                        hand={hand}/>
-                                        :<div/>
+                                    setSuit={setSuit} 
+                                    user={username} 
+                                    room={room} 
+                                    socket={socket}
+                                    hand={hand}/>
+                                    :
+                                    <CardHand 
+                                    user={username} 
+                                    hand={hand} 
+                                    room={room} 
+                                    socket={socket}
+                                    chooseSuit={chooseSuit}/>
                                 }
-                                <CardHand 
-                                        user={username} 
-                                        hand={hand} 
-                                        room={room} 
-                                        socket={socket}
-                                        chooseSuit={chooseSuit}/>
-                                
-                            </div>
                             
-                        </div>
+                            </div>
+                    </div>
                     }
                 </div>
             </div>
@@ -192,9 +193,9 @@ function LobbyDisplay(props)
 function CardHand(props){
     
     return (
-        <div className='flex flex-grow justify-center mt-5 gap-x-3'>
-            {props.hand }
-        </div>
+            <div className='flex flex-wrap justify-center mt-5 gap-x-3'>
+                {props.hand }
+            </div>
     )
     
 }
