@@ -5,8 +5,8 @@ import {useNavigate} from 'react-router-dom'
 var roomState //needed to pass info through navigate()
 
 function CreateGame({ socket }){
-    const [username,setUser] = useState("");
-    const [room,setRoom] = useState("");
+    const [username,setUser] = useState("")
+    const [room,setRoom] = useState("")
     const [error, setError] = useState(false)
 	const navigate = useNavigate()
 
@@ -26,7 +26,7 @@ function CreateGame({ socket }){
       }},[socket, navigate]) 
 
     const handleChange = (e) =>{
-        setRoom(e.target.value);
+        setRoom(e.target.value.trim());
         setError(false);
         return
       }
@@ -42,7 +42,10 @@ function CreateGame({ socket }){
                         id="user" 
                         placeholder="User Name" 
                         className="p-3 text-2xl rounded-full grid items-center justify-center mt-2" 
-                        onChange= {e => setUser(e.target.value)}
+                        onChange= {e => 
+                            {setError(false)
+                            setUser(e.target.value.trim())
+                        }}
                     />
                     <input 
                         id="room" 
@@ -55,6 +58,18 @@ function CreateGame({ socket }){
                     <button 
                     className="p-2 rounded-full bg-blue-400 mt-1"
                     onClick={() => {
+
+                        if (username==="" || room ===""){
+                            setError(true)
+                            console.log("cannot leave fields blank")
+                            return
+                        }
+                        if (room.includes(" ")){
+                            setError(true)
+                            console.log("Room name cannot include spaces")
+                            return                       
+                        }
+
                         socket.emit("create", {username, room});
 						roomState = {room: room, user: username}
                     }}>
