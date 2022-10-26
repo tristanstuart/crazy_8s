@@ -36,7 +36,6 @@ function WaitingRoom({ socket }) {
         socket.on("updateDisplay", data=>{
             if(turn !== data["nextTurn"]){
                 setWarning("")
-                console.log("yeah its true fadsfasfa")
             }
             setUpcard(data['upcard'])
             setTurn(data['nextTurn'])
@@ -68,9 +67,9 @@ function WaitingRoom({ socket }) {
         })
 
         //uncomment to display status
-        socket.on("status",status=>{
-            console.log(JSON.stringify(status,null, 2))
-        })
+        // socket.on("status",status=>{
+        //     console.log(JSON.stringify(status,null, 2))
+        // })
         
       return ()=>{
         socket.off("player_joined")
