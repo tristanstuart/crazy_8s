@@ -1,7 +1,6 @@
 import Suit from "./Suit"
 const ChooseSuit = props =>{
     const suits = ["Hearts",'Diamonds', 'Clubs',"Spades"]
-    console.log("choose suit prompt,",props)
     const suitButtons = suits.map(suit=>
             <Suit
                 key={suit}
