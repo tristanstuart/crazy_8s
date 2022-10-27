@@ -239,4 +239,18 @@ class Game():
             self.setSuit(data["suit"])
             return "next",self.render()
             
+    def draw(self):
+    
+        if self.needSuit == True:
+            return "error","Please select a suit"
+        
+        #do stuff
+        if self.drawCard() == False:
+            self.gameOver = True
+            return "error","There are no more cards to draw"     
+                
+        #update userCards, and center display, move to next player
+        return "next",self.render()        
+
             
+        

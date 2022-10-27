@@ -161,30 +161,28 @@ def on_create(data):
 
 @socketio.on('start_game')
 def on_start_game(data):
-    print("data",data)
     room = data
     rooms[room].gameStart()
     print(f"starting game! {rooms[room].getPlayerTurn().getName()} goes first. Upcard is {rooms[room].upcard().long_name}")
-    
+    print()    
     turnData = rooms[room].getPlayerTurn().getName()
     upcardData = rooms[room].upcard().toDict()
 
     for p in rooms[room].players:
         playerCards, opponentCards = rooms[room].getCardState(p)
         emit('move_to_game_start', {'turn':turnData, 'upcard':upcardData, 'hand':playerCards, 'opponents':opponentCards}, to=p.getSID())
+        print()
         print("sent info to " + p.getName())
 
 @socketio.on("action")
 def action(data):
+
+    result,message = checkData(data,request.sid)
     
-    if not data["room"] in rooms:
-        print("room does not exist")
+    if result=="error":
+        emit(result,message,to=request.sid)
         return
-
-    if(request.sid != rooms[data["room"]].getPlayerTurn().getSID()):
-        emit("error","Please wait",to=request.sid)
-        return
-
+    print(result,message)
     # need to delete game associated with Room? or just make a reset function
     # on game.py and make a @socket.on("reset")
     # if the admin in the room wants another game with curr players
@@ -236,13 +234,62 @@ def action(data):
 
 @socketio.on("draw")
 def draw(data):
-    pass
+    result,message = checkData(data,request.sid)
+
+    if result=="error":
+        print("error",message)
+        print()
+        emit(result,message,to=request.id)
+        return
+    print(data["player"],"wants to draw")
+    print(result,message)
+    print()
+    result, message= rooms[data["room"]].draw()
+    if result == "error":
+        emit(result,message,to=request.sid)
+        return
+    elif result == "next":
+        rooms[data["room"]].nextTurn()
+
+    update(message,request.sid,data["room"])
+
 @socketio.on("deal")
 def deal(data):
-    pass
+    if not data["room"] in rooms:
+        print("room does not exist")
+        return
+
+    if(request.sid != rooms[data["room"]].getPlayerTurn().getSID()):
+        emit("error","Please wait",to=request.sid)
+        return
+
 @socketio.on("setSuit")
 def setSuit(data):
-    pass
+    if not data["room"] in rooms:
+        print("room does not exist")
+        return
+
+    if(request.sid != rooms[data["room"]].getPlayerTurn().getSID()):
+        emit("error","Please wait",to=request.sid)
+        return
+
+def checkData(data,SID):
+    if not data["room"] in rooms:
+        print("room does not exist")
+        return "error", "room does not exist"
+
+    if(SID != rooms[data["room"]].getPlayerTurn().getSID()):
+        return "error", "Please wait"
+    print()
+    return "valid"," current turn " + data["player"]
+
+def update(message,SID,room):
+    #update specific player hand
+    emit("updateHand",message["userCards"],to=SID)
+    #updates center card, current turn, and activesuit as a dict
+    emit('updateDisplay', message["updateDisplay"], to=room)
+    #returns the entire status of this particular game session
+    emit("status",rooms[room].status(),to=SID)
 
 
 if __name__ == '__main__':

@@ -100,6 +100,4 @@ class Player():
                 "rank":card.rank,
                 "suit":card.suit
             })
-
-        print("cards in getcards")
         return cards
