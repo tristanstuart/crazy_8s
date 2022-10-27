@@ -209,15 +209,19 @@ def action(data):
     # this should end the game, probably just choose a random player to discard a random card
     elif result == "noCards":
         emit("error",message,to=data["room"])
+        return
     # a deal/draw/setting a suit from an eight card was succesful, 
     # set the next expected player in game.py
     elif result == "next":
         rooms[data["room"]].nextTurn()
     # someone has won
-    elif result == "end":
+    elif result == "noCards":
+        emit("noCards",message)
+        return
+    elif result == "winner":
         emit("updateHand",message["data"]["userCards"],to=request.sid)
         emit('updateDisplay', message["data"]["updateDisplay"], to=data["room"])
-        emit('end', message["winner"], to=data["room"])
+        emit('winner', message["winner"], to=data["room"])
         return
 
     # updates the specific players hand display

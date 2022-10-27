@@ -117,6 +117,7 @@ class Game():
             #if false then there is only one card in the pile and users are hoarding cards
             if self.reShuffle():
                 print("gameOver")
+                self.gameOver=True
                 return False
         
         self.playerTurn.cards.append(self.deck.pop())
@@ -195,7 +196,8 @@ class Game():
                 # if its false then there are no more cards in the deck and the pile only has one card
                 # assuming players are hoarding cards
                 if self.drawCard() == False:
-                    return "end","There are no more cards to draw"     
+                    self.gameOver = True
+                    return "noCards","There are no more cards to draw"     
                 
                 #update userCards, and center display
                 return "next",self.render()
@@ -214,7 +216,7 @@ class Game():
                             "data":self.render()
                         }
                         self.gameOver = True;
-                        return "end",message
+                        return "winner",message
 
                     #update userCards, and center display
                     return "next",self.render()
