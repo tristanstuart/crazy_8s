@@ -70,6 +70,14 @@ function Navigation(){
                 SandBox
             </NavLink>
 
+            <NavLink 
+                className={"block p-3"}  
+                to="Rules"
+                onClick={() => setShowMenu(!showMenu)}
+            >
+                Rules
+            </NavLink>
+
         </div>
         menuMask = 
         <div
