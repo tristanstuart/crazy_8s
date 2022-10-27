@@ -112,14 +112,14 @@ function WaitingRoom({ socket }) {
                                     room={room} 
                                     socket={socket}
                                     hand={hand}/>
-                                    :
-                                    <CardHand 
+                                    :<div/>
+                                }
+                                <CardHand 
                                     user={username} 
                                     hand={hand} 
                                     room={room} 
                                     socket={socket}
                                     chooseSuit={chooseSuit}/>
-                                }
                             
                             </div>
                     </div>
