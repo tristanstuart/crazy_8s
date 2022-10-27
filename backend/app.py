@@ -170,6 +170,7 @@ def on_start_game(data):
     for p in rooms[room].players:
         playerCards, opponentCards = rooms[room].getCardState(p)
         emit('move_to_game_start', {'turn':turnData, 'upcard':upcardData, 'hand':playerCards, 'opponents':opponentCards}, to=p.getSID())
+        print()
         print("sent info to " + p.getName())
 
 @socketio.on("draw")
