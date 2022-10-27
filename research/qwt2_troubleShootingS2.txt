@@ -1,0 +1,38 @@
+Crazy 8's Trouble Shooting Sprint 2:
+
+-Login page seems to not be functioning properly. When accessing the login page through
+the nave bar I was unable to get the page to load. I believe that it used to load.
+
+-Sign up page also does the same thing that the login page does. I believe that in earlier 
+commits it was there but not functioning.
+
+-Game logic seems to be working well. When playing a game by one's self they can draw 
+all 51 cards, excluding the one that we are using for the face up card.
+
+-When playing solo the user does not have to wait for anyone to finish their turn because 
+there is no one else to take the turn so that logic is sound.
+
+-Overall I tested all the buttons and features that we have implemented thus far and all 
+seem to be working as intended.
+ 
+-No logic for when player leaves room, game comes to a stand still and can not progress
+
+-Admin does not have option to end game so the game room is never released and always takes 
+space on the server
+
+-No warnings when navigating away from gameplay, when you leave the game screen you are 
+disconnected and can not rejoin the game
+
+__________________________________________________________________________________________
+
+Things We Could Add to Make our Page Better:
+
+-We could add some optional stock background music that can be disabled in the settings if 
+the user wishes to do so.
+
+-We could refactor our homepage to be more inviting and fun.
+
+-Once the database is fully functional we can add avatars that the users can choose from.
+
+-We need to add a feature that when the game ends the admin has the option to  close the lobby
+or start a new game
