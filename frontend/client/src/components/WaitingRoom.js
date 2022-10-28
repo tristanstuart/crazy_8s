@@ -44,6 +44,10 @@ function WaitingRoom({ socket }) {
         socket.on("updateHand",data=>{
             setHand(makeCards(username,room,socket,chooseSuit,data['hand']))
         })
+        
+        socket.on("updateOpponents",data=>{
+            setOpponentCards(data['opponents'])
+        })
 
         socket.on('move_to_game_start', data =>{
             setHand(makeCards(username,room,socket,chooseSuit,data['hand']))
@@ -73,6 +77,11 @@ function WaitingRoom({ socket }) {
       return ()=>{
         socket.off("player_joined")
         socket.off("move_to_game_start")
+        socket.off("updateDisplay")
+        socket.off("updateHand")
+        socket.off("updateOpponents")
+        socket.off("error")
+        socket.off("choose suit")
       }},[socket,room, username])
     return (
         <div >
@@ -84,10 +93,11 @@ function WaitingRoom({ socket }) {
                         <div className='bg-purple-200 h-screen '>
                             
                             <div className='flex  items-center justify-center'>
-                                <PlayerLayout opponents={opponentCards} players={players}/>
+                                <PlayerLayout opponents={opponentCards} players={players} turn={turn}/>
                             </div>
                             <CurrentSuit suit={activeSuit}/>
-                            <div style={{textAlign:"center"}}>Current Turn: {turn}</div>
+                            {turn === username && <div className="animate-bounce" style={{textAlign:"center",color:"green","font-size":"28px"}}>Your Turn!</div>}
+                            {/*turn !== username && <div style={{textAlign:"center"}}>Current Turn: {turn}</div>*/}
                             <div style={{textAlign:"center",color:"red",fontSize:"25px",margin:"15px"}}>
                                 {warning}
                             </div>
@@ -144,14 +154,17 @@ const Popup = props =>{
 }
 
 function makeCards(username,room,socket,chooseSuit,cards){
-    return cards.map(e=><Card key={e["rank"]+ " " +e["suit"]}
-    user={username} 
-    rank={e["rank"]} 
-    suit={e["suit"]} 
-    room={room}
-    socket={socket}
-    chooseSuit={chooseSuit}
-    class_={'transition ease-in-out delay-150 bg-blue-500 hover:-translate-y-10 hover:scale-110 duration-300'}/>)
+    return cards.map( e=>
+        <Card key={e["rank"]+ " " +e["suit"]}
+            user={username} 
+            rank={e["rank"]} 
+            suit={e["suit"]} 
+            room={room}
+            socket={socket}
+            chooseSuit={chooseSuit}
+            class_={'transition ease-in-out delay-150 bg-blue-500 hover:-translate-y-10 hover:scale-110 duration-300'}
+        />
+    )
 }
 
 const CurrentSuit = props =>{    
