@@ -15,7 +15,7 @@ class Game():
         self.playerTurn = None
         self.index = None
         self.needSuit = False
-        self.gameOver = False;
+        self.gameOver = False
 
     def status(self):
         status = {
@@ -178,7 +178,9 @@ class Game():
         if len(self.playerTurn.cards) == 0:
             return True
         return False
-
+    
+    def reset(self):
+        pass
     #just sets suit chosen
     def setSuit(self,suit):
         self.needSuit = False
