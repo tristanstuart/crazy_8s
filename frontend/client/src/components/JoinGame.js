@@ -31,6 +31,8 @@ function JoinGame({ socket }){
 
       return ()=>{
         socket.off("user_already_in_room")
+        socket.off("player_joined")
+        socket.off("room_does_not_exist")
       }},[socket, navigate, room, username])  
 
         return (
