@@ -2,6 +2,7 @@ from turtle import update
 from urllib import response
 from flask import Flask, render_template, request, url_for
 from flask_socketio import SocketIO, emit, join_room, send
+from tkinter import messagebox, Tk
 import os
 import logging
 from logic.game import Game
@@ -22,7 +23,6 @@ with open('creds.json') as f:
     password = data['password']
     SF_ACCOUNT = data["account"]
     SF_WH = data["warehouse"]
-
 
 ctx = snowflake.connector.connect(
     user=username,
@@ -218,6 +218,7 @@ def action(data):
         emit("updateHand",message["data"]["userCards"],to=request.sid)
         emit('updateDisplay', message["data"]["updateDisplay"], to=data["room"])
         emit('end', message["winner"], to=data["room"])
+        alert('Game Over', message["winner"] + " has won")
         return
 
     # updates the specific players hand display
@@ -244,8 +245,15 @@ def setSuit(data):
 def reset(data):
     if not data["room"] in rooms:
         print("room does not exist")
-        return
+        return 
     rooms[data["room"]].reset()
+    
+def alert(title, message, kind='info', hidemain=True):
+    if kind not in ('error', 'warning', 'info'):
+        raise ValueError('Unsupported alert kind.')
+
+    show_method = getattr(messagebox, 'show{}'.format(kind))
+    show_method(title, message)
 
 
 if __name__ == '__main__':

@@ -213,7 +213,7 @@ class Game():
                             "winner":data["player"],
                             "data":self.render()
                         }
-                        self.gameOver = True;
+                        self.gameOver = True
                         return "end",message
 
                     #update userCards, and center display

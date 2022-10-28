@@ -65,6 +65,9 @@ function WaitingRoom({ socket }) {
                 setSuit(true)
             }
         })
+        socket.on("reset", message =>{
+            window.alert("Game Is Over")
+        })
 
         //uncomment to display status
         // socket.on("status",status=>{
@@ -238,6 +241,7 @@ function UpcardDisplay(props)
 
         </div>
     )
+
     
 }
 
