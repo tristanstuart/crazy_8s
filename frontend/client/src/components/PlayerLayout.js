@@ -2,6 +2,7 @@
 function TableLayout(props){
     //referenced https://css-tricks.com/text-blocks-over-image/ for displaying text over the card image
     const avatar = <img alt='avatar icon' src='../../avatar.svg' className='rounded-lg w-20 mb-4' />
+    const avatarAnimated = <img alt='avatar icon' src='../../avatar.svg' className='animate-bounce rounded-lg w-20 mb-4' />
     const deckImg = <img alt="1B" src="../../cards/1B.svg" className="w-15 h-20"/>
 
     
@@ -16,7 +17,7 @@ function TableLayout(props){
                 <div 
                     className='text-center'
                 >
-                    {avatar}
+                    {props.turn === person.name ? avatarAnimated : avatar}
                     <h5>
                         {person['name']}
                     </h5>
