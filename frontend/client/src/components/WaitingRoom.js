@@ -44,6 +44,10 @@ function WaitingRoom({ socket }) {
         socket.on("updateHand",data=>{
             setHand(makeCards(username,room,socket,chooseSuit,data['hand']))
         })
+        
+        socket.on("updateOpponents",data=>{
+            setOpponentCards(data['opponents'])
+        })
 
         socket.on('move_to_game_start', data =>{
             setHand(makeCards(username,room,socket,chooseSuit,data['hand']))
@@ -144,14 +148,17 @@ const Popup = props =>{
 }
 
 function makeCards(username,room,socket,chooseSuit,cards){
-    return cards.map(e=><Card key={e["rank"]+ " " +e["suit"]}
-    user={username} 
-    rank={e["rank"]} 
-    suit={e["suit"]} 
-    room={room}
-    socket={socket}
-    chooseSuit={chooseSuit}
-    class_={'transition ease-in-out delay-150 bg-blue-500 hover:-translate-y-10 hover:scale-110 duration-300'}/>)
+    return cards.map( e=>
+        <Card key={e["rank"]+ " " +e["suit"]}
+            user={username} 
+            rank={e["rank"]} 
+            suit={e["suit"]} 
+            room={room}
+            socket={socket}
+            chooseSuit={chooseSuit}
+            class_={'transition ease-in-out delay-150 bg-blue-500 hover:-translate-y-10 hover:scale-110 duration-300'}
+        />
+    )
 }
 
 const CurrentSuit = props =>{    

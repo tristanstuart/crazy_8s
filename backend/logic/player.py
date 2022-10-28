@@ -5,8 +5,8 @@ class Player():
         self.info = info
         self.cards = []
 
-
-    def player_turn(self,up_card,deck,pile,activeSuit):
+    #is this used for anything?
+    '''def player_turn(self,up_card,deck,pile,activeSuit):
         valid_play = False
         is_eight = False
         print( "\nYour hand: ")
@@ -60,7 +60,7 @@ class Player():
                 print("You played " + pile[0].long_name)
             if not valid_play:
                 response = input("That's not a legal play. Try again: ")
-        
+        '''
 
     def get_new_suit(self):
         activeSuit = ""
