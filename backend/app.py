@@ -161,84 +161,92 @@ def on_create(data):
 
 @socketio.on('start_game')
 def on_start_game(data):
-    print("data",data)
     room = data
     rooms[room].gameStart()
-    print(f"starting game! {rooms[room].getPlayerTurn().getName()} goes first. Upcard is {rooms[room].upcard().long_name}")
-    
+    print(f"starting game! {rooms[room].getPlayerTurn().getName()} goes first. Upcard is {rooms[room].upcard().long_name}")  
     turnData = rooms[room].getPlayerTurn().getName()
     upcardData = rooms[room].upcard().toDict()
 
     for p in rooms[room].players:
         playerCards, opponentCards = rooms[room].getCardState(p)
         emit('move_to_game_start', {'turn':turnData, 'upcard':upcardData, 'hand':playerCards, 'opponents':opponentCards}, to=p.getSID())
+        print()
         print("sent info to " + p.getName())
-
-@socketio.on("action")
-def action(data):
-    
-    if not data["room"] in rooms:
-        print("room does not exist")
-        return
-
-    if(request.sid != rooms[data["room"]].getPlayerTurn().getSID()):
-        emit("error","Please wait",to=request.sid)
-        return
-
-    # need to delete game associated with Room? or just make a reset function
-    # on game.py and make a @socket.on("reset")
-    # if the admin in the room wants another game with curr players
-    if rooms[data["room"]].gameOver == True:
-        emit("error","sorry the game is over")
-        return
-
-    #based on the result emit the message , could be a string or dict
-    result,message = rooms[data["room"]].action(data)
-
-    #split this all up
-    
-    #player didnt choose a matching suit/rank
-    if result == "error":
-        emit(result,message,to=request.sid)
-        return
-    #player played an eight card, and now they need to choose a suit
-    elif result == "choose suit":
-        emit("choose suit",True,to=request.sid)
-
-    # no more cards in the deck, assmuming players are hoarding cards, dont know if 
-    # this should end the game, probably just choose a random player to discard a random card
-    elif result == "noCards":
-        emit("error",message,to=data["room"])
-    # a deal/draw/setting a suit from an eight card was succesful, 
-    # set the next expected player in game.py
-    elif result == "next":
-        rooms[data["room"]].nextTurn()
-    # someone has won
-    elif result == "end":
-        emit("updateHand",message["data"]["userCards"],to=request.sid)
-        emit('updateDisplay', message["data"]["updateDisplay"], to=data["room"])
-        emit('end', message["winner"], to=data["room"])
-        return
-
-    # updates the specific players hand display
-    emit("updateHand",message["userCards"],to=request.sid)
-    # updates the upCard,activeSuit, and whose current turn it is
-    # the current turn may return the same name because,
-    # a person dealing an eight card may attept to deal/draw , when setting the suit is expected
-    emit('updateDisplay', message["updateDisplay"], to=data["room"])
-
-    #returns the entire status of this particular game session
-    emit("status",rooms[data["room"]].status(),to=request.sid)
 
 @socketio.on("draw")
 def draw(data):
-    pass
+    result,message = checkData(data,request.sid)
+
+    print(result,message)
+    if result=="error":
+        emit(result,message,to=request.sid)
+        return
+    
+    result, message= rooms[data["room"]].draw()
+    if result == "error":
+        emit(result,message,to=request.sid)
+        return
+    elif result == "next":
+        rooms[data["room"]].nextTurn()
+
+    update(message,request.sid,data["room"])
+
 @socketio.on("deal")
 def deal(data):
-    pass
+    result,message = checkData(data,request.sid)
+    print(result,message)
+    if result=="error":
+        emit(result,message,to=request.sid)
+        return
+    
+    result, message= rooms[data["room"]].deal(data)
+    if result == "error":
+        emit(result,message,to=request.sid)
+        return
+    elif result =="winner":
+        emit('winner',to=data["room"])
+    elif result == "choose suit":
+        emit(result,True,to=request.sid)
+    elif result == "next":
+        rooms[data["room"]].nextTurn()
+    else:
+        print("unknown result",result)
+        return
+
+    update(message,request.sid,data["room"])
+
 @socketio.on("setSuit")
 def setSuit(data):
-    pass
+    result,message = checkData(data,request.sid)
+    print(result,message)
+    if result=="error":
+        emit(result,message,to=request.sid)
+        return
+
+    result = rooms[data["room"]].setSuit(data["suit"])
+
+    rooms[data["room"]].nextTurn()
+    update(result,request.sid,data["room"])
+
+def checkData(data,SID):
+    if not data["room"] in rooms:
+        return "error", "room does not exist"
+
+    if(SID != rooms[data["room"]].getPlayerTurn().getSID()):
+        return "error", "Please wait"
+    
+    if rooms[data["room"]].gameOver == True:
+        return "error", "sorry the game is over"
+
+    return "valid"," current turn " + rooms[data["room"]].playerTurn.getName()
+
+def update(message,SID,room):
+    emit("updateHand",message["updateHand"],to=SID)
+    #updates center card, current turn, and activesuit as a dict
+    emit('updateDisplay', message["updateDisplay"], to=room)
+    #returns the entire status of this particular game session
+    #uncomment to see stats on client
+    #emit("status",rooms[room].status(),to=SID)
 
 
 if __name__ == '__main__':

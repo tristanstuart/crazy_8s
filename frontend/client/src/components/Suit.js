@@ -1,11 +1,9 @@
 const Suit = props =>{
     
     const handleClick = () =>{
-        props.socket.emit("action",{
-            "action":"choose suit",
+        props.socket.emit("setSuit",{
             "suit":props.suit,
             "room":props.room,
-            "player":props.user
         })
         props.setSuit(false)
     }

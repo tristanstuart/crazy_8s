@@ -15,7 +15,7 @@ class Game():
         self.playerTurn = None
         self.index = None
         self.needSuit = False
-        self.gameOver = False;
+        self.gameOver = False
 
     def status(self):
         status = {
@@ -23,12 +23,10 @@ class Game():
         }
         for player in self.players:
             status["players"].append({player.getName():player.getCards()})       
-        status["update"] = self.update()
+        status["updateDisplay"] = self.updateDisplay()
         status["deck"] = len(self.deck)
         status["pile"] = len(self.pile)
         status["chooseSuit"] = self.needSuit
-        status["currentTurn"] = self.playerTurn.getName()
-        status["nextTurn"] = self.getNext()
         
         return status
 
@@ -117,15 +115,15 @@ class Game():
             #if false then there is only one card in the pile and users are hoarding cards
             if self.reShuffle():
                 print("gameOver")
+                self.gameOver=True
                 return False
         
         self.playerTurn.cards.append(self.deck.pop())
         return True
     
-    def deal(self,rank,suit):
+    def dealCard(self,rank,suit):
         
         if  rank == "8" or rank == self.upcard().rank or suit == self.activeSuit:
-            
             for i in range(len(self.playerTurn.cards)):
                 #look for the matching card
                 if self.playerTurn.cards[i].rank == rank and self.playerTurn.cards[i].suit == suit:
@@ -133,16 +131,16 @@ class Game():
                     if rank =="8":
                         self.needSuit = True
                         return "choose suit"
-                    
                     self.activeSuit = self.pile[0].suit
                     break
-            
             return "next"
-        
         return "error"
 
     # return updated center display
-    def update(self):
+    def updateDisplay(self):
+        winner = ""
+        if self.gameOver == True:
+            winner = self.playerTurn.getName()
         return {
             "upcard":{
                 "rank":self.upcard().rank,
@@ -150,7 +148,8 @@ class Game():
                 },
             "currentTurn":self.playerTurn.getName(),
             "nextTurn":self.getNext(),
-            "activeSuit":self.activeSuit
+            "activeSuit":self.activeSuit,
+            "winner":winner
         }
     
     #get the next player's name
@@ -163,7 +162,7 @@ class Game():
 
     #update current player cards, and center display
     def render(self):
-        return {"updateDisplay":self.update(),"userCards":self.playerTurn.getCards()}
+        return {"updateDisplay":self.updateDisplay(),"updateHand":self.playerTurn.getCards()}
 
     # set the next players turn
     def nextTurn(self):
@@ -183,58 +182,40 @@ class Game():
     def setSuit(self,suit):
         self.needSuit = False
         self.activeSuit = suit
+        return self.render()
+            
+    def draw(self):
     
-    #handles evething so far, which is bad
-    def action(self,data):
+        if self.needSuit == True:
+            return "error","Please select a suit"
         
-        #if the player dealt an 8 card, then its expected they cant deal/draw
-        if self.needSuit == False:
-            if data["action"] == "draw":
+        if self.drawCard() == False:
+            self.gameOver = True
+            return "error","There are no more cards to draw"     
                 
-                #cant decide if this should end the game or not
-                # if its false then there are no more cards in the deck and the pile only has one card
-                # assuming players are hoarding cards
-                if self.drawCard() == False:
-                    return "end","There are no more cards to draw"     
-                
-                #update userCards, and center display
-                return "next",self.render()
+        return "next",self.render()        
 
-            elif data["action"] == "deal":
-            
-                result = self.deal(data["card"]["rank"],data["card"]["suit"]) 
-                
-                #user was able to deal a card succesfully
-                if  result == "next":
+    def deal(self,data):
+        if self.needSuit == True:
+            return "error","Please select a suit"
 
-                    #checks if the curr user has an empty hand, if so they win
-                    if self.endGame():
-                        message = {
-                            "winner":data["player"],
-                            "data":self.render()
-                        }
-                        self.gameOver = True;
-                        return "end",message
+        result = self.dealCard(data["card"]["rank"],data["card"]["suit"]) 
 
-                    #update userCards, and center display
-                    return "next",self.render()
-                # user dealt an eight card, and a new suit is required from them
-                elif result == "choose suit":
+        if  result == "next":
 
-                    return "choose suit", self.render()
-                # current user dealt a card with no matching rank/suit
-                elif result == "error":
-                    return "error","Cards do not match"
-            #being passed an unknown action
-            else:
-                return "error", "unknown action"
+            #checks if the curr user has an empty hand, if so they win
+            if self.endGame():
+                self.gameOver = True
+                return "winner",self.render()
 
-        else:
-            #if the user decided to deal/draw, when a suit is expected: return this error message
-            if data["action"] != "choose suit":
-                return "error","Please select a suit"
-            
-            self.setSuit(data["suit"])
+            #update userCards, and center display
             return "next",self.render()
-            
-            
+        # user dealt an eight card, and a new suit is required from them
+        elif result == "choose suit":
+
+            return "choose suit", self.render()
+        # current user dealt a card with no matching rank/suit
+        elif result == "error":
+            return "error","Cards do not match"
+    
+

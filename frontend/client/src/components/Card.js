@@ -51,9 +51,7 @@ const suitMap = new Map([
 function Card({rank, suit,user,room,socket,class_}) {
   const handleClick = () =>{
     if(room !== undefined){
-        socket.emit("action",{
-          "action":"deal",
-          "player":user,
+        socket.emit("deal",{
           "card":{
             "rank":rank,
             "suit":suit
