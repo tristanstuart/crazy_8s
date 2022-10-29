@@ -176,14 +176,14 @@ def on_start_game(data):
 @socketio.on("draw")
 def draw(data):
     result,message = checkData(data,request.sid)
-
-    print(result,message)
+    #print(result,message)
+    
     if result=="error":
         emit(result,message,to=request.sid)
         return
     
     result, message= rooms[data["room"]].draw()
-    if result == "error":
+    if result == "error":#no more cards
         emit(result,message,to=request.sid)
         return
     elif result == "next":
@@ -200,9 +200,8 @@ def deal(data):
         emit(result,message,to=request.sid)
         return
 
-    # overwriting variables?
     result, message= rooms[data["room"]].deal(data) # otherwise process turn
-    if result == "error": # invalid card?
+    if result == "error": # invalid card
         emit(result,message,to=request.sid)
         return
     elif result =="winner": # player made winning play
@@ -215,7 +214,7 @@ def deal(data):
         print("unknown result",result)
         return
 
-    update(message,request.sid,data["room"]) # what does this do?
+    update(message,request.sid,data["room"]) #update center display, curr player hand, and opponent hands
 
 @socketio.on("setSuit")
 def setSuit(data):
@@ -236,15 +235,16 @@ def checkData(data,SID):
     if not data["room"] in rooms:
         return "error", "room does not exist"
 
-    if(SID != rooms[data["room"]].getPlayerTurn().getSID()):
-        return "error", "Please wait"
-    
     if rooms[data["room"]].gameOver == True:
         return "error", "sorry the game is over"
 
+    if(SID != rooms[data["room"]].getPlayerTurn().getSID()):
+        return "error", "Please wait"
+
     return "valid"," current turn " + rooms[data["room"]].playerTurn.getName()
 
-def update(message,SID,room): 
+def update(message,SID,room):
+    #update specific playerhand, refers to them by request.sid as SID 
     emit("updateHand",message["updateHand"],to=SID)
     #updates center card, current turn, and activesuit as a dict
     emit('updateDisplay', message["updateDisplay"], to=room)
@@ -256,7 +256,6 @@ def update(message,SID,room):
     
     #uncomment to see stats on client
     #emit("status",rooms[room].status(),to=SID)
-
 
 if __name__ == '__main__':
 	socketio.run(app, debug=True,port=5000) 
