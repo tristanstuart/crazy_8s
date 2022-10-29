@@ -15,7 +15,7 @@ class Game():
         self.playerTurn = None
         self.index = None
         self.needSuit = False
-        self.gameOver = False
+        self.gameOver = False;
 
     def status(self):
         status = {
@@ -178,9 +178,7 @@ class Game():
         if len(self.playerTurn.cards) == 0:
             return True
         return False
-    
-    def reset(self):
-        pass
+
     #just sets suit chosen
     def setSuit(self,suit):
         self.needSuit = False
@@ -215,7 +213,7 @@ class Game():
                             "winner":data["player"],
                             "data":self.render()
                         }
-                        self.gameOver = True;
+                        self.gameOver = True
                         return "end",message
 
                     #update userCards, and center display
