@@ -199,7 +199,14 @@ class Game():
         if self.needSuit == True:
             return "error","Please select a suit"
 
-        result = self.dealCard(data["card"]["rank"],data["card"]["suit"]) 
+                    #checks if the curr user has an empty hand, if so they win
+                    if self.endGame():
+                        message = {
+                            "winner":data["player"],
+                            "data":self.render()
+                        }
+                        self.gameOver = True
+                        return "end",message
 
         if  result == "next":
 

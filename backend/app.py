@@ -2,6 +2,7 @@ from turtle import update
 from urllib import response
 from flask import Flask, render_template, request, url_for
 from flask_socketio import SocketIO, emit, join_room, send
+from tkinter import messagebox, Tk
 import os
 import logging
 from logic.game import Game
@@ -22,7 +23,6 @@ with open('creds.json') as f:
     password = data['password']
     SF_ACCOUNT = data["account"]
     SF_WH = data["warehouse"]
-
 
 ctx = snowflake.connector.connect(
     user=username,
@@ -211,8 +211,12 @@ def deal(data):
         emit(result,True,to=request.sid)
     elif result == "next": # normal turn processed correctly, move to next player
         rooms[data["room"]].nextTurn()
-    else:
-        print("unknown result",result)
+    # someone has won
+    elif result == "end":
+        emit("updateHand",message["data"]["userCards"],to=request.sid)
+        emit('updateDisplay', message["data"]["updateDisplay"], to=data["room"])
+        emit('end', message["winner"], to=data["room"])
+        alert('Game Over', message["winner"] + " has won")
         return
 
     update(message,request.sid,data["room"]) # what does this do?
@@ -226,36 +230,19 @@ def setSuit(data):
         emit(result,message,to=request.sid)
         return
 
-    result = rooms[data["room"]].setSuit(data["suit"])
-
-    rooms[data["room"]].nextTurn()
-    update(result,request.sid,data["room"])
-
-#validates that the room exists, that it is the player's turn, and that the game hasn't ended
-def checkData(data,SID):
+@socketio.on("reset")
+def reset(data):
     if not data["room"] in rooms:
-        return "error", "room does not exist"
-
-    if(SID != rooms[data["room"]].getPlayerTurn().getSID()):
-        return "error", "Please wait"
+        print("room does not exist")
+        return 
+    rooms[data["room"]].reset()
     
-    if rooms[data["room"]].gameOver == True:
-        return "error", "sorry the game is over"
+def alert(title, message, kind='info', hidemain=True):
+    if kind not in ('error', 'warning', 'info'):
+        raise ValueError('Unsupported alert kind.')
 
-    return "valid"," current turn " + rooms[data["room"]].playerTurn.getName()
-
-def update(message,SID,room): 
-    emit("updateHand",message["updateHand"],to=SID)
-    #updates center card, current turn, and activesuit as a dict
-    emit('updateDisplay', message["updateDisplay"], to=room)
-
-    for p in rooms[room].players:#update all opponent card counts
-        opponentCards = rooms[room].getCardState(p)[1] #function returns player and opponent hand info [1] on the end gets just the opponent info
-        emit('updateOpponents', {'opponents':opponentCards}, to=p.getSID())
-    #returns the entire status of this particular game session
-    
-    #uncomment to see stats on client
-    #emit("status",rooms[room].status(),to=SID)
+    show_method = getattr(messagebox, 'show{}'.format(kind))
+    show_method(title, message)
 
 
 if __name__ == '__main__':
