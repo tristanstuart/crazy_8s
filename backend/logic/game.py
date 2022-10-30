@@ -213,6 +213,10 @@ class Game():
         # user dealt an eight card, and a new suit is required from them
         elif result == "choose suit":
 
+            if self.endGame():
+                self.gameOver = True
+                return "winner",self.render()
+
             return "choose suit", self.render()
         # current user dealt a card with no matching rank/suit
         elif result == "error":

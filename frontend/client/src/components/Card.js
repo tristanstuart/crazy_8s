@@ -64,7 +64,7 @@ function Card({rank, suit,user,room,socket,class_}) {
   return (
     <div 
         className={class_}
-        style={{display:'grid',justifyContent:'center'}}
+        style={{width:"120px"}}
         onClick={handleClick}>
       <img
         alt={rank + 'of' + suit} 

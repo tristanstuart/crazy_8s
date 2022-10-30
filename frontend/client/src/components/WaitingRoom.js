@@ -30,9 +30,6 @@ function WaitingRoom({ socket }) {
         })
 
         socket.on("updateDisplay", data=>{
-            if(turn !== data["nextTurn"]){
-                setWarning("")
-            }
             if(data["winner"] !== ""){
                 setWarning(data["winner"] + " has won!")
             }
@@ -42,6 +39,7 @@ function WaitingRoom({ socket }) {
         })
         
         socket.on("updateHand",data=>{
+            setWarning("")
             setHand(makeCards(username,room,socket,chooseSuit,data['hand']))
         })
         
@@ -96,7 +94,7 @@ function WaitingRoom({ socket }) {
                                 <PlayerLayout opponents={opponentCards} players={players} turn={turn}/>
                             </div>
                             <CurrentSuit suit={activeSuit}/>
-                            {turn === username && <div className="animate-bounce" style={{textAlign:"center",color:"green","font-size":"28px"}}>Your Turn!</div>}
+                            {turn === username && <div className="animate-bounce" style={{textAlign:"center",color:"green",fontSize:"28px"}}>Your Turn!</div>}
                             {/*turn !== username && <div style={{textAlign:"center"}}>Current Turn: {turn}</div>*/}
                             <div style={{textAlign:"center",color:"red",fontSize:"25px",margin:"15px"}}>
                                 {warning}
@@ -116,13 +114,12 @@ function WaitingRoom({ socket }) {
 
                             <div className='bg-purple-200 h-full'>
                                 {chooseSuit === true ? 
-                                    <Popup
+                                    <ChooseSuit 
                                     setSuit={setSuit} 
                                     user={username} 
                                     room={room} 
-                                    socket={socket}
-                                    hand={hand}/>
-                                    :<div/>
+                                    socket={socket}/>:<div/>
+
                                 }
                                 <CardHand 
                                     user={username} 
@@ -143,7 +140,7 @@ function WaitingRoom({ socket }) {
 
 const Popup = props =>{
     return(
-        <div style={{display:"grid",justifyContent:"center",gridTemplateColumns:"auto auto",gap:"15px",padding:"15px"}}>
+        <div style={{display:"flex",justifyContent:"center",padding:"15px",height:"inherit"}}>
             <ChooseSuit 
                 setSuit={props.setSuit} 
                 user={props.user} 
@@ -162,7 +159,7 @@ function makeCards(username,room,socket,chooseSuit,cards){
             room={room}
             socket={socket}
             chooseSuit={chooseSuit}
-            class_={'transition ease-in-out delay-150 bg-blue-500 hover:-translate-y-10 hover:scale-110 duration-300'}
+            class_={'relative flex transition-all transform-gpu rounded-lg shadow-2xl cursor-pointer -rotate-12 hover:-mt-5'}
         />
     )
 }
@@ -204,7 +201,8 @@ function LobbyDisplay(props)
 
 function CardHand(props){
     return (
-        <div className='flex flex-wrap justify-center mt-5 gap-x-3'>
+        // <div className='flex flex-wrap justify-center mt-5 gap-x-3'>
+        <div className="flex space-x-2 items-center justify-center bg-gray-100">
             {props.hand }
         </div>
     )   
