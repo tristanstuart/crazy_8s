@@ -176,14 +176,14 @@ def on_start_game(data):
 @socketio.on("draw")
 def draw(data):
     result,message = checkData(data,request.sid)
-
-    print(result,message)
+    #print(result,message)
+    
     if result=="error":
         emit(result,message,to=request.sid)
         return
     
     result, message= rooms[data["room"]].draw()
-    if result == "error":
+    if result == "error":#no more cards
         emit(result,message,to=request.sid)
         return
     elif result == "next":
@@ -200,9 +200,8 @@ def deal(data):
         emit(result,message,to=request.sid)
         return
 
-    # overwriting variables?
     result, message= rooms[data["room"]].deal(data) # otherwise process turn
-    if result == "error": # invalid card?
+    if result == "error": # invalid card
         emit(result,message,to=request.sid)
         return
     elif result =="winner": # player made winning play
@@ -219,7 +218,7 @@ def deal(data):
         alert('Game Over', message["winner"] + " has won")
         return
 
-    update(message,request.sid,data["room"]) # what does this do?
+    update(message,request.sid,data["room"]) #update center display, curr player hand, and opponent hands
 
 @socketio.on("setSuit")
 def setSuit(data):
@@ -233,17 +232,29 @@ def setSuit(data):
 @socketio.on("reset")
 def reset(data):
     if not data["room"] in rooms:
-        print("room does not exist")
-        return 
-    rooms[data["room"]].reset()
+        return "error", "room does not exist"
+
+    if rooms[data["room"]].gameOver == True:
+        return "error", "sorry the game is over"
+
+    if(SID != rooms[data["room"]].getPlayerTurn().getSID()):
+        return "error", "Please wait"
+
+    return "valid"," current turn " + rooms[data["room"]].playerTurn.getName()
+
+def update(message,SID,room):
+    #update specific playerhand, refers to them by request.sid as SID 
+    emit("updateHand",message["updateHand"],to=SID)
+    #updates center card, current turn, and activesuit as a dict
+    emit('updateDisplay', message["updateDisplay"], to=room)
+
+    for p in rooms[room].players:#update all opponent card counts
+        opponentCards = rooms[room].getCardState(p)[1] #function returns player and opponent hand info [1] on the end gets just the opponent info
+        emit('updateOpponents', {'opponents':opponentCards}, to=p.getSID())
+    #returns the entire status of this particular game session
     
-def alert(title, message, kind='info', hidemain=True):
-    if kind not in ('error', 'warning', 'info'):
-        raise ValueError('Unsupported alert kind.')
-
-    show_method = getattr(messagebox, 'show{}'.format(kind))
-    show_method(title, message)
-
+    #uncomment to see stats on client
+    #emit("status",rooms[room].status(),to=SID)
 
 if __name__ == '__main__':
 	socketio.run(app, debug=True,port=5000) 
