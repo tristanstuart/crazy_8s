@@ -121,6 +121,19 @@
         * Task: https://cs3398f22ferengi.atlassian.net/browse/FC8-42
         * Commit: https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/pull-requests/8
 - Christian
+    - `Render/Create game table with players shown`
+        * [Task](https://cs3398f22ferengi.atlassian.net/jira/software/projects/FC8/boards/2?assignee=6306a1439278161d1937db38&selectedIssue=FC8-40)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/pull-requests/15)
+    - `Render Players Hand`
+        * [Task](https://cs3398f22ferengi.atlassian.net/jira/software/projects/FC8/boards/2?assignee=6306a1439278161d1937db38&selectedIssue=FC8-35)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/pull-requests/14)
+    - `Render Up Card`
+        * [Task](https://cs3398f22ferengi.atlassian.net/jira/software/projects/FC8/boards/2?assignee=6306a1439278161d1937db38&selectedIssue=FC8-37)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/pull-requests/11)
+    - `Moved frontend to react and setup front and backend communication`
+        * [Task](https://cs3398f22ferengi.atlassian.net/jira/software/projects/FC8/boards/2?assignee=6306a1439278161d1937db38&selectedIssue=FC8-50)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/pull-requests/9)
+    
     
 - Emmanuel
 
@@ -134,6 +147,8 @@
     * Make our bot work in single player mode
     * Fix bugs
 - Christian
+    * Make the web app look better
+    * deploy the web app
     
 - Emmanuel 
 
