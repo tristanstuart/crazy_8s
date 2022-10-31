@@ -7,6 +7,7 @@
 -  [Features](#features)
 -  [Setup](#setup)
 -  [Sprint 1](#sprint-1)
+-  [Sprint 2](#sprint-2)
 # Who you’re working with (you and your team members)? #
 *Team Members Here: Marco Roman, Tristan Stuart, Quinn Templeton, Emmanual Sapolucia, Christian Davis*
 
@@ -28,7 +29,7 @@
 
 # Features # 
 * *App Theme(Marco): Change the overall theme of the app to your liking*
-* *Leader Board(Marco): Be able to track the top players with a leaber board*
+* *Leader Board(Marco): Be able to track the top players with a leader board*
 * *Card Theme(Tristan): Change the themes of your cards*
 * *Custom Profile(Tristan): Be able to customize your profile to your liking*
 * *Multiplayer Feauture(Quinn): Be able to connect with friends and play together*
@@ -105,9 +106,44 @@
 - Quinn
 	* Implement the login database to our website
 	* Implement the rules of Crazy 8 into our functioning website
+<br></br>
+
+# Sprint 2
+## Contributions
+- Marco
+    - `Client sending proper player turn`
+        * Task: https://cs3398f22ferengi.atlassian.net/browse/FC8-43
+        * Commit: https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/pull-requests/13
+    - `Server receive client info`
+        * Task: https://cs3398f22ferengi.atlassian.net/browse/FC8-39
+        * Commit: https://bitbucket.org/cs3398f22ferengi/crazy_8s/pull-requests/28
+    - `Create Card class in react/js`
+        * Task: https://cs3398f22ferengi.atlassian.net/browse/FC8-42
+        * Commit: https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/pull-requests/8
+- Christian
+    
+- Emmanuel
+
+- Tristan
+
+- Quinn
+
+
+## Next Steps
+- Marco
+    * Make our bot work in single player mode
+    * Fix bugs
+- Christian
+    
+- Emmanuel 
+
+- Tristan
+   
+- Quinn
+	
+
+<div style="display:flex; justify-content:center;">
 
 ![Alt text](https://img.women.com/images/images/000/179/050/large/screen_shot_2019-04-17_at_1.53.25_pm.png?1555534518 "Crazy 8")
 
-## Setup
-
-## Sprint 1
+</div>
