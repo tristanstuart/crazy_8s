@@ -138,6 +138,21 @@
 - Emmanuel
 
 - Tristan
+    - `FC8-41: Render number of cards in opponents hands`
+        * [Task](https://cs3398f22ferengi.atlassian.net/browse/FC8-41?atlOrigin=eyJpIjoiM2NlZWI2MzQ3ZTk2NDU5Yzg0OTI1YjJmNWQ3M2FmMjEiLCJwIjoiaiJ9)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/crazy_8s/commits/520b90c5692d577ce22a2bcbd06bc5eca6efc2c1)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/crazy_8s/commits/e82bd7582cab128a6ad0f4b682226537301cb4c1)
+        * [Pull Request](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/pull-requests/10)
+    - `FC8-48: Setup waiting room and game lobby communication`
+        * [Task](https://cs3398f22ferengi.atlassian.net/browse/FC8-41?atlOrigin=eyJpIjoiM2NlZWI2MzQ3ZTk2NDU5Yzg0OTI1YjJmNWQ3M2FmMjEiLCJwIjoiaiJ9)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/crazy_8s/commits/b31ea22a3abe5f5ac2c0a904b7f9a8011e7e1a8a)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/crazy_8s/commits/492b746100d9d990fb983ca24d9c28e7150daad7)
+        * [Pull Request](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/pull-requests/12)
+    - `FC8-38: Render Whose Turn Indication`
+        * [Task](https://cs3398f22ferengi.atlassian.net/browse/FC8-38?atlOrigin=eyJpIjoiMjEzZDUwZmMwNjk1NDllYmI0NmE5MzI0MzRlMmM5YjEiLCJwIjoiaiJ9)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/crazy_8s/commits/6e94e05fe54224881a7607a1cd7c67c240276886)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/crazy_8s/commits/efbd9cfde7051097039cef4c908c73fc72f7473d)
+        * [Pull Request](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/pull-requests/25)
 
 - Quinn
     - Added a draw button with card drawing functioanlity
@@ -165,7 +180,8 @@
 - Emmanuel 
 
 - Tristan
-   
+   * Fix edge cases in UI rendering
+   * Work on customization features for player profiles
 - Quinn
     * Get a functioning login and register page
     * Refactor UI
