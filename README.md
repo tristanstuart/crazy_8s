@@ -140,6 +140,18 @@
 - Tristan
 
 - Quinn
+    - Added a draw button with card drawing functioanlity
+        * [Task](https://cs3398f22ferengi.atlassian.net/jira/software/projects/FC8/boards/2?assignee=6304d77555894b7fbddcc2f3&selectedIssue=FC8-46)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/crazy_8s/commits/b439c9a63f9967388d68d9aff320b9ca5bc4c48e)
+    - Established a connection to our SQL database
+        * [Task](https://cs3398f22ferengi.atlassian.net/jira/software/projects/FC8/boards/2?assignee=6304d77555894b7fbddcc2f3&selectedIssue=FC8-9)
+        * [Commit] (https://bitbucket.org/cs3398f22ferengi/crazy_8s/commits/a3425edf538acc2ffafe69ad1189c48468b41be3)
+    - Added a rules page to nav bar and also content to rules page
+        * [Task](https://cs3398f22ferengi.atlassian.net/jira/software/projects/FC8/boards/2?assignee=6304d77555894b7fbddcc2f3&selectedIssue=FC8-20)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/pull-requests/21)
+    - Bug tested
+        * [Task](https://cs3398f22ferengi.atlassian.net/jira/software/projects/FC8/boards/2?assignee=6304d77555894b7fbddcc2f3&selectedIssue=FC8-23)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/crazy_8s/commits/972b42397bde4d50a37521d8debf3d4f9f939d57) 
 
 
 ## Next Steps
@@ -155,6 +167,9 @@
 - Tristan
    
 - Quinn
+    * Get a functioning login and register page
+    * Refactor UI
+    * Test for bugs
 	
 
 <div style="display:flex; justify-content:center;">
