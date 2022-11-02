@@ -136,18 +136,18 @@
     
     
 - Emmanuel
-    - `Game Reset Game.Python
-        *[Task](https://cs3398f22ferengi.atlassian.net/browse/FC8-5?atlOrigin=eyJpIjoiYWMxMmUxNGI4ODk2NDI1MGFmNWIzOWViNzU0MjJiZjMiLCJwIjoiaiJ9)
-        *[Commit](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/commits/b65d668647c86603817d95ee15071befa5571046)
-        *[Pull Request](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/pull-requests/26)
-    -  `Game Reset Front end
-        *[Task](https://cs3398f22ferengi.atlassian.net/browse/FC8-44?atlOrigin=eyJpIjoiMTdiNDA1ZmYyZmFlNDkyMjgxODdmMmI2MWY1NzNiNDAiLCJwIjoiaiJ9)
-        *[Commit](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/commits/ce924d210eed3de238acbdd0de0337d4144b3522)
-        *[Pull Request](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/pull-requests/26)
-    - `Reset App.Py
-        *[Task](https://cs3398f22ferengi.atlassian.net/browse/FC8-19?atlOrigin=eyJpIjoiYzcwZTgwZTFjOTlhNDA5MGI0OWI3Y2NjNTNhZDUwNjIiLCJwIjoiaiJ9)
-        *[Commit](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/commits/3b80b938268962d1179282ef41c5e59a411bfb12)
-        *[Pull Request](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/pull-requests/26)
+    - `Game Reset Game.Python`
+        * [Task](https://cs3398f22ferengi.atlassian.net/browse/FC8-5?atlOrigin=eyJpIjoiYWMxMmUxNGI4ODk2NDI1MGFmNWIzOWViNzU0MjJiZjMiLCJwIjoiaiJ9) 
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/commits/b65d668647c86603817d95ee15071befa5571046)
+        * [Pull Request](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/pull-requests/26)
+    -  `Game Reset Front end`
+        * [Task](https://cs3398f22ferengi.atlassian.net/browse/FC8-44?atlOrigin=eyJpIjoiMTdiNDA1ZmYyZmFlNDkyMjgxODdmMmI2MWY1NzNiNDAiLCJwIjoiaiJ9)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/commits/ce924d210eed3de238acbdd0de0337d4144b3522)
+        * [Pull Request](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/pull-requests/26)
+    - `Reset App.Py`
+        * [Task](https://cs3398f22ferengi.atlassian.net/browse/FC8-19?atlOrigin=eyJpIjoiYzcwZTgwZTFjOTlhNDA5MGI0OWI3Y2NjNTNhZDUwNjIiLCJwIjoiaiJ9)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/commits/3b80b938268962d1179282ef41c5e59a411bfb12)
+        * [Pull Request](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/pull-requests/26)
 
 
 - Tristan
@@ -191,8 +191,8 @@
     * deploy the web app
     
 - Emmanuel 
-    *Work on Customization 
-    *Work on end game functions
+    * Work on Customization 
+    * Work on end game functions
     
 - Tristan
    * Fix edge cases in UI rendering
