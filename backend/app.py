@@ -102,6 +102,7 @@ def login(data):
         return
 
     emit("error","Wrong Username/Password")
+    
 @socketio.on("signup")
 def signUp(data):
     ##edit when we have access to database
@@ -182,14 +183,14 @@ def draw(data):
         emit(result,message,to=request.sid)
         return
     
-    result, message= rooms[data["room"]].draw()
+    result, message = rooms[data["room"]].draw()
     if result == "error":#no more cards
         emit(result,message,to=request.sid)
         return
-    elif result == "next":
-        rooms[data["room"]].nextTurn()
+    # elif result == "next":
+    #     rooms[data["room"]].nextTurn()
 
-    update(message,request.sid,data["room"])
+    updatePlayer(message,request.sid,data["room"])
 
 @socketio.on("deal")
 def deal(data):
@@ -214,7 +215,7 @@ def deal(data):
         print("unknown result",result)
         return
 
-    update(message,request.sid,data["room"]) #update center display, curr player hand, and opponent hands
+    updateRoom(message,request.sid,data["room"]) #update center display, curr player hand, and opponent hands
 
 @socketio.on("setSuit")
 def setSuit(data):
@@ -228,7 +229,7 @@ def setSuit(data):
     result = rooms[data["room"]].setSuit(data["suit"])
 
     rooms[data["room"]].nextTurn()
-    update(result,request.sid,data["room"])
+    updateRoom(result,request.sid,data["room"])
 
 #validates that the room exists, that it is the player's turn, and that the game hasn't ended
 def checkData(data,SID):
@@ -243,19 +244,35 @@ def checkData(data,SID):
 
     return "valid"," current turn " + rooms[data["room"]].playerTurn.getName()
 
-def update(message,SID,room):
-    #update specific playerhand, refers to them by request.sid as SID 
-    emit("updateHand",message["updateHand"],to=SID)
+# def update(message,SID,room):
+#     #update specific playerhand, refers to them by request.sid as SID 
+#     emit("updateHand",message["updateHand"],to=SID)
+#     #updates center card, current turn, and activesuit as a dict
+#     emit('updateDisplay', message["updateDisplay"], to=room)
+
+#     for p in rooms[room].players:#update all opponent card counts
+#         opponentCards = rooms[room].getCardState(p)[1] #function returns player and opponent hand info [1] on the end gets just the opponent info
+#         emit('updateOpponents', {'opponents':opponentCards}, to=p.getSID())
+#     #returns the entire status of this particular game session
+    
+#     #uncomment to see stats on client
+#     #emit("status",rooms[room].status(),to=SID)
+
+
+def updateRoom(message,SID, room):
     #updates center card, current turn, and activesuit as a dict
     emit('updateDisplay', message["updateDisplay"], to=room)
 
     for p in rooms[room].players:#update all opponent card counts
         opponentCards = rooms[room].getCardState(p)[1] #function returns player and opponent hand info [1] on the end gets just the opponent info
         emit('updateOpponents', {'opponents':opponentCards}, to=p.getSID())
-    #returns the entire status of this particular game session
-    
-    #uncomment to see stats on client
-    #emit("status",rooms[room].status(),to=SID)
+
+def updatePlayer(message, SID, room):
+    #update specific playerhand, refers to them by request.sid as SID 
+    emit("updateHand",message["updateHand"],to=SID)
+    for p in rooms[room].players:#update all opponent card counts
+        opponentCards = rooms[room].getCardState(p)[1] #function returns player and opponent hand info [1] on the end gets just the opponent info
+        emit('updateOpponents', {'opponents':opponentCards}, to=p.getSID())
 
 if __name__ == '__main__':
 	socketio.run(app, debug=True,port=5000) 
