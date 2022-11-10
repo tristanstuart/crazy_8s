@@ -36,6 +36,11 @@ function WaitingRoom({ socket }) {
             setUpcard(data['upcard'])
             setTurn(data['nextTurn'])
             setActiveSuit(data["activeSuit"])
+            if(data['rule'] == 'draw2'){
+                socket.emit("draw",{"room":room})
+                socket.emit("draw",{"room":room})
+                console.log('i am here')
+            }
         })
         
         socket.on("updateHand",data=>{
@@ -210,11 +215,8 @@ function CardHand(props){
 
 function UpcardDisplay(props)
 {
-    console.log("button clicked")
     const drawCard = () =>{
         if (props.turn !== props.username){
-            console.log("it is "+ props.turn + " turn." )
-            console.log("it is "+ props.username + " turn." )
             return
         }
         props.socket.emit("draw",{

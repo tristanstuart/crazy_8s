@@ -133,6 +133,8 @@ class Game():
                         return "choose suit"
                     if rank == "Queen":
                         return "skip"
+                    if rank == "2":
+                        return "draw2"
                     self.activeSuit = self.pile[0].suit
                     break
             return "next"
@@ -153,8 +155,13 @@ class Game():
             "nextTurn":self.getNext(),
             "activeSuit":self.activeSuit,
             "winner":winner,
+            'rule': ''
         }
-        if rule == 'skip': display['nextTurn'] = self.playerTurn.getName()
+        if rule:
+            if rule == 'skip': 
+                display['nextTurn'] = self.playerTurn.getName()
+            
+            display['rule'] = rule
         
         return display
 
@@ -220,6 +227,8 @@ class Game():
             return "choose suit", self.render()
         elif result == "skip":
             return "skip",self.render('skip')
+        elif result == "draw2":
+            return "next", self.render('draw2')
         # current user dealt a card with no matching rank/suit
         elif result == "error":
             return "error","Cards do not match"
