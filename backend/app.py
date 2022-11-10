@@ -211,11 +211,19 @@ def deal(data):
         emit(result,True,to=request.sid)
     elif result == "next": # normal turn processed correctly, move to next player
         rooms[data["room"]].nextTurn()
+        print(message)
+        print()
+    elif result == "skip": #Queen was played and next player is skipped
+        rooms[data["room"]].nextTurn()
+        rooms[data["room"]].nextTurn()
+        print(message)
+        print()
     else:
         print("unknown result",result)
         return
 
     updateRoom(message,request.sid,data["room"]) #update center display, curr player hand, and opponent hands
+    updatePlayer(message,request.sid,data["room"])
 
 @socketio.on("setSuit")
 def setSuit(data):
@@ -240,23 +248,10 @@ def checkData(data,SID):
         return "error", "sorry the game is over"
 
     if(SID != rooms[data["room"]].getPlayerTurn().getSID()):
+        print(rooms[data["room"]].getPlayerTurn())
         return "error", "Please wait"
 
     return "valid"," current turn " + rooms[data["room"]].playerTurn.getName()
-
-# def update(message,SID,room):
-#     #update specific playerhand, refers to them by request.sid as SID 
-#     emit("updateHand",message["updateHand"],to=SID)
-#     #updates center card, current turn, and activesuit as a dict
-#     emit('updateDisplay', message["updateDisplay"], to=room)
-
-#     for p in rooms[room].players:#update all opponent card counts
-#         opponentCards = rooms[room].getCardState(p)[1] #function returns player and opponent hand info [1] on the end gets just the opponent info
-#         emit('updateOpponents', {'opponents':opponentCards}, to=p.getSID())
-#     #returns the entire status of this particular game session
-    
-#     #uncomment to see stats on client
-#     #emit("status",rooms[room].status(),to=SID)
 
 
 def updateRoom(message,SID, room):

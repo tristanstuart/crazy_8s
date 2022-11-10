@@ -210,8 +210,11 @@ function CardHand(props){
 
 function UpcardDisplay(props)
 {
+    console.log("button clicked")
     const drawCard = () =>{
         if (props.turn !== props.username){
+            console.log("it is "+ props.turn + " turn." )
+            console.log("it is "+ props.username + " turn." )
             return
         }
         props.socket.emit("draw",{

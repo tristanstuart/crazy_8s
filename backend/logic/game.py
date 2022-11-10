@@ -131,17 +131,20 @@ class Game():
                     if rank =="8":
                         self.needSuit = True
                         return "choose suit"
+                    if rank == "Queen":
+                        return "skip"
                     self.activeSuit = self.pile[0].suit
                     break
             return "next"
         return "error"
 
     # return updated center display
-    def updateDisplay(self):
+    def updateDisplay(self, rule=None):
         winner = ""
         if self.gameOver == True:
             winner = self.playerTurn.getName()
-        return {
+
+        display = {
             "upcard":{
                 "rank":self.upcard().rank,
                 "suit":self.upcard().suit
@@ -149,9 +152,12 @@ class Game():
             "currentTurn":self.playerTurn.getName(),
             "nextTurn":self.getNext(),
             "activeSuit":self.activeSuit,
-            "winner":winner
+            "winner":winner,
         }
-    
+        if rule == 'skip': display['nextTurn'] = self.playerTurn.getName()
+        
+        return display
+
     #get the next player's name
     def getNext(self):
         if self.needSuit == True:
@@ -161,9 +167,9 @@ class Game():
         return self.players[self.index+1].getName()        
 
     #update current player cards, and center display
-    def render(self):
-        return {"updateDisplay":self.updateDisplay(),"updateHand":self.playerTurn.getCards()}
-
+    # overloaded function
+    def render(self, rule=None):
+        return {"updateDisplay":self.updateDisplay(rule),"updateHand":self.playerTurn.getCards()}
     # set the next players turn
     def nextTurn(self):
         if self.index + 1 == len(self.players):
@@ -200,24 +206,20 @@ class Game():
             return "error","Please select a suit"
 
         result = self.dealCard(data["card"]["rank"],data["card"]["suit"]) 
+        
+        #checks if the curr user has an empty hand, if so they win
+        if self.endGame():
+            self.gameOver = True
+            return "winner",self.render()
 
-        if  result == "next":
-
-            #checks if the curr user has an empty hand, if so they win
-            if self.endGame():
-                self.gameOver = True
-                return "winner",self.render()
-
+        if result == "next":
             #update userCards, and center display
             return "next",self.render()
         # user dealt an eight card, and a new suit is required from them
         elif result == "choose suit":
-
-            if self.endGame():
-                self.gameOver = True
-                return "winner",self.render()
-
             return "choose suit", self.render()
+        elif result == "skip":
+            return "skip",self.render('skip')
         # current user dealt a card with no matching rank/suit
         elif result == "error":
             return "error","Cards do not match"
