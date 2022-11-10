@@ -39,7 +39,6 @@ function WaitingRoom({ socket }) {
             if(data['rule'] == 'draw2'){
                 socket.emit("draw",{"room":room})
                 socket.emit("draw",{"room":room})
-                console.log('i am here')
             }
         })
         
