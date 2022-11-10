@@ -135,6 +135,8 @@ class Game():
                         return "skip"
                     if rank == "2":
                         return "draw2"
+                    if rank == "Ace":
+                        return 'reverse'
                     self.activeSuit = self.pile[0].suit
                     break
             return "next"
@@ -229,6 +231,9 @@ class Game():
             return "skip",self.render('skip')
         elif result == "draw2":
             return "next", self.render('draw2')
+        elif result == 'reverse':
+            self.players.reverse()
+            return "next",self.render() 
         # current user dealt a card with no matching rank/suit
         elif result == "error":
             return "error","Cards do not match"
