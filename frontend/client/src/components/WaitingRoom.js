@@ -80,7 +80,7 @@ function WaitingRoom({ socket }) {
         socket.off("updateOpponents")
         socket.off("error")
         socket.off("choose suit")
-      }},[socket,room, username])
+      }},[socket,room, username,chooseSuit])
     return (
         <div >
             <div >
@@ -138,17 +138,6 @@ function WaitingRoom({ socket }) {
 }
 
 
-const Popup = props =>{
-    return(
-        <div style={{display:"flex",justifyContent:"center",padding:"15px",height:"inherit"}}>
-            <ChooseSuit 
-                setSuit={props.setSuit} 
-                user={props.user} 
-                room={props.room} 
-                socket={props.socket}/>
-        </div>
-    )
-}
 
 function makeCards(username,room,socket,chooseSuit,cards){
     return cards.map( e=>

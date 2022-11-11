@@ -1,6 +1,6 @@
 import React from "react";
 
-function Rules(){
+function Rules({socket}){
     return (
         <div >
             <h1 className="text-2xl grid items-center justify-center w-screen" >Rules</h1>

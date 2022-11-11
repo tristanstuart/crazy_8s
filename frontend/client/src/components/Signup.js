@@ -1,16 +1,18 @@
 import {useState,useEffect} from 'react'
-import {BrowserRouter as Link} from 'react-router-dom';
+import { NavLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function SignUp({ socket }) {
     document.title = "Sign-Up"
     const [user,setUser] = useState("")
     const [pass,setPass] = useState("")
     const [repass,setRepass] = useState("")
-    const [warning,setWarning] = useState("")
+    const [warning,setWarning] = useState("")    
 
     useEffect(()=>{
         socket.on("userCreated",message=>{
             setWarning(message)
+            console.log("you were created")
         })
 
         socket.on("error",error=>{
@@ -46,8 +48,8 @@ function SignUp({ socket }) {
             </div>
             <p style={{display:'flex',justifyContent:'center',margin:'15px'}}>{warning}</p>
             <div style={{display:'grid',justifyContent:"center",gridTemplateColumns:'repeat(2,max-content)',gap:'15px'}}>
-                <a id="join" href="null" onClick={create} style={{backgroundColor:"lightblue",borderRadius:'30px',padding:'10px 15px 10px 15px'}}>Create Account!</a>
-                <Link to="/" style={{backgroundColor:"lightcoral",borderRadius:'30px',padding:'10px 15px 10px 15px'}}>Cancel</Link>
+                <button id="join" onClick={create} style={{backgroundColor:"lightblue",borderRadius:'30px',padding:'10px 15px 10px 15px'}}>Create Account!</button>
+                <NavLink to="/" style={{backgroundColor:"lightcoral",borderRadius:'30px',padding:'10px 15px 10px 15px'}}>Cancel</NavLink>
             </div>
             </main>
         </div>
