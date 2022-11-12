@@ -4,12 +4,15 @@ from .cards import Card
 from .deck import Deck
 from .player import Player
 from .bot import Bot
+from .Rules import Rules
+
 
 class Game():
     def __init__(self, admin) -> None:
         self.deck = Deck().init_cards().copy()
         self.pile = []
         self.players = [Player(admin)]
+        self.num_players = 1
         self.admin = admin
         self.activeSuit = ""
         self.playerTurn = None
@@ -82,6 +85,7 @@ class Game():
 
     def addPlayer(self, playerInfo):
         self.players.append(Player(playerInfo))
+        self.num_players += 1
     
     def playerExists(self, playerInfo): # !!playerInfo is not a Player object!!
         for p in self.players:
@@ -110,38 +114,13 @@ class Game():
     def getPlayerTurn(self):
         return self.playerTurn
 
-    def drawCard(self):
-        if len(self.deck) == 0:
-            #if false then there is only one card in the pile and users are hoarding cards
-            if self.reShuffle():
-                print("gameOver")
-                self.gameOver=True
-                return False
-        
-        self.playerTurn.cards.append(self.deck.pop())
-        return True
-    
-    def dealCard(self,rank,suit):
-        
-        if  rank == "8" or rank == self.upcard().rank or suit == self.activeSuit:
-            for i in range(len(self.playerTurn.cards)):
-                #look for the matching card
-                if self.playerTurn.cards[i].rank == rank and self.playerTurn.cards[i].suit == suit:
-                    self.pile.insert(0,self.playerTurn.cards.pop(i))
-                    if rank =="8":
-                        self.needSuit = True
-                        return "choose suit"
-                    self.activeSuit = self.pile[0].suit
-                    break
-            return "next"
-        return "error"
-
     # return updated center display
-    def updateDisplay(self):
+    def updateDisplay(self, rule=None):
         winner = ""
         if self.gameOver == True:
             winner = self.playerTurn.getName()
-        return {
+
+        display = {
             "upcard":{
                 "rank":self.upcard().rank,
                 "suit":self.upcard().suit
@@ -149,9 +128,13 @@ class Game():
             "currentTurn":self.playerTurn.getName(),
             "nextTurn":self.getNext(),
             "activeSuit":self.activeSuit,
-            "winner":winner
+            "winner":winner,
+            'rule': rule
         }
-    
+        
+        
+        return display
+
     #get the next player's name
     def getNext(self):
         if self.needSuit == True:
@@ -161,9 +144,22 @@ class Game():
         return self.players[self.index+1].getName()        
 
     #update current player cards, and center display
-    def render(self):
-        return {"updateDisplay":self.updateDisplay(),"updateHand":self.playerTurn.getCards()}
-
+    # overloaded function
+    def render(self, rule=None):
+        if rule == "skip":
+            current_players_hand = self.playerTurn.getCards()
+            display = self.updateDisplay(rule)
+            self.nextTurn()
+            display = self.updateDisplay(rule)
+            self.nextTurn()
+            return {
+                "updateDisplay":display,
+                "updateHand":current_players_hand
+            }
+        return {"updateDisplay":self.updateDisplay(rule),
+                "updateHand":self.playerTurn.getCards()
+                }
+    
     # set the next players turn
     def nextTurn(self):
         if self.index + 1 == len(self.players):
@@ -182,44 +178,102 @@ class Game():
     def setSuit(self,suit):
         self.needSuit = False
         self.activeSuit = suit
-        return self.render()
+        update = self.render()
+        self.nextTurn()
+        return update
             
     def draw(self):
-    
-        if self.needSuit == True:
-            return "error","Please select a suit"
+        if self.needSuit: 
+            return Rules.CHOOSE_SUIT, None
         
         if self.drawCard() == False:
             self.gameOver = True
-            return "error","There are no more cards to draw"     
+            return Rules.ERROR, None   
                 
-        return "next",self.render()        
+        return Rules.VALID, self.render()  
 
-    def deal(self,data):
+    def drawCard(self):
+        if len(self.deck) == 0:
+            #if false then there is only one card in the pile and users are hoarding cards
+            if self.reShuffle():
+                print("gameOver")
+                self.gameOver=True
+                return False
+        
+        self.playerTurn.cards.append(self.deck.pop())
+        return True      
+
+    def play_card(self,data):
         if self.needSuit == True:
             return "error","Please select a suit"
 
-        result = self.dealCard(data["card"]["rank"],data["card"]["suit"]) 
+        result = self.verify_card_played( 
+                                rank = data["card"]["rank"],
+                                suit = data["card"]["suit"] 
+                                ) 
+        
+        #checks if the curr user has an empty hand, if so they win
+        if self.endGame():
+            self.gameOver = True
+            return Rules.WINNER,self.render()
 
-        if  result == "next":
-
-            #checks if the curr user has an empty hand, if so they win
-            if self.endGame():
-                self.gameOver = True
-                return "winner",self.render()
-
-            #update userCards, and center display
-            return "next",self.render()
-        # user dealt an eight card, and a new suit is required from them
-        elif result == "choose suit":
-
-            if self.endGame():
-                self.gameOver = True
-                return "winner",self.render()
-
-            return "choose suit", self.render()
         # current user dealt a card with no matching rank/suit
-        elif result == "error":
-            return "error","Cards do not match"
+        elif result is Rules.ERROR: 
+            print('expected rank or suit: ' + self.activeSuit + '-' + self.upcard().rank)
+            print('recieved: rank and suit ', data["card"]["rank"] + ' of ' + data["card"]["suit"])
+            return Rules.ERROR, "cards do not match"
+
+        elif result is Rules.VALID:
+            update = self.render() #update userCards, and center display
+
+        # user dealt an eight card, and a new suit is required from them
+        elif result is Rules.CHOOSE_SUIT: 
+            update = self.render()
+            return Rules.CHOOSE_SUIT, update
+        # Queen was played and next player is skipped 
+        # call next turn twice to update server side ?
+        elif result is Rules.SKIP:
+            update = self.render('skip')
+            return result, update
+
+        elif result is Rules.DRAW2:
+            update = self.render('draw2')
+            
+        elif result is Rules.REVERSE:
+            current_player = self.players[self.index]
+            print('\n',self.players[self.index], '\n')
+            self.players.reverse()
+            self.index = self.players.index(current_player)
+            print('\n',self.players[self.index], '\n')
+            update = self.render('reverse')
+
+        self.nextTurn()
+        return None, update
+
+    def verify_card_played(self,rank,suit):
+        
+        if  ( rank == "8" or
+              rank == self.upcard().rank or 
+              suit == self.activeSuit):
+
+            for i in range(len(self.playerTurn.cards)):
+                #looks for the matching card to remove from players hand
+                if self.playerTurn.cards[i].rank == rank and self.playerTurn.cards[i].suit == suit:
+                    self.pile.insert(0,self.playerTurn.cards.pop(i))
+                    self.activeSuit = self.pile[0].suit
+                    if rank =="8":
+                        self.needSuit = True
+                        return Rules.CHOOSE_SUIT
+                    if rank == "Queen":
+                        return Rules.SKIP
+                    if rank == "2":
+                        return Rules.DRAW2
+                    if rank == "Ace":
+                        return Rules.REVERSE
+                    break
+            return Rules.VALID
+        
+        return Rules.ERROR
+
     
 

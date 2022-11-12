@@ -5,8 +5,10 @@ from flask_socketio import SocketIO, emit, join_room, send
 import os
 import logging
 from logic.game import Game
+from logic.Rules import Rules
 import json
 import snowflake.connector
+
 
 app = Flask(__name__)
 SECRET_KEY = os.urandom(32)
@@ -102,6 +104,7 @@ def login(data):
         return
 
     emit("error","Wrong Username/Password")
+    
 @socketio.on("signup")
 def signUp(data):
     ##edit when we have access to database
@@ -176,86 +179,84 @@ def on_start_game(data):
 @socketio.on("draw")
 def draw(data):
     result,message = checkData(data,request.sid)
-    #print(result,message)
     
-    if result=="error":
-        emit(result,message,to=request.sid)
-        return
+    if result is Rules.ERROR: return emit("error",message,to=request.sid)
     
-    result, message= rooms[data["room"]].draw()
-    if result == "error":#no more cards
-        emit(result,message,to=request.sid)
-        return
-    elif result == "next":
-        rooms[data["room"]].nextTurn()
+    result, message = rooms[data["room"]].draw()
+    #no more cards
+    if result is Rules.ERROR: return emit("error","There are no more cards to draw",to=request.sid)
+    elif result is Rules.CHOOSE_SUIT: return emit("choose suit", "Please choose a suit",to=request.sid)
 
-    update(message,request.sid,data["room"])
+    updatePlayer(message,request.sid,data["room"])
 
 @socketio.on("deal")
 def deal(data):
-    result,message = checkData(data,request.sid) # validate turn can be processed
-    # print(result,message) # for debugging
+    # validate turn can be processed
+    result,message = checkData(data,request.sid) 
+   
+    # if invalid turn, send client error
+    if result is Rules.ERROR: 
+        return emit("error",message,to=request.sid)
+ 
+    # otherwise process turn
+    result, message = rooms[data["room"]].play_card(data) 
     
-    if result=="error": # if turn is not valid, send client error
-        emit(result,message,to=request.sid)
-        return
+    # player made winning play
+    if result is Rules.WINNER: 
+        emit("winner",to=data["room"])
+    # player played an 8
+    elif result is Rules.CHOOSE_SUIT:
+       emit("choose suit", True ,to=request.sid)
 
-    result, message= rooms[data["room"]].deal(data) # otherwise process turn
-    if result == "error": # invalid card
-        emit(result,message,to=request.sid)
-        return
-    elif result =="winner": # player made winning play
-        emit('winner',to=data["room"])
-    elif result == "choose suit": # player played an 8
-        emit(result,True,to=request.sid)
-    elif result == "next": # normal turn processed correctly, move to next player
-        rooms[data["room"]].nextTurn()
-    else:
-        print("unknown result",result)
-        return
-
-    update(message,request.sid,data["room"]) #update center display, curr player hand, and opponent hands
+    # invalid card
+    elif result is Rules.ERROR: 
+    #    updatePlayer(message,request.sid,data["room"])
+       return emit("error", message ,to=request.sid)
+    
+    updateRoom(message,request.sid,data["room"]) #update center display, curr player hand, and opponent hands
+    updatePlayer(message,request.sid,data["room"])
+    
 
 @socketio.on("setSuit")
 def setSuit(data):
     result,message = checkData(data,request.sid)
-    #print(result,message) # for debugging
    
-    if result=="error":
-        emit(result,message,to=request.sid)
-        return
+    if result is Rules.ERROR: 
+        return emit("error",message,to=request.sid)
 
-    result = rooms[data["room"]].setSuit(data["suit"])
+    message = rooms[data["room"]].setSuit(data["suit"])
 
-    rooms[data["room"]].nextTurn()
-    update(result,request.sid,data["room"])
-
+    updateRoom(message,request.sid,data["room"])
+    updatePlayer(message,request.sid,data["room"])
 #validates that the room exists, that it is the player's turn, and that the game hasn't ended
 def checkData(data,SID):
     if not data["room"] in rooms:
-        return "error", "room does not exist"
+        return Rules.ERROR, "room does not exist"
 
     if rooms[data["room"]].gameOver == True:
-        return "error", "sorry the game is over"
+        return Rules.ERROR, "sorry the game is over"
 
     if(SID != rooms[data["room"]].getPlayerTurn().getSID()):
-        return "error", "Please wait"
+        print(rooms[data["room"]].getPlayerTurn())
+        return Rules.ERROR, "Please wait"
 
-    return "valid"," current turn " + rooms[data["room"]].playerTurn.getName()
+    return Rules.VALID," current turn " + rooms[data["room"]].playerTurn.getName()
 
-def update(message,SID,room):
-    #update specific playerhand, refers to them by request.sid as SID 
-    emit("updateHand",message["updateHand"],to=SID)
+
+def updateRoom(message,SID, room):
     #updates center card, current turn, and activesuit as a dict
-    emit('updateDisplay', message["updateDisplay"], to=room)
+    emit("updateDisplay", message["updateDisplay"], to=room)
 
     for p in rooms[room].players:#update all opponent card counts
         opponentCards = rooms[room].getCardState(p)[1] #function returns player and opponent hand info [1] on the end gets just the opponent info
-        emit('updateOpponents', {'opponents':opponentCards}, to=p.getSID())
-    #returns the entire status of this particular game session
-    
-    #uncomment to see stats on client
-    #emit("status",rooms[room].status(),to=SID)
+        emit("updateOpponents", {'opponents':opponentCards}, to=p.getSID())
+
+def updatePlayer(message, SID, room):
+    #update specific playerhand, refers to them by request.sid as SID 
+    emit("updateHand",message["updateHand"],to=SID)
+    for p in rooms[room].players:#update all opponent card counts
+        opponentCards = rooms[room].getCardState(p)[1] #function returns player and opponent hand info [1] on the end gets just the opponent info
+        emit("updateOpponents", {'opponents':opponentCards}, to=p.getSID())
 
 if __name__ == '__main__':
 	socketio.run(app, debug=True,port=5000) 
