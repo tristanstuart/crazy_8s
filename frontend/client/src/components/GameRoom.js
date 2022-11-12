@@ -1,8 +1,10 @@
 import {useEffect, useState} from 'react'
 import {useLocation} from 'react-router-dom'
-import Card from './Card'
-import ChooseSuit from './ChooseSuit'
-import PlayerLayout from './PlayerLayout'
+import {CardHand, makeCards} from './gameplay/CardHand'
+import UpcardDisplay from './gameplay/UpcardDisplay'
+import ChooseSuit from './gameplay/ChooseSuit'
+import CurrentSuit from './gameplay/CurrentSuit'
+import PlayerLayout from './gameplay/PlayerLayout'
 
 function GameRoom({ socket }) {
     console.log("in game room")
@@ -27,7 +29,7 @@ function GameRoom({ socket }) {
     if(!loadedData)
     {
         var data = location.state.data
-        setHand(makeCards(socket, username,room,chooseSuit,data['hand']))
+        setHand(makeCards(socket,room,data['hand'])) //moved makeCards to /gameplay/CardHand.js
         setTurn(data['turn'])
         setUpcard(data['upcard'])
         setOpponentCards(data['opponents'])
@@ -55,7 +57,7 @@ function GameRoom({ socket }) {
         
         socket.on("updateHand",data=>{
             setWarning("")
-            setHand(makeCards(socket, username,room,chooseSuit,data['hand']))
+            setHand(makeCards(socket, room,data['hand'])) //moved makeCards to /gameplay/CardHand.js
             
         })
         
@@ -129,69 +131,6 @@ function GameRoom({ socket }) {
             </div>
         </div>
     )
-}
-
-function makeCards(socket, username, room, chooseSuit, cards){
-    return cards.map( e=>
-        <Card key={e["rank"]+ " " +e["suit"]}
-            user={username} 
-            rank={e["rank"]} 
-            suit={e["suit"]} 
-            room={room}
-            socket={socket}
-            chooseSuit={chooseSuit}
-            class_={'relative flex transition-all transform-gpu rounded-lg shadow-2xl cursor-pointer hover:-mt-20'}
-        />
-    )
-}
-
-const CurrentSuit = props =>{    
-    return(
-        <div style={{display:"flex",justifyContent:"center"}}>
-            Active Suit: {props.suit}
-        </div>
-    )
-}
-function CardHand(props){
-    return (
-        // <div className='flex flex-wrap justify-center mt-5 gap-x-3'>
-        <div className="flex space-x-2 items-center justify-center">
-            {props.hand }
-        </div>
-    )   
-}
-
-function UpcardDisplay(props)
-{
-    const drawCard = () =>{
-        if (props.turn !== props.username){
-            return
-        }
-        props.socket.emit("draw",{
-            "room":props.room
-        })
-    }
-
-    const deckImg = (
-        <img 
-            alt="1B"
-            src="../../cards/1B.svg"
-            width="120px"
-        /> 
-    )                      
-    return (
-            <div style={{display:"grid",gridTemplateColumns:"repeat(3,max-content)",gap:"10px"}}>
-                <Card suit={props.card.suit} rank={props.card.rank} />
-                <div>{deckImg}</div>
-                <button 
-                    onClick={drawCard}
-                    className='flex items-center justify-center rounded-full bg-red-400 w-20 h-7 mt-auto mb-auto'
-                >
-                    Draw
-                </button>
-            </div>
-    )
-    
 }
 
 export default GameRoom;
