@@ -2,7 +2,7 @@ import React, {useState, useEffect} from "react";
 import io from "socket.io-client";
 import './index.css';
 import JoinGame from "./components/JoinGame";
-import Footer from './components/Footer'
+//import Footer from './components/Footer'
 import AboutUs from "./components/AboutUs";
 import Header from "./components/Header";
 import Home from "./components/Home";
@@ -12,6 +12,7 @@ import SocketDashboard from "./components/SocketDashboard"
 import SignUp from './components/Signup'
 import Login from './components/Login'
 import WaitingRoom from "./components/WaitingRoom";
+import GameRoom from "./components/GameRoom";
 import SandBox from "./components/SandBox"
 import Rules from "./components/Rules";
 
@@ -40,6 +41,7 @@ function App() {
         <Route path ='createGame' element={<CreateGame socket={socket}/>} />
         <Route path ='socketDashboard' element={<SocketDashboard socket={socket}/>} />
         <Route path ='waitingRoom' element={<WaitingRoom socket={socket}/>} />
+        <Route path ='gameRoom' element={<GameRoom socket={socket}/>} />
         <Route path ='Sandbox' element={<SandBox socket={socket}/>} />
         <Route path ='Rules' element={<Rules socket={socket}/>} />
       </Routes>
