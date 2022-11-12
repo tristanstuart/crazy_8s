@@ -13,12 +13,13 @@ function Login({ socket }) {
     useEffect(()=>{
       socket.on("received",e=>{
         setWarning(e)
+        sessionStorage.setItem("username",username)
         nav("/")
       })
       socket.on("error",error=>{
         setWarning(error)
       })
-    },[socket,nav])  
+    },[socket,nav,username])  
   
     const login = () =>{
       if(username ==="" || password ===""){
