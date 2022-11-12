@@ -1,16 +1,26 @@
 from turtle import update
-from urllib import response
-from flask import Flask, render_template, request, url_for
-from flask_socketio import SocketIO, emit, join_room, send
+from flask import Flask, render_template, request,session
+from flask_socketio import SocketIO, emit, join_room
 import os
 import logging
 from logic.game import Game
 import json
 import snowflake.connector
+import jwt
+import random
 
 app = Flask(__name__)
-SECRET_KEY = os.urandom(32)
-app.config['SECRET_KEY'] = SECRET_KEY
+#SECRET = os.urandom(32)
+SECRET = "areallybadsecreat"
+app.config.update(
+    DEBUG=True,
+    SECRET_KEY = SECRET,
+    SESSION_COOKIE_HTTPONLY = True,
+    SESSION_COOKIE_SAMESITE = "Strict",
+    SESSION_COOKIE_SECURE=True, 
+    REMEMBER_COOKIE_SECURE = True,
+)
+# app.config['SECRET_KEY'] = SECRET_KEY
 socketio = SocketIO(app,cors_allowed_origins="*")
 socketio.init_app(app, cors_allowed_origins="*")
 log = logging.getLogger("werkzeug")
@@ -43,9 +53,10 @@ except:
     print("no user was found")
 finally:
     cs.close()
+print()
 #ctx.close()
 
-
+count = 0
 rooms = {}
 
 #delete after database setup
@@ -55,13 +66,30 @@ users=[{"username":"test","password":"test"},{"username":"test2","password":"tes
 def is_admin(id, room):
     return rooms[room].getAdmin()['sid'] == id
 
-@socketio.on('connection')
+
+@socketio.on('connect')
 def on_connect(data):
-    print('user connected')
+    print(request.sid,"is connected")
+    # cookie = jwt.encode({"something":num},SECRET,algorithm="HS256")
+    print()
+    print()
+
+@socketio.on("need")
+def need():
+    print("sending a cookie")
+    num = random.getrandbits(9)
+    # cookie = jwt.encode({"something":num},SECRET,algorithm="HS256")
+    emit("cookie",num)
+
+@socketio.on("disconnect")
+def dis():
+    print(request.sid,"is disocnnecting")
+    print()
+    print()
 
 @socketio.on('disconnected')
 def on_admin_disconnect(data):
-
+    print("holaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
     print('user disconnected')
     # need to implement a method in game.py that 
     # returns a players cards back to the deck 
@@ -75,7 +103,7 @@ def on_admin_disconnect(data):
 def login(data):
     ##edit when we have access to database
     cs = ctx.cursor()
-    authenticated = FALSE
+    authenticated = False
 
     username = data["username"]
     password = data["password"]
@@ -87,21 +115,25 @@ def login(data):
         one_row = cs.fetchone()
         print(one_row[0])
         #if at least one row is found the user authenticated
-        authenticated = TRUE
+        authenticated = True
         #add this data object to the users list
         users.append(data)
     except:
         print("no user was found")
+        #uncomment these later when we can create a user using signup with database
+        #emit("error","Wrong Username/Password")
+        #return
     finally:
         cs.close()
-
     
     #can user data in users or the authenticatesd flag set above
     if data in users:
-        emit("received","user logged in")
-        return
+        print("que")
+        emit("signed","User logged in")
+        session["val"] = "otro"
 
     emit("error","Wrong Username/Password")
+
 @socketio.on("signup")
 def signUp(data):
     ##edit when we have access to database
@@ -109,12 +141,14 @@ def signUp(data):
         emit("error","Username taken.")
         return
     users.append(data)
+    print("a user was created")
     emit("userCreated", "User created. Please log in")
 
 # only emitted by players
 
 @socketio.on('join')
 def on_join(data):
+
     name = data['name']
     room = data['room']
     playerInfo = {}
@@ -122,11 +156,13 @@ def on_join(data):
     playerInfo['name'] = name
 
     if room not in rooms:
-        emit('room_does_not_exist', room)
+        emit('error',{"title":'This room does not exist',"message":'please join an existing game or create your own'})
         print('The room: \''+ room +'\' does not exist')
     elif rooms[room].playerExists(playerInfo):
-        emit('user_already_in_room', to=request.sid) #read by client in JoinGame.js
+        emit("error",{"title":'Username is not available',"message":'Someone with this username is already in this room'})
         print(f"{playerInfo['name']}({playerInfo['sid']}) was denied to join room: {repr(rooms[room])}")
+    elif rooms.get(room).hasStarted():
+        emit("error",{"title":"Game In Session","message":"Sorry this game is in Session"})
     else:
         join_room(room)
         rooms[room].addPlayer(playerInfo)
@@ -257,5 +293,43 @@ def update(message,SID,room):
     #uncomment to see stats on client
     #emit("status",rooms[room].status(),to=SID)
 
+
+
+@app.route("/")
+def index():
+    # 
+
+    # if request.cookies.get("coookie"):
+    #     try:
+    #         # jwt.decode(request.cookies.get("coookie"),SECRET,algorithms="HS256")
+    #         print("that is a valid cookie")
+    #         print()
+            
+    #     except:
+    #         print("error processing cookie")
+    #         print("ill give you a new cookie")
+    #         # encoded = jwt.encode({"name":"bryan"},SECRET,algorithm="HS256")
+    #         encoded = random.getrandbits(6)
+    #         resp = make_response(render_template("index.html"))
+    #         resp.set_cookie("coookie",encoded)
+    #         return resp
+        
+    #     return render_template("index.html")
+    # print("giving new cookie")
+    # encoded = jwt.encode({"name":"marco"},SECRET,algorithm="HS256")
+    #print("encoded string",encoded)
+    print()
+    # print("decoded",jwt.decode(encoded,SECRET,algorithms="HS256"))
+
+    # encoded = random.getrandbits(6)
+    # resp = make_response(render_template("index.html"))
+    # resp.set_cookie("coookie",str(encoded))
+    # return resp
+    return render_template("index.html")
+
+@app.route("/Rules")
+def rule():
+    print("he went to rules")
+
 if __name__ == '__main__':
-	socketio.run(app, debug=True,port=5000) 
+	socketio.run(app, debug=True) 
