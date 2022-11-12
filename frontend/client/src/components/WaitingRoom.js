@@ -39,12 +39,15 @@ function WaitingRoom({ socket }) {
             if(data['rule'] == 'draw2'){
                 socket.emit("draw",{"room":room})
                 socket.emit("draw",{"room":room})
+                
             }
+            
         })
         
         socket.on("updateHand",data=>{
             setWarning("")
             setHand(makeCards(username,room,socket,chooseSuit,data['hand']))
+            
         })
         
         socket.on("updateOpponents",data=>{
