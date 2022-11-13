@@ -33,7 +33,6 @@ with open('creds.json') as f:
     SF_ACCOUNT = data["account"]
     SF_WH = data["warehouse"]
 
-
 ctx = snowflake.connector.connect(
     user=username,
     password=password,
@@ -44,24 +43,19 @@ try:
     #validate that we are reading from the data base and also test the login query with the sample user
     cs.execute("SELECT current_version()")
     one_row = cs.fetchone()
-    print(one_row[0])
     cs.execute("use warehouse {0}".format(SF_WH))
     cs.execute("select * from login where username='{0}' and password = hash('{1}')".format("testuser", "foo"))
     one_row = cs.fetchone()
-    print(one_row[0])
 except:
     print("no user was found")
 finally:
     cs.close()
 print()
 #ctx.close()
-
-count = 0
+count = [0]
 rooms = {}
-
-#delete after database setup
 users=[{"username":"test","password":"test"},{"username":"test2","password":"test2"}]
-
+people = {}
 
 def is_admin(id, room):
     return rooms[room].getAdmin()['sid'] == id
@@ -74,19 +68,38 @@ def on_connect(data):
     print()
     print()
 
+@socketio.on("reconnect")
+def reconnect(data):
+    print(data)
+    if data.get("room") == None:
+        print("no room provided")
+        return
+    if data["room"] in rooms:
+        print("this room exists")
+        emit("joinAgain",data.get("room"))
+        return
+    print("error")
+    emit("deadRoom","room does not exist")
+    
 @socketio.on("need")
 def need():
     print("sending a cookie")
-    num = random.getrandbits(9)
-    # cookie = jwt.encode({"something":num},SECRET,algorithm="HS256")
-    emit("cookie",num)
+    num = count[0]
+    count[0] += 1
+    people[num] = { 
+        "id":num,
+        "isAdmin":False,
+        "room":None,
+        "inSession":False
+    }
+    print(people)
+    emit("data",people[num])
 
 @socketio.on("disconnect")
 def dis():
     print(request.sid,"is disocnnecting")
-    print()
-    print()
 
+#i dont think this gets used
 @socketio.on('disconnected')
 def on_admin_disconnect(data):
     print("holaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
@@ -151,6 +164,8 @@ def on_join(data):
 
     name = data['name']
     room = data['room']
+    if rooms.get(room) == None:
+        emit("error","room")
     playerInfo = {}
     playerInfo['sid'] = request.sid
     playerInfo['name'] = name
@@ -158,16 +173,18 @@ def on_join(data):
     if room not in rooms:
         emit('error',{"title":'This room does not exist',"message":'please join an existing game or create your own'})
         print('The room: \''+ room +'\' does not exist')
+        return
     elif rooms[room].playerExists(playerInfo):
         emit("error",{"title":'Username is not available',"message":'Someone with this username is already in this room'})
         print(f"{playerInfo['name']}({playerInfo['sid']}) was denied to join room: {repr(rooms[room])}")
+        return
     elif rooms.get(room).hasStarted():
         emit("error",{"title":"Game In Session","message":"Sorry this game is in Session"})
+        return
     else:
         join_room(room)
         rooms[room].addPlayer(playerInfo)
         emit('player_joined', rooms[room].playerList(), to=room) #read by players in WaitingRoom.js
-        
         print(f'{name} joined room {room}: {repr(rooms[room])}')
 
 @socketio.on('exists')
@@ -198,6 +215,15 @@ def on_create(data):
 @socketio.on('start_game')
 def on_start_game(data):
     room = data
+    
+    if rooms.get(room) == None:
+        emit("error","game does not exist")
+        return
+
+    if rooms.get(room).hasStarted():
+        emit("error","Cannot start a game that has already started")
+        return
+
     rooms[room].gameStart()
     print(f"starting game! {rooms[room].getPlayerTurn().getName()} goes first. Upcard is {rooms[room].upcard().long_name}")  
     turnData = rooms[room].getPlayerTurn().getName()
@@ -297,39 +323,8 @@ def update(message,SID,room):
 
 @app.route("/")
 def index():
-    # 
-
-    # if request.cookies.get("coookie"):
-    #     try:
-    #         # jwt.decode(request.cookies.get("coookie"),SECRET,algorithms="HS256")
-    #         print("that is a valid cookie")
-    #         print()
-            
-    #     except:
-    #         print("error processing cookie")
-    #         print("ill give you a new cookie")
-    #         # encoded = jwt.encode({"name":"bryan"},SECRET,algorithm="HS256")
-    #         encoded = random.getrandbits(6)
-    #         resp = make_response(render_template("index.html"))
-    #         resp.set_cookie("coookie",encoded)
-    #         return resp
-        
-    #     return render_template("index.html")
-    # print("giving new cookie")
-    # encoded = jwt.encode({"name":"marco"},SECRET,algorithm="HS256")
-    #print("encoded string",encoded)
     print()
-    # print("decoded",jwt.decode(encoded,SECRET,algorithms="HS256"))
-
-    # encoded = random.getrandbits(6)
-    # resp = make_response(render_template("index.html"))
-    # resp.set_cookie("coookie",str(encoded))
-    # return resp
     return render_template("index.html")
-
-@app.route("/Rules")
-def rule():
-    print("he went to rules")
 
 if __name__ == '__main__':
 	socketio.run(app, debug=True) 
