@@ -10,6 +10,8 @@ function CreateGame({ socket }){
     const [error, setError] = useState(false)
 	const navigate = useNavigate()
 
+    const data = JSON.parse(sessionStorage.getItem("data"))
+
     useEffect(()=>{
         socket.on("create",e=>{
             if (e === false) {
@@ -18,12 +20,21 @@ function CreateGame({ socket }){
             }
             else {
                 console.log('room created')
+                console.log(roomState.user)
+                data.isAdmin = true
+                data.inSession = false
+                data.room = roomState.room
+                data.user = roomState.user
+                data.playerList = [roomState.user]
+
+                sessionStorage.setItem("data",JSON.stringify(data))
 				navigate('/waitingRoom', {state:{room:roomState.room, playerList:[roomState.user], user:roomState.user, isAdmin:true}}) //go to waiting room
+                
             }
         })
       return ()=>{
         socket.off("create")
-      }},[socket, navigate]) 
+      }},[socket, navigate,room,data]) 
 
     const handleChange = (e) =>{
         setRoom(e.target.value.trim());

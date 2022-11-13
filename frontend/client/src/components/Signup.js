@@ -1,6 +1,5 @@
 import {useState,useEffect} from 'react'
 import { NavLink } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
 
 function SignUp({ socket }) {
     document.title = "Sign-Up"
@@ -12,7 +11,6 @@ function SignUp({ socket }) {
     useEffect(()=>{
         socket.on("userCreated",message=>{
             setWarning(message)
-            console.log("you were created")
         })
 
         socket.on("error",error=>{

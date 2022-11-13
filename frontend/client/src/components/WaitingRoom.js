@@ -6,7 +6,9 @@ import ChooseSuit from './ChooseSuit'
 import PlayerLayout from './PlayerLayout'
 
 function WaitingRoom({ socket }) {
-	const location = useLocation()
+	
+    const session = JSON.parse(sessionStorage.getItem("data"))
+    const location = useLocation()
 	const username = location.state.user
 	const room = location.state.room
     const isAdmin = location.state.isAdmin
@@ -27,6 +29,8 @@ function WaitingRoom({ socket }) {
     useEffect(()=>{
         socket.on('player_joined',e=>{
     		setPlayers(e)
+            session.playerList = e
+            sessionStorage.setItem("data",JSON.stringify(session))
         })
 
         socket.on("updateDisplay", data=>{
@@ -48,6 +52,9 @@ function WaitingRoom({ socket }) {
         })
 
         socket.on('move_to_game_start', data =>{
+            session["inSession"] = true
+            session["hand"] = data.hand
+            sessionStorage.setItem("data",JSON.stringify(session))
             setHand(makeCards(username,room,socket,chooseSuit,data['hand']))
             setTurn(data['turn'])
             setUpcard(data['upcard'])
@@ -80,13 +87,13 @@ function WaitingRoom({ socket }) {
         socket.off("updateOpponents")
         socket.off("error")
         socket.off("choose suit")
-      }},[socket,room, username,chooseSuit])
+      }},[socket,room, username,chooseSuit,session])
     return (
         <div >
             <div >
                 <div>
                 {!gameIsStarted && <Loading />}
-                    {!gameIsStarted && <LobbyDisplay socket={socket} players={players} isAdmin={isAdmin} room={room}/>}
+                    {!gameIsStarted && <LobbyDisplay socket={socket} players={session.playerList} isAdmin={isAdmin} room={room}/>}
                     {gameIsStarted && 
                         <div className='bg-purple-200 h-screen '>
                             
@@ -95,12 +102,11 @@ function WaitingRoom({ socket }) {
                             </div>
                             <CurrentSuit suit={activeSuit}/>
                             {turn === username && <div className="animate-bounce" style={{textAlign:"center",color:"green",fontSize:"28px"}}>Your Turn!</div>}
-                            {/*turn !== username && <div style={{textAlign:"center"}}>Current Turn: {turn}</div>*/}
+                            
                             <div style={{textAlign:"center",color:"red",fontSize:"25px",margin:"15px"}}>
                                 {warning}
                             </div>
-                            {/* style={{ display:"center",justifyContent:"center" }} */}
-                            {/* className='container shadow-md bg-green-300 rounded-full w-1/2 py-1' */}
+                            
                                 <div style={{display:"flex",justifyContent:"center",backgroundColor:"lightgreen",width:"fit-content",margin:"10px auto 10px auto"
                                 ,padding:"15px 75px 15px 75px",borderRadius:"100px"}}  >
                                     <UpcardDisplay 
@@ -163,6 +169,7 @@ const CurrentSuit = props =>{
 
 function LobbyDisplay(props)
 {
+    
     return (
     <div style={{display:"grid",justifyContent:"center",gap:"5px"}}>
         <div style={{display:"flex",justifyContent:"center",backgroundColor:"lightgreen",width:"max-content",padding:"20px 15px 20px 15px",borderRadius:"30px"}}>
@@ -175,7 +182,7 @@ function LobbyDisplay(props)
                 </ul>
             </div>
         </div>{
-        props.isAdmin && (
+        JSON.parse(sessionStorage.getItem("data")).isAdmin && (
             <button 
                 className="p-2 rounded-full bg-blue-400"
                 onClick={() => {
