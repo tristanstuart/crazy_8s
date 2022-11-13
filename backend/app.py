@@ -20,7 +20,6 @@ app.config.update(
     SESSION_COOKIE_SECURE=True, 
     REMEMBER_COOKIE_SECURE = True,
 )
-# app.config['SECRET_KEY'] = SECRET_KEY
 socketio = SocketIO(app,cors_allowed_origins="*")
 socketio.init_app(app, cors_allowed_origins="*")
 log = logging.getLogger("werkzeug")
@@ -64,9 +63,6 @@ def is_admin(id, room):
 @socketio.on('connect')
 def on_connect(data):
     print(request.sid,"is connected")
-    # cookie = jwt.encode({"something":num},SECRET,algorithm="HS256")
-    print()
-    print()
 
 @socketio.on("reconnect")
 def reconnect(data):
@@ -76,6 +72,8 @@ def reconnect(data):
         return
     if data["room"] in rooms:
         print("this room exists")
+        data["sid"] = request.sid
+        join_room(data.get("room"))
         emit("joinAgain",data.get("room"))
         return
     print("error")
@@ -87,22 +85,23 @@ def need():
     num = count[0]
     count[0] += 1
     people[num] = { 
-        "id":num,
+        "sessionID":num,
         "isAdmin":False,
         "room":None,
-        "inSession":False
+        "inSession":False,
+        "user":None,
+        "sid":request.sid
     }
     print(people)
     emit("data",people[num])
 
 @socketio.on("disconnect")
 def dis():
-    print(request.sid,"is disocnnecting")
+    print(request.sid,"is disconnecting")
 
 #i dont think this gets used
 @socketio.on('disconnected')
 def on_admin_disconnect(data):
-    print("holaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
     print('user disconnected')
     # need to implement a method in game.py that 
     # returns a players cards back to the deck 
@@ -141,9 +140,7 @@ def login(data):
     
     #can user data in users or the authenticatesd flag set above
     if data in users:
-        print("que")
         emit("signed","User logged in")
-        session["val"] = "otro"
 
     emit("error","Wrong Username/Password")
 
@@ -154,7 +151,6 @@ def signUp(data):
         emit("error","Username taken.")
         return
     users.append(data)
-    print("a user was created")
     emit("userCreated", "User created. Please log in")
 
 # only emitted by players
@@ -165,7 +161,7 @@ def on_join(data):
     name = data['name']
     room = data['room']
     if rooms.get(room) == None:
-        emit("error","room")
+        emit("error","No room provided")
     playerInfo = {}
     playerInfo['sid'] = request.sid
     playerInfo['name'] = name
