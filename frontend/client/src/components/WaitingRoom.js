@@ -12,7 +12,7 @@ function WaitingRoom({ socket }) {
     const ROOM = sessionStorage.getItem("data") !== null?JSON.parse(sessionStorage.getItem("data")).room:null;
     const DATA = sessionStorage.getItem("data") !== null?JSON.parse(sessionStorage.getItem("data")):null;
     
-
+    
     const [opponentCards, setOpponentCards] = useState(DATA.opponents)
     const [activeSuit,setActiveSuit] = useState(DATA.activeSuit)
     const [gameIsStarted, startGame] = useState(DATA.inSession)
@@ -66,11 +66,11 @@ function WaitingRoom({ socket }) {
             if(data['rule'] === 'draw2'){
                 socket.emit("draw",{
                     "room":ROOM,
-                    ID:JSON.parse(sessionStorage.getItem("session")).ID
+                    ID:ID
                 })
                 socket.emit("draw",{
                     "room":ROOM,
-                    ID:JSON.parse(sessionStorage.getItem("session")).ID
+                    ID:ID
                 })
             }  
         })
@@ -129,7 +129,7 @@ function WaitingRoom({ socket }) {
         socket.off("updateOpponents")
         socket.off("error")
         socket.off("choose suit")
-      }},[socket, username, chooseSuit, DATA, ROOM])
+      }},[socket, username, chooseSuit, DATA, ROOM, ID])
     return (
         <div >
             <div >
