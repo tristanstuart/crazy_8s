@@ -7,9 +7,6 @@ from logic.game import Game
 from logic.Rules import Rules
 import json
 import snowflake.connector
-import jwt
-import random
-
 
 app = Flask(__name__)
 SECRET = "areallybadsecreat"
@@ -17,6 +14,7 @@ app.config.update(
     DEBUG=True,
     SECRET_KEY = SECRET,
 )
+
 socketio = SocketIO(app,cors_allowed_origins="*")
 socketio.init_app(app, cors_allowed_origins="*")
 log = logging.getLogger("werkzeug")
@@ -51,6 +49,7 @@ print()
 count = [0]
 rooms = {}
 users=[{"username":"test","password":"test"},{"username":"test2","password":"test2"}]
+#make db handle unique ID's for session
 people = {}
 
 def is_admin(id, room):
@@ -64,6 +63,11 @@ def on_connect(data):
 #users session
 @socketio.on("newSID")
 def newSID(data):
+    if people.get(data["ID"]) == None:
+        print("Error ID " + f'{data["ID"]}' + " not found")
+        print("a new session will be given")
+        need()
+        return 
     print("data on reconnect",data)
     print("assigning a new SID on server")
     people[data["ID"]]["sid"] = request.sid
@@ -74,10 +78,10 @@ def newSID(data):
 #to preserve gameInfo
 @socketio.on("needSession")
 def need():
-    print("sending a session")
+    print("sending a new session")
     #refer to each new person by an ID, and store their request.sid
     #their sid would need to be updated as socketio ditches their id if the user
-    #disconnects
+    #disconnects, additionally this logic should be on the db
     num = count[0]
     count[0] += 1
     people[num] = { 
@@ -141,8 +145,9 @@ def pending(data):
         print("that game is still going")
         join_room(data["room"])
         emit("reJoin","someonejoined")
-    else:
-        print("sorry bud")
+        return
+    emit("deadRoom","Error room " + f'{data["room"]}' + " not found")
+    print("sorry bud " + f'{data["room"]}' + "does not exist")
 
 @socketio.on('join')
 def on_join(data):
@@ -188,7 +193,7 @@ def on_create(data):
     #a user could leave the room automatically if they disconnect, but we cannot
     #assume they will refresh the page, so just do it here for them
     if data.get("oldRoom") != None:
-        print(data["oldRoom"])
+        print("leaving old room",data["oldRoom"])
         leave_room(data["oldRoom"])
     
     if (room in rooms ): #or len(room) < 3
@@ -223,9 +228,7 @@ def on_start_game(data):
 
     for p in rooms[room].players:
         playerCards, opponentCards = rooms[room].getCardState(p)
-        print("printing all peoplefafadsfadf",p)
         emit('move_to_game_start', {'turn':turnData, 'upCard':upcardData, 'hand':playerCards, 'opponents':opponentCards}, to=getSID(p.getSID()))
-        print()
         print("sent info to " + p.getName())
 
 @socketio.on("draw")
@@ -316,7 +319,13 @@ def index():
 
 #gets a users SID based on their ID in people dictionary
 def getSID(ID):
+    #if the server restarts it has no recollection of past ID's 
+    if people.get(ID) == None:
+        print("not a known ID, a new one will be assigned")
+        need()
+        return
+
     return people[ID]["sid"]
 
 if __name__ == '__main__':
-	socketio.run(app, debug=True) 
+	socketio.run(app) 
