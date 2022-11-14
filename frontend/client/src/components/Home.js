@@ -2,7 +2,8 @@ import React from "react";
 import { Link} from "react-router-dom";
 import JoinBtn from "./buttons/JoinBtn";
 
-function Home(){
+function Home({socket}){
+
     return (
         <div className="flex items-center justify-center h-screen" >
                 <main>
@@ -21,5 +22,6 @@ function Home(){
         </div>
     )
 }
+
 
 export default Home;
