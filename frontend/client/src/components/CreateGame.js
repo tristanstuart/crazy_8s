@@ -10,8 +10,6 @@ function CreateGame({ socket }){
     const [error, setError] = useState(false)
 	const navigate = useNavigate()
 
-    const data = JSON.parse(sessionStorage.getItem("data"))
-
     useEffect(()=>{
         socket.on("create",e=>{
             if (e === false) {
@@ -19,14 +17,15 @@ function CreateGame({ socket }){
                 setError(true)
             }
             else {
-                console.log('room created')
-                console.log(roomState.user)
-                data.isAdmin = true
-                data.inSession = false
-                data.room = roomState.room
-                data.user = roomState.user
-                data.playerList = [roomState.user]
+                const data = {
+                    isAdmin : true,
+                    inSession : false,
+                    room : roomState.room,
+                    user : roomState.user,
+                    playerList : [roomState.user]
 
+                }
+                console.log('room created')
                 sessionStorage.setItem("data",JSON.stringify(data))
 				navigate('/waitingRoom', {state:{room:roomState.room, playerList:[roomState.user], user:roomState.user, isAdmin:true}}) //go to waiting room
                 
@@ -34,7 +33,7 @@ function CreateGame({ socket }){
         })
       return ()=>{
         socket.off("create")
-      }},[socket, navigate,room,data]) 
+      }},[socket, navigate,room]) 
 
     const handleChange = (e) =>{
         setRoom(e.target.value.trim());
@@ -80,8 +79,24 @@ function CreateGame({ socket }){
                             console.log("Room name cannot include spaces")
                             return                       
                         }
-
-                        socket.emit("create", {username, room});
+                        //fix an issues hre where room is not updated if the user was prev
+                        //in a room
+                        if(JSON.parse(sessionStorage.getItem("data"))!== null){
+                            const data = JSON.parse(sessionStorage.getItem("data"))
+                            socket.emit("create", {
+                                "username":username, 
+                                "room":room,
+                                "oldRoom":data.room,
+                                ID:JSON.parse(sessionStorage.getItem("session")).ID
+                            })
+                            return
+                        }
+                        
+                        socket.emit("create", {
+                            "username":username, 
+                            "room":room,
+                            ID:JSON.parse(sessionStorage.getItem("session")).ID
+                        })
 						roomState = {room: room, user: username}
                     }}>
                     Create Game </button>

@@ -1,64 +1,66 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter as Router } from "react-router-dom";
 import io from "socket.io-client";
-import {useNavigate} from 'react-router-dom'
-
-const session = JSON.parse(sessionStorage.getItem("data"))
 
 const socket= io("http://127.0.0.1:5000",{
-  transports: ['websocket']
-}) //change this to whatever server is
+  transports: ['websocket'] 
+}) //needed when running backend as python app.py
 
-const Navo = () =>{
-  const nav = useNavigate()
-  useEffect(()=>{
-    socket.on("joinAgain",e=>{
-      console.log("join the room",e)
-      nav('/waitingRoom', {state:{room:session.room, playerList:session.playerList, user:session.user, isAdmin:session.isAdmin}})
+const session = JSON.parse(sessionStorage.getItem("session"))
+const DATA = sessionStorage.getItem("data") !== null?JSON.parse(sessionStorage.getItem("data")):null;
 
-    })
-  },[nav])
-  return <div/>
+//if the user refreshed the page, the server needs to reassign their new request.sid associated with the client
+const pageAccessedByReload = (
+  (window.performance.navigation && window.performance.navigation.type === 1) ||
+    window.performance
+      .getEntriesByType('navigation')
+      .map((nav) => nav.type)
+      .includes('reload')
+);
+
+if(pageAccessedByReload){
+  socket.emit("newSID",session)
 }
 
 socket.on("connect",()=>{
-  if(sessionStorage.getItem("data") == null){
-    socket.emit("need")
-    console.log("i need a cookie")
-    return
+  if(session == null){
+    socket.emit("needSession")
   }
-  if(session.room !== null){
-    console.log(session.room)
-    socket.emit("reconnect",session)
-  }
-  // socket.emit("reconnect",session)
 })
 
 socket.on("disconnect",()=>{
   console.log("ummm your disconnecting buddy")
-  socket.emit("reconnect",session)
 })
 
 socket.on("deadRoom",message=>{
   console.log(message)
 })
 
-
-
-socket.on("data",data=>{
-  sessionStorage.setItem("data",JSON.stringify(data))
+socket.on("session",data=>{
+  sessionStorage.setItem("session",JSON.stringify(data))
 })
+
+//not sure where im going with this, im guessing rejoin a gameroom ,
+//dont know if it should auto redirect on a successful response, or let the user leave
+if(DATA !== null){
+  if(DATA.room != null){
+    socket.emit("pendingRoom",{
+      room:DATA.room,
+      ID:session.ID
+    })
+  }
+}
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   // <React.StrictMode>
     
     <Router>
-      <Navo/>
       <App socket={socket}/>
     </Router>
   // {/* </React.StrictMode> */}

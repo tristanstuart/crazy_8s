@@ -14,12 +14,13 @@ function JoinGame({ socket }){
 
     useEffect(()=>{
         socket.on("player_joined", e =>{
-            const data = JSON.parse(sessionStorage.getItem("data"))
-            data.room = roomState.room
-            data.inSession = false
-            data.isAdmin = false
-            data.user = roomState.user
-            data.playerList = e
+            const data = {
+                room : roomState.room,
+                inSession : false,
+                isAdmin : false,
+                user : roomState.user,
+                playerList : e
+            }
             sessionStorage.setItem("data",JSON.stringify(data))
 			navigate('/waitingRoom', {state:{room:roomState.room, playerList:e, user:roomState.user, isAdmin:false}}) //go to waiting room
         })
@@ -76,7 +77,7 @@ function JoinGame({ socket }){
                             setError(true)
                             return
                         }
-                        socket.emit("join", {name: username, room: room})
+                        socket.emit("join", {name: username, room: room,ID:JSON.parse(sessionStorage.getItem("session")).ID})
 						roomState = {room: room, user: username}
                     }}> 
                     Join Game </button>
