@@ -52,12 +52,7 @@ socket.on("disconnect",()=>{
 //an error is thrown if the user accesses waitinRoom.js with this new data set.
 //this message is only received if the room does not exist
 socket.on("deadRoom",message=>{
-  const DATA = sessionStorage.getItem("data") !== null?JSON.parse(sessionStorage.getItem("data")):null;
-  DATA.inSession = false
-  DATA.isAdmin = false
-  DATA.playerList = null
-  DATA.room = "none"
-
+  
   const data = {
     inSession:false,
     isAdmin:false,
