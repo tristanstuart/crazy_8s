@@ -19,7 +19,7 @@ function CreateGame({ socket }){
                 const DATA = JSON.parse(sessionStorage.getItem("data"))
                 //clears out prev gameData in sessionStorage
                 const data = {
-                    username:DATA.user,
+                    user:DATA.user,
                     playerList:[DATA.user],
                     room:DATA.room,
                     isAdmin:true,

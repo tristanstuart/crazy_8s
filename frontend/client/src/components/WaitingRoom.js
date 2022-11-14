@@ -52,7 +52,7 @@ function WaitingRoom({ socket }) {
             if(data["winner"] !== ""){
                 setWarning(data["winner"] + " has won!")
             }
-            
+            console.log("updateDisplay",data)
             DATA.upCard = data["upCard"]
             DATA.turn = data["nextTurn"]
             DATA.activeSuit = data["activeSuit"]
@@ -89,6 +89,7 @@ function WaitingRoom({ socket }) {
         })
 
         socket.on('move_to_game_start', data =>{
+            console.log("gameStart",data)
             DATA.inSession = true
             DATA.hand = data["hand"]
             DATA.upCard = data["upCard"]
@@ -140,7 +141,7 @@ function WaitingRoom({ socket }) {
                         <div className='bg-purple-200 h-screen '>
                             
                             <div className='flex  items-center justify-center'>
-                                <PlayerLayout opponents={opponentCards} players={players} turn={turn}/>
+                                <PlayerLayout opponents={opponentCards} players={players} turn={DATA.turn}/>
                             </div>
                             <CurrentSuit suit={activeSuit}/>
                             {turn === username && <div className="animate-bounce" style={{textAlign:"center",color:"green",fontSize:"28px"}}>Your Turn!</div>}
