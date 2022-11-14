@@ -128,7 +128,7 @@ class Game():
             winner = self.playerTurn.getName()
 
         display = {
-            "upcard":{
+            "upCard":{
                 "rank":self.upcard().rank,
                 "suit":self.upcard().suit
                 },
