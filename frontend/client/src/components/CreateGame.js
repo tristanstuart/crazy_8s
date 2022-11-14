@@ -17,10 +17,12 @@ function CreateGame({ socket }){
                 setError(true)
             }
             else {
+                const DATA = JSON.parse(sessionStorage.getItem("data"))
+                console.log(DATA.room)
                 const data = {
                     isAdmin : true,
                     inSession : false,
-                    room : roomState.room,
+                    room : JSON.parse(sessionStorage.getItem("data")).room,
                     user : roomState.user,
                     playerList : [roomState.user]
 
@@ -89,6 +91,10 @@ function CreateGame({ socket }){
                                 "oldRoom":data.room,
                                 ID:JSON.parse(sessionStorage.getItem("session")).ID
                             })
+                            data.room = room
+                            data.user = username
+                            sessionStorage.setItem("data",JSON.stringify(data))
+                            roomState = {room: data.room, user: data.user}
                             return
                         }
                         
@@ -97,7 +103,11 @@ function CreateGame({ socket }){
                             "room":room,
                             ID:JSON.parse(sessionStorage.getItem("session")).ID
                         })
-						roomState = {room: room, user: username}
+                        const data = JSON.parse(sessionStorage.getItem("data"))
+                        data.room = room
+                        data.user = username
+                        sessionStorage.setItem("data",JSON.stringify(data))
+						roomState = {room: data.room, user: data.user}
                     }}>
                     Create Game </button>
             </div>
