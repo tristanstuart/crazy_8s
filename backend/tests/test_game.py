@@ -36,4 +36,14 @@ def test_verify_card_played():
 
     rule = game.verify_card_played(game.playerTurn.cards[0].rank, game.playerTurn.cards[0].suit) # play the invalid card
     assert rule == Rules.ERROR
-    
+
+def test_getCardState():
+    game = setup_game()
+    for player in game.players: # for every player
+        playerCards, opponents = game.getCardState(player) # get card state
+        for card in player.cards: # ensure cardstate contains all cards in player hand
+            assert card.toDict() in playerCards
+        for opponent in opponents: # for each opponent of player
+            for p in game.players: # look for the player data corresponding to opponent
+                if p.getName() == opponent['name']:          # make sure the number of cards in opponent
+                    assert len(p.cards) == opponent['count'] # matches card count in game's player data for said opponent
