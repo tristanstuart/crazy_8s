@@ -2,8 +2,6 @@ import {useEffect, useState} from 'react'
 import AlertBox from './AlertBox';
 import {useNavigate} from 'react-router-dom'
 
-var roomState //needed to pass info through navigate()
-
 function CreateGame({ socket }){
     const [username,setUser] = useState("")
     const [room,setRoom] = useState("")
@@ -17,13 +15,26 @@ function CreateGame({ socket }){
                 setError(true)
             }
             else {
+                
+                const DATA = JSON.parse(sessionStorage.getItem("data"))
+                //clears out prev gameData in sessionStorage
+                const data = {
+                    user:DATA.user,
+                    playerList:[DATA.user],
+                    room:DATA.room,
+                    isAdmin:true,
+                    inSesion:false
+                }
+        
                 console.log('room created')
-				navigate('/waitingRoom', {state:{room:roomState.room, playerList:[roomState.user], user:roomState.user, isAdmin:true}}) //go to waiting room
+                sessionStorage.setItem("data",JSON.stringify(data))
+				navigate('/waitingRoom', {state:{room:data.room, playerList:[data.user], user:data.user, isAdmin:data.isAdmin}}) //go to waiting room
+            
             }
         })
       return ()=>{
         socket.off("create")
-      }},[socket, navigate]) 
+      }},[socket, navigate,room]) 
 
     const handleChange = (e) =>{
         setRoom(e.target.value.trim());
@@ -42,8 +53,8 @@ function CreateGame({ socket }){
                         id="user" 
                         placeholder="User Name" 
                         className="p-3 text-2xl rounded-full grid items-center justify-center mt-2" 
-                        onChange= {e => 
-                            {setError(false)
+                        onChange= {e => {
+                            setError(false)  
                             setUser(e.target.value.trim())
                         }}
                     />
@@ -70,8 +81,33 @@ function CreateGame({ socket }){
                             return                       
                         }
 
-                        socket.emit("create", {username, room});
-						roomState = {room: room, user: username}
+                        if(JSON.parse(sessionStorage.getItem("data")) == null){
+                            
+                            socket.emit("create", {
+                                "username":username, 
+                                "room":room,
+                                ID:JSON.parse(sessionStorage.getItem("session")).ID
+                            })
+                            const data = {
+                                room:room,
+                                user:username
+                            }
+                            sessionStorage.setItem("data",JSON.stringify(data))
+                            
+                            return
+                        }
+                        
+                        const data = JSON.parse(sessionStorage.getItem("data"))
+                        socket.emit("create", {
+                            "username":username, 
+                            "room":room,
+                            "oldRoom":data.room,
+                            ID:JSON.parse(sessionStorage.getItem("session")).ID
+                        })
+                        data.room = room
+                        data.user = username
+                        sessionStorage.setItem("data",JSON.stringify(data))                
+						
                     }}>
                     Create Game </button>
             </div>

@@ -19,7 +19,12 @@ class Game():
         self.index = None
         self.needSuit = False
         self.gameOver = False
+        self.inSession = False
+        
 
+    def hasStarted(self):
+        return self.inSession;
+        
     def status(self):
         status = {
             "players":[],
@@ -69,7 +74,9 @@ class Game():
         print(f"roll random between 0 and {len(self.players) - 1} to determine starting player")
         self.index = randint(0, len(self.players) - 1)
         self.playerTurn = self.players[self.index]
-
+        self.inSession = True
+        
+    
     
     def upcard(self):
         return self.pile[0]
@@ -121,7 +128,7 @@ class Game():
             winner = self.playerTurn.getName()
 
         display = {
-            "upcard":{
+            "upCard":{
                 "rank":self.upcard().rank,
                 "suit":self.upcard().suit
                 },

@@ -6,7 +6,7 @@ class Player():
         self.cards = []
 
     def __repr__(self):
-        return self.getName() + " (" + self.getSID() + ")"
+        return self.getName() + " (" + str(self.getSID()) + ")"
 
     def getName(self):
         return self.info['name']
