@@ -1,6 +1,6 @@
 import React from "react";
 
-function AboutUs(){
+function AboutUs({socket}){
     return (
         <div >
             <h1 className="text-2xl grid items-center justify-center w-screen" >About Us</h1>
