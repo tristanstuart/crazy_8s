@@ -56,18 +56,19 @@ function Card({rank, suit,room,socket,class_}) {
             "rank":rank,
             "suit":suit
           },
-          "room":room
+          "room":room,
+          ID:JSON.parse(sessionStorage.getItem("session")).ID
         })  
     }
   }
-
+  
   return (
     <div 
         className={class_}
         style={{width:"120px"}}
         onClick={handleClick}>
       <img
-        alt={rank + 'of' + suit} 
+        alt={rank + 'of' + suit}
         src={`/cards/${rankMap.get(rank)}${suitMap.get(suit)}.svg`} 
         style={{width:'120px'}} 
       />

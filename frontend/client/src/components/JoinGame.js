@@ -13,26 +13,24 @@ function JoinGame({ socket }){
 	const navigate = useNavigate()
 
     useEffect(()=>{
-        socket.on("user_already_in_room",e=>{
-            setErrorTitle('Username is not available')
-            setErrorMsg('Someone with this username is already in this room')
-            setError(true)
-        })
         socket.on("player_joined", e =>{
-            console.log("joined room " + room)
-            
+            const data = {
+                room : roomState.room,
+                inSession : false,
+                isAdmin : false,
+                user : roomState.user,
+                playerList : e
+            }
+            sessionStorage.setItem("data",JSON.stringify(data))
 			navigate('/waitingRoom', {state:{room:roomState.room, playerList:e, user:roomState.user, isAdmin:false}}) //go to waiting room
         })
-        socket.on('room_does_not_exist', e=>{
-            setErrorTitle('This room does not exist')
-            setErrorMsg('please join an existing game or create your own')
+        socket.on("error",data=>{
+            setErrorTitle(data.title)
+            setErrorMsg(data.message)
             setError(true)
         })
 
       return ()=>{
-        socket.off("user_already_in_room")
-        socket.off("player_joined")
-        socket.off("room_does_not_exist")
       }},[socket, navigate, room, username])  
 
         return (
@@ -79,7 +77,7 @@ function JoinGame({ socket }){
                             setError(true)
                             return
                         }
-                        socket.emit("join", {name: username, room: room})
+                        socket.emit("join", {name: username, room: room,ID:JSON.parse(sessionStorage.getItem("session")).ID})
 						roomState = {room: room, user: username}
                     }}> 
                     Join Game </button>
