@@ -1,5 +1,5 @@
 
-const LeaveGame = ({socket,room,ID,inSession,hand,user}) =>{
+const LeaveGame = ({socket,room,ID,inSession,hand,user,isAdmin}) =>{
     
     const handleClick = () =>{
         console.log("you clicked leave button")
@@ -8,7 +8,8 @@ const LeaveGame = ({socket,room,ID,inSession,hand,user}) =>{
             "ID":ID,
             "room":room,
             "inSession":inSession,
-            "user":user
+            "user":user,
+            "isAdmin":isAdmin
         }
         if(inSession){
             data.hand = hand

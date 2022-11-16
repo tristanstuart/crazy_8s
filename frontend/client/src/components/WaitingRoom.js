@@ -105,6 +105,11 @@ function WaitingRoom({ socket }) {
             startGame(DATA.inSession)
         })
 
+        socket.on("newAdmin",data=>{
+            DATA.isAdmin = true
+            sessionStorage.setItem("data",JSON.stringify(DATA))
+        })
+
         socket.on("error",error=>{
             setWarning(error)
         })
@@ -189,7 +194,9 @@ function WaitingRoom({ socket }) {
                     ID={ID} 
                     inSession={DATA.inSession} 
                     hand={DATA.hand}
-                    user={DATA.user}/>
+                    user={DATA.user}
+                    isAdmin={isAdmin}
+                    />
             </div>
         </div>
     )

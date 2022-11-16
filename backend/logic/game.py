@@ -141,6 +141,8 @@ class Game():
 
     #get the next player's name
     def getNext(self):
+        if len(self.players) == 0:
+            return "no more players"
         if self.needSuit == True:
             return self.playerTurn.getName()
         if self.index + 1 == len(self.players):

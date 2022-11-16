@@ -7,6 +7,7 @@ from logic.game import Game
 from logic.Rules import Rules
 import json
 import snowflake.connector
+import random
 
 app = Flask(__name__)
 SECRET = "areallybadsecreat"
@@ -67,14 +68,29 @@ def leaveRoom(data):
     if not data["room"] in rooms:
         emit("leaveRoom")
         return
-        
-    leave_room(data.get("room"))
 
-    rooms[data.get("room")].removePlayer(data)
+    room = data["room"]
+        
+    leave_room(room)
+
+    rooms[room].removePlayer(data)
     
-    emit("leaveRoom",f'You have left room {data["room"]}')
-    emit("error",f'{data["user"]} has left the room',to=data.get("room"))
-    updateRoom()
+    emit("leaveRoom",f'You have left room {room}')
+    emit("error",f'{data["user"]} has left the room',to=room)
+
+    render = rooms[room].render()
+
+    print(render)
+    
+    if len(rooms[room].players) > 1:
+        player = random.choice(rooms[room].players)
+        print(player)
+        emit("newAdmin",{"isAdmin":True},to=getSID(player.getSID()))
+    updateRoom(render,room)
+
+    #do something if there is only one player left, del room ?
+    
+
     if len(rooms[data.get("room")].players) == 0:
         print(f'no more players in room,deleting room {data["room"]}')
         del(rooms[data.get("room")])
