@@ -67,15 +67,16 @@ def leaveRoom(data):
     if not data["room"] in rooms:
         emit("leaveRoom")
         return
+        
     leave_room(data.get("room"))
-    # emit("error","heyafd")
 
     rooms[data.get("room")].removePlayer(data)
     
     emit("leaveRoom",f'You have left room {data["room"]}')
     emit("error",f'{data["user"]} has left the room',to=data.get("room"))
+    updateRoom()
     if len(rooms[data.get("room")].players) == 0:
-        print("no more players in room")
+        print(f'no more players in room,deleting room {data["room"]}')
         del(rooms[data.get("room")])
 
 
@@ -275,7 +276,7 @@ def deal(data):
     #    updatePlayer(message,request.sid,data["room"])
        return emit("error", message ,to=getSID(data["ID"]))
     
-    updateRoom(message,data["ID"],data["room"]) #update center display, curr player hand, and opponent hands
+    updateRoom(message,data["room"]) #update center display, curr player hand, and opponent hands
     updatePlayer(message,data["ID"],data["room"])
 
 @socketio.on("setSuit")
@@ -287,7 +288,7 @@ def setSuit(data):
 
     message = rooms[data["room"]].setSuit(data["suit"])
 
-    updateRoom(message,data["ID"],data["room"])
+    updateRoom(message,data["room"])
     updatePlayer(message,data["ID"],data["room"])
 
 #validates that the room exists, that it is the player's turn, and that the game hasn't ended
@@ -306,17 +307,17 @@ def checkData(data):
     return Rules.VALID," current turn " + rooms[data["room"]].playerTurn.getName()
 
 
-def updateRoom(message,SID, room):
+def updateRoom(message, room):
     #updates center card, current turn, and activesuit as a dict
     emit("updateDisplay", message["updateDisplay"], to=room)
-
-    for p in rooms[room].players:#update all opponent card counts
-        opponentCards = rooms[room].getCardState(p)[1] #function returns player and opponent hand info [1] on the end gets just the opponent info
-        emit("updateOpponents", {'opponents':opponentCards}, to=getSID(p.getSID()))
-
+    updateOpponents(room)
+    
 def updatePlayer(message, SID, room):
     #update specific playerhand, refers to them by request.sid as SID 
     emit("updateHand",message["updateHand"],to=getSID(SID))
+    updateOpponents(room)
+    
+def updateOpponents(room):
     for p in rooms[room].players:#update all opponent card counts
         opponentCards = rooms[room].getCardState(p)[1] #function returns player and opponent hand info [1] on the end gets just the opponent info
         emit("updateOpponents", {'opponents':opponentCards}, to=getSID(p.getSID()))
