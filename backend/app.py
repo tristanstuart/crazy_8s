@@ -61,6 +61,24 @@ def on_connect(data):
 
 #set a clients newSID given to them by socketio, as it does not preserve it through the
 #users session
+@socketio.on("leaveRoom")
+def leaveRoom(data):
+    
+    if not data["room"] in rooms:
+        emit("leaveRoom")
+        return
+    leave_room(data.get("room"))
+    # emit("error","heyafd")
+
+    rooms[data.get("room")].removePlayer(data)
+    
+    emit("leaveRoom",f'You have left room {data["room"]}')
+    emit("error",f'{data["user"]} has left the room',to=data.get("room"))
+    if len(rooms[data.get("room")].players) == 0:
+        print("no more players in room")
+        del(rooms[data.get("room")])
+
+
 @socketio.on("newSID")
 def newSID(data):
     if people.get(data["ID"]) == None:
@@ -136,18 +154,15 @@ def signUp(data):
     users.append(data)
     emit("userCreated", "User created. Please log in")
 
-
 #sent by client if they disconnected while in a gameSesion
 #still needs to be finished
 @socketio.on("pendingRoom")
 def pending(data):
     if data["room"] in rooms:
-        print("that game is still going")
         join_room(data["room"])
-        emit("reJoin","someonejoined")
+        emit("reJoin",f'successfully joined room {data["room"]}')
         return
-    emit("deadRoom","Error room " + f'{data["room"]}' + " not found")
-    print("sorry bud " + f'{data["room"]}' + "does not exist")
+    emit("leaveRoom","Error room " + f'{data["room"]}' + " not found")
 
 @socketio.on('join')
 def on_join(data):
@@ -182,19 +197,10 @@ def exists(data):
     room = data['room']
     emit('exists', room in rooms)
 
-# only emitted by admin
-
 @socketio.on('create')
 def on_create(data):
     name = data['username']
     room = data['room']
-    
-    #fix issues on client not updating data.room stored in sessionStorage
-    #a user could leave the room automatically if they disconnect, but we cannot
-    #assume they will refresh the page, so just do it here for them
-    if data.get("oldRoom") != None:
-        print("leaving old room",data["oldRoom"])
-        leave_room(data["oldRoom"])
     
     if (room in rooms ): #or len(room) < 3
         emit('create', False) #read by client in JoinGame.js
@@ -214,7 +220,8 @@ def on_start_game(data):
     room = data["room"]
     
     if rooms.get(room) == None:
-        emit("error","game does not exist")
+        emit("leaveRoom","Room does not exist")
+
         return
 
     if rooms.get(room).hasStarted():
@@ -286,6 +293,7 @@ def setSuit(data):
 #validates that the room exists, that it is the player's turn, and that the game hasn't ended
 def checkData(data):
     if not data["room"] in rooms:
+        emit("leaveRoom","Sorry the game you tried to join never existed")
         return Rules.ERROR, "room does not exist"
 
     if rooms[data["room"]].gameOver == True:
