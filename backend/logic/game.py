@@ -23,7 +23,7 @@ class Game():
         
 
     def hasStarted(self):
-        return self.inSession;
+        return self.inSession
         
     def status(self):
         status = {
@@ -37,7 +37,6 @@ class Game():
         status["chooseSuit"] = self.needSuit
         
         return status
-
 
     def shuffleDeck(self):
         shuffle(self.deck)
@@ -75,9 +74,7 @@ class Game():
         self.index = randint(0, len(self.players) - 1)
         self.playerTurn = self.players[self.index]
         self.inSession = True
-        
-    
-    
+         
     def upcard(self):
         return self.pile[0]
 
@@ -282,5 +279,20 @@ class Game():
         
         return Rules.ERROR
 
-    
-
+    def removePlayer(self,data):
+        ID = data["ID"]
+        if not data["inSession"]:
+            for p in range(len(self.players)):
+                if self.players[p].getSID() == ID:
+                    self.players.pop(p)
+                    return
+                           
+        player = None
+        
+        for i in range(len(self.players)):
+            if self.players[i].getSID() == ID:
+                player = self.players.pop(i)
+                break
+        for i in range(len(player.cards)):
+            self.deck.append(player.cards.pop())
+        del(player)
