@@ -182,7 +182,14 @@ function WaitingRoom({ socket }) {
                     </div>
                     }
                 </div>
-                <LeaveGame socket={socket} room={ROOM} ID={ID} hand={DATA.hand}/>
+                <br></br>
+                <LeaveGame 
+                    socket={socket} 
+                    room={ROOM} 
+                    ID={ID} 
+                    inSession={DATA.inSession} 
+                    hand={DATA.hand}
+                    user={DATA.user}/>
             </div>
         </div>
     )

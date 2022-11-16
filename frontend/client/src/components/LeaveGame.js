@@ -1,14 +1,22 @@
 
-const LeaveGame = ({socket,room,ID,hand}) =>{
+const LeaveGame = ({socket,room,ID,inSession,hand,user}) =>{
     
     const handleClick = () =>{
         console.log("you clicked leave button")
         console.log()
-        socket.emit("leaveRoom",{
+        const data = {
             "ID":ID,
             "room":room,
-            "hand":hand
-        })
+            "inSession":inSession,
+            "user":user
+        }
+        if(inSession){
+            data.hand = hand
+            socket.emit("leaveRoom",data)
+            return
+        }
+        socket.emit("leaveRoom",data)
+        
     }
 
     return (
