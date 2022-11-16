@@ -3,8 +3,7 @@ import Loading from './WaitBanner'
 import Card from './Card'
 import ChooseSuit from './ChooseSuit'
 import PlayerLayout from './PlayerLayout'
-
-
+import LeaveGame from './LeaveGame'
 
 function WaitingRoom({ socket }) {
 
@@ -183,6 +182,7 @@ function WaitingRoom({ socket }) {
                     </div>
                     }
                 </div>
+                <LeaveGame socket={socket} room={ROOM} ID={ID} hand={DATA.hand}/>
             </div>
         </div>
     )
