@@ -1,6 +1,6 @@
 from turtle import update
 from flask import Flask, render_template, request
-from flask_socketio import SocketIO, emit, join_room,leave_room
+from flask_socketio import SocketIO, emit, join_room,leave_room,close_room
 import os
 import logging
 from logic.game import Game
@@ -79,19 +79,23 @@ def leaveRoom(data):
     emit("error",f'{data["user"]} has left the room',to=room)
 
     render = rooms[room].render()
-
-    print(render)
     
-    if len(rooms[room].players) > 1:
+    if len(rooms[room].players) >= 2:
         player = random.choice(rooms[room].players)
-        print(player)
-        emit("newAdmin",{"isAdmin":True},to=getSID(player.getSID()))
-    updateRoom(render,room)
-
+        
+        if data["isAdmin"] == True:
+            print(f'{player.getName()} is now admin')
+            print(data["isAdmin"])
+            emit("newAdmin",{"isAdmin":True},to=getSID(player.getSID()))
+        updateRoom(render,room)
+        return
     #do something if there is only one player left, del room ?
-    
-
-    if len(rooms[data.get("room")].players) == 0:
+    #right now it just redirects the user to homepage,del room, and leave room in socket
+    if len(rooms[data.get("room")].players) < 2:
+        emit("leaveRoom",f'you are the only player in the room',to=room)
+        close_room(room)
+        #leave_room(room=room,sid=getSID(rooms[room].playerTurn.getSID()))
+        
         print(f'no more players in room,deleting room {data["room"]}')
         del(rooms[data.get("room")])
 

@@ -141,12 +141,20 @@ class Game():
 
     #get the next player's name
     def getNext(self):
+        print("length of players in get next",len(self.players))
+        print("index in get next",self.index)
         if len(self.players) == 0:
             return "no more players"
+
+        if len(self.players) == 1:
+            return self.playerTurn.getName()
+        
         if self.needSuit == True:
             return self.playerTurn.getName()
+        
         if self.index + 1 == len(self.players):
             return self.players[0].getName()
+
         return self.players[self.index+1].getName()        
 
     #update current player cards, and center display
@@ -291,10 +299,25 @@ class Game():
                            
         player = None
         
+        print("playerss in before removePlayer",self.players)
+
+
         for i in range(len(self.players)):
             if self.players[i].getSID() == ID:
+                if self.playerTurn.getSID() == self.players[i].getSID():
+                    print("index in removePlayer",self.index)
+
+                    self.nextTurn()
+                    if self.index != 0:
+                        self.index -= 1
+                    print("index after next turn",self.index)
+
                 player = self.players.pop(i)
+
                 break
+
+        print("playerss in removePlayer",self.players)
+        print("new player turn",self.playerTurn)
         for i in range(len(player.cards)):
             self.deck.append(player.cards.pop())
         del(player)
