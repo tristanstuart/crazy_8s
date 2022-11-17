@@ -11,7 +11,7 @@ function Login({ socket }) {
 
     //needed so you dont receive the same data multiple times 
     useEffect(()=>{
-      socket.on("received",e=>{
+      socket.on("signed",e=>{
         setWarning(e)
         sessionStorage.setItem("username",username)
         nav("/")
