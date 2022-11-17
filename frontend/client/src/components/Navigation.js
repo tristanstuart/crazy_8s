@@ -54,14 +54,6 @@ function Navigation(){
             >
                 Sign-Up
             </NavLink>
-            
-            <NavLink 
-                className={"block p-3"}  
-                to="SocketDashboard"
-                onClick={() => setShowMenu(!showMenu)}
-            >
-                Socket Dashboard
-            </NavLink>
             <NavLink 
                 className={"block p-3"}  
                 to="SandBox"
