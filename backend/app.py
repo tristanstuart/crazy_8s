@@ -5,8 +5,11 @@ import os
 import logging
 from logic.game import Game
 from logic.Rules import Rules
+from logic.database import DB
 import json
 import snowflake.connector
+
+
 
 app = Flask(__name__)
 SECRET = "areallybadsecreat"
@@ -20,30 +23,7 @@ socketio.init_app(app, cors_allowed_origins="*")
 log = logging.getLogger("werkzeug")
 log.disabled = True
 
-with open('creds.json') as f:
-    data = json.load(f)
-    username = data['username']
-    password = data['password']
-    SF_ACCOUNT = data["account"]
-    SF_WH = data["warehouse"]
 
-ctx = snowflake.connector.connect(
-    user=username,
-    password=password,
-    account=SF_ACCOUNT
-    )
-cs = ctx.cursor()
-try:
-    #validate that we are reading from the data base and also test the login query with the sample user
-    cs.execute("SELECT current_version()")
-    one_row = cs.fetchone()
-    cs.execute("use warehouse {0}".format(SF_WH))
-    cs.execute("select * from login where username='{0}' and password = hash('{1}')".format("testuser", "foo"))
-    one_row = cs.fetchone()
-except:
-    print("no user was found")
-finally:
-    cs.close()
 print()
 #ctx.close()
 count = [0]
@@ -97,45 +77,31 @@ def dis():
 @socketio.on("login")
 def login(data):
     ##edit when we have access to database
-    cs = ctx.cursor()
     authenticated = False
 
     username = data["username"]
     password = data["password"]
-    query = "select * from login where username='{0}' and password = hash('{1}')".format(username, password)
-    print(query)
+    authenticated = DB.authenticate(username, password) #returns True or False if the user authenticated
 
-    try:
-        cs.execute(query)
-        one_row = cs.fetchone()
-        print(one_row[0])
-        #if at least one row is found the user authenticated
-        authenticated = True
-        #add this data object to the users list
+    if authenticated:
         users.append(data)
-    except:
-        print("no user was found")
-        #uncomment these later when we can create a user using signup with database
-        #emit("error","Wrong Username/Password")
-        #return
-    finally:
-        cs.close()
-    
-    #can user data in users or the authenticatesd flag set above
-    if data in users:
         emit("signed","User logged in")
-
-    emit("error","Wrong Username/Password")
+    else:
+        emit("error","Wrong Username/Password")
+    
     
 @socketio.on("signup")
 def signUp(data):
-    ##edit when we have access to database
-    if data in users:
-        emit("error","Username taken.")
-        return
-    users.append(data)
-    emit("userCreated", "User created. Please log in")
+    username = data["username"]
+    password = data["password"]
+    secQues = data["question"]
+    secAns = data["answer"]
 
+    result = DB.createUser
+    if result:
+        emit("userCreated",'User ' + username + ' was created!')
+    else:
+        emit("error",'A user with that name already exists. Choose another user name')
 
 #sent by client if they disconnected while in a gameSesion
 #still needs to be finished
