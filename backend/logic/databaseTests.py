@@ -1,19 +1,20 @@
 import unittest
-from backend.logic.database import database
+from database import DB
 
 class databaseTestCase(unittest.TestCase):
 
-
-    def setUp(self):
-        """Call before every test case"""
-        self.db = database
+    @classmethod
+    def setUpClass(self):
+        # print("open")
+        self.db = DB()
         self.newuser = 'testuser123'
-        self.db.initCon()
 
-    def tearDown(self):
+    @classmethod
+    def tearDownClass(self):
         """Call after every test case."""
         self.db.deleteUser(self.newuser)
-        self.db.closeCon()   
+        # print("close")
+        self.db.closeCon()
 
     def testAuthenticatePass(self):
         """Verify that True is returned when the correct userId, password combo is provided"""
