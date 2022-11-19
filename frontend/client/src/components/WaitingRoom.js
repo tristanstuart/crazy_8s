@@ -46,6 +46,12 @@ function WaitingRoom({ socket }) {
             console.log(e)
         })
 
+        socket.on("override",data=>{
+            DATA.turn = data["nextTurn"]
+            sessionStorage.setItem("data",JSON.stringify(DATA))
+            setTurn(DATA.turn)
+        })
+
         socket.on("updateDisplay", data=>{
             setWarning("")
             if(data["winner"] !== ""){
