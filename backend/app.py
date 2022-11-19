@@ -60,8 +60,7 @@ def is_admin(id, room):
 def on_connect(data):
     print(request.sid,"is connected")
 
-#set a clients newSID given to them by socketio, as it does not preserve it through the
-#users session
+
 @socketio.on("leaveRoom")
 def leaveRoom(data):
     
@@ -73,33 +72,51 @@ def leaveRoom(data):
         
     leave_room(room)
 
-    rooms[room].removePlayer(data)
-    
-    emit("leaveRoom",f'You have left room {room}')
-    emit("error",f'{data["user"]} has left the room',to=room)
+    #check if the player leaving is the curr player turn
+    isCurrentPlayer = False
+    if rooms[room].hasStarted():
+        if rooms[room].playerTurn.getSID() == data["ID"]:
+            isCurrentPlayer = True
 
-    render = rooms[room].render()
-    
-    if len(rooms[room].players) >= 2:
-        player = random.choice(rooms[room].players)
-        
-        if data["isAdmin"] == True:
-            print(f'{player.getName()} is now admin')
-            print(data["isAdmin"])
-            emit("newAdmin",{"isAdmin":True},to=getSID(player.getSID()))
-        updateRoom(render,room)
+    rooms[room].removePlayer(data)
+    emit("leaveRoom",f'You have left room {room}')
+
+    #this if for the waiting room before the game starts if all users happen to leave, just del room
+    if len(rooms[room].players) == 0:
+        close_room(room)
+        del(rooms[room])
         return
-    #do something if there is only one player left, del room ?
-    #right now it just redirects the user to homepage,del room, and leave room in socket
-    if len(rooms[data.get("room")].players) < 2:
+
+    #if the player leaving happens to be admin, assign the admin role to someone new
+    if data["isAdmin"] == True:
+        player = random.choice(rooms[room].players)        
+        emit("newAdmin",{"isAdmin":True},to=getSID(player.getSID()))
+        print(f'{player.getName()} is now admin')
+
+    #game hasn't started, just update the player list in waiting room
+    if not data["inSession"]:
+        emit('player_joined', rooms[room].playerList(), to=room)
+        return
+
+    if len(rooms[room].players) >= 2:
+        #if the player leaving is the current expected player, look at new player 
+        if isCurrentPlayer:
+            emit("override",{"nextTurn":rooms[room].playerTurn.getName()},to=room)
+        updateOpponents(room)
+        emit("error",f'{data["user"]} has left the room',to=room)
+        
+        return
+        
+    # do something if there is only one player left while the game is in session, del room ? 
+    # or just wait for reconnection, lets just del for rigth now
+    if len(rooms[room].players) < 2:
+        print(f'no more players in room,deleting room {room}')
         emit("leaveRoom",f'you are the only player in the room',to=room)
         close_room(room)
-        #leave_room(room=room,sid=getSID(rooms[room].playerTurn.getSID()))
-        
-        print(f'no more players in room,deleting room {data["room"]}')
-        del(rooms[data.get("room")])
+        del(rooms[room])
 
-
+#set a clients newSID given to them by socketio, as it does not preserve it through the
+#users session
 @socketio.on("newSID")
 def newSID(data):
     if people.get(data["ID"]) == None:
@@ -107,7 +124,6 @@ def newSID(data):
         print("a new session will be given")
         need()
         return 
-    print("data on reconnect",data)
     print("assigning a new SID on server")
     people[data["ID"]]["sid"] = request.sid
     emit("session",people[data["ID"]])
