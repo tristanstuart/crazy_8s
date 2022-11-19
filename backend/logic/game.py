@@ -140,15 +140,14 @@ class Game():
         return display
 
     #get the next player's name
-    def getNext(self):
-        print("length of players in get next",len(self.players))
-        print("index in get next",self.index)
+    def getNext(self,over=None):
+        
+        if self.index == len(self.players):
+            self.index -= 1
+
         if len(self.players) == 0:
             return "no more players"
 
-        if len(self.players) == 1:
-            return self.playerTurn.getName()
-        
         if self.needSuit == True:
             return self.playerTurn.getName()
         
@@ -291,33 +290,27 @@ class Game():
 
     def removePlayer(self,data):
         ID = data["ID"]
+        #if the game hasn't started no prob just remove the player
         if not data["inSession"]:
             for p in range(len(self.players)):
                 if self.players[p].getSID() == ID:
                     self.players.pop(p)
                     return
-                           
+    
         player = None
         
-        print("playerss in before removePlayer",self.players)
-
-
+        #look for player
         for i in range(len(self.players)):
             if self.players[i].getSID() == ID:
-                if self.playerTurn.getSID() == self.players[i].getSID():
-                    print("index in removePlayer",self.index)
-
-                    self.nextTurn()
-                    if self.index != 0:
-                        self.index -= 1
-                    print("index after next turn",self.index)
-
                 player = self.players.pop(i)
-
                 break
-
-        print("playerss in removePlayer",self.players)
-        print("new player turn",self.playerTurn)
+    
+        #if the player leaving is the current expected player , just set to the next player
+        if self.playerTurn.getSID() == player.getSID():
+            self.index-=1
+            self.nextTurn()
+        
         for i in range(len(player.cards)):
             self.deck.append(player.cards.pop())
+        self.shuffleDeck()
         del(player)
