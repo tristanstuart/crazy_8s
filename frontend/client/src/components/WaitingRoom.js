@@ -3,8 +3,7 @@ import Loading from './WaitBanner'
 import Card from './Card'
 import ChooseSuit from './ChooseSuit'
 import PlayerLayout from './PlayerLayout'
-
-
+import LeaveGame from './LeaveGame'
 
 function WaitingRoom({ socket }) {
 
@@ -45,6 +44,12 @@ function WaitingRoom({ socket }) {
         //work on this
         socket.on("winner",e=>{
             console.log(e)
+        })
+
+        socket.on("override",data=>{
+            DATA.turn = data["nextTurn"]
+            sessionStorage.setItem("data",JSON.stringify(DATA))
+            setTurn(DATA.turn)
         })
 
         socket.on("updateDisplay", data=>{
@@ -104,6 +109,11 @@ function WaitingRoom({ socket }) {
             setUpcard(DATA.upCard)
             setOpponentCards(DATA.opponents)
             startGame(DATA.inSession)
+        })
+
+        socket.on("newAdmin",data=>{
+            DATA.isAdmin = true
+            sessionStorage.setItem("data",JSON.stringify(DATA))
         })
 
         socket.on("error",error=>{
@@ -183,6 +193,16 @@ function WaitingRoom({ socket }) {
                     </div>
                     }
                 </div>
+                <br></br>
+                <LeaveGame 
+                    socket={socket} 
+                    room={ROOM} 
+                    ID={ID} 
+                    inSession={DATA.inSession} 
+                    hand={DATA.hand}
+                    user={DATA.user}
+                    isAdmin={isAdmin}
+                    />
             </div>
         </div>
     )
