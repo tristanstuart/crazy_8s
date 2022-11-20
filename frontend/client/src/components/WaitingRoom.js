@@ -173,7 +173,7 @@ function WaitingRoom({ socket }) {
                                 </div>
             
 
-                            <div className='bg-purple-200 h-full'>
+                            <div className='bg-purple-200 mt-'>
                                 {chooseSuit === true ? 
                                     <ChooseSuit 
                                     setSuit={setSuit} 
@@ -188,21 +188,25 @@ function WaitingRoom({ socket }) {
                                     room={ROOM} 
                                     socket={socket}
                                     chooseSuit={chooseSuit}/>
+
+                               <br></br>
+                                <LeaveGame 
+                                    socket={socket} 
+                                    room={ROOM} 
+                                    ID={ID} 
+                                    inSession={DATA.inSession} 
+                                    hand={DATA.hand}
+                                    user={DATA.user}
+                                    isAdmin={isAdmin}
+                                    />
+                                </div>
                             
                             </div>
-                    </div>
+                    
                     }
                 </div>
-                <br></br>
-                <LeaveGame 
-                    socket={socket} 
-                    room={ROOM} 
-                    ID={ID} 
-                    inSession={DATA.inSession} 
-                    hand={DATA.hand}
-                    user={DATA.user}
-                    isAdmin={isAdmin}
-                    />
+               
+                
             </div>
         </div>
     )
@@ -212,15 +216,15 @@ function WaitingRoom({ socket }) {
 
 function makeCards(username,room,socket,chooseSuit,cards){
     return cards.map( e=>
-        <Card key={e["rank"]+ " " +e["suit"]}
+        <Card key={e["rank"]+ " " +e["suit"] }
             user={username} 
             rank={e["rank"]} 
             suit={e["suit"]} 
             room={room}
             socket={socket}
             chooseSuit={chooseSuit}
-            class_={'relative flex transition-all transform-gpu rounded-lg shadow-2xl cursor-pointer hover:-mt-20'}
-        />
+            class_={'card-select'}
+        />                                 
     )
 }
 
@@ -269,8 +273,10 @@ function CardHand(props){
 
     const hand = makeCards(props.username,props.room,props.socket,props.chooseSuit,props.hand)
     return (
-        <div className="flex space-x-2 items-center justify-center">
-            {hand}
+        <div className='hand-container'>
+            <div className="hand ">
+                {hand}
+            </div>
         </div>
     )   
 }

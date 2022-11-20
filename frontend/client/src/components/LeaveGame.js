@@ -19,16 +19,13 @@ const LeaveGame = ({socket,room,ID,inSession,hand,user,isAdmin}) =>{
         socket.emit("leaveRoom",data)
         
     }
-
+    //style={{display:"flex",justifyContent:"center",margin:"20px"}}
     return (
-        <div style={{display:"flex",justifyContent:"center",margin:"20px"}}>
+        <div className="flex justify-center">
             <button 
                 onClick={handleClick}
-                style={{
-                    backgroundColor:"#b9c0ea",
-                    padding:"10px",
-                    borderRadius:"30px"
-                }}>
+                className="bg-red-100 border-solid border-2 border-red-500  m-20 p-2 rounded-full "
+                >
                 Leave Game
             </button>
         </div>
