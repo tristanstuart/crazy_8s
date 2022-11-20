@@ -1,6 +1,5 @@
 import React from "react";
 import { Link} from "react-router-dom";
-import JoinBtn from "./buttons/JoinBtn";
 
 function Home({socket}){
 

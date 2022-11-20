@@ -10,7 +10,7 @@ function Navigation(){
     let menuMask;
     if(showMenu){
         menu = <div
-            className="absolute z-10 bg-white top-0 left-0 w-4/5 h-full shadow p-3  "
+            className="absolute z-10 bg-white opacity-70 top-0 left-0 h-full shadow p-3 text-4xl w-auto  "
         >
             <span className="font-bold block p-3">The Menu</span>
             <NavLink 
