@@ -277,11 +277,9 @@ function CardHand(props){
 
     const hand = makeCards(props.username,props.room,props.socket,props.chooseSuit,props.hand)
     return (
-        <div className='hand-container'>
             <div className="hand ">
                 {hand}
             </div>
-        </div>
     )   
 }
 
