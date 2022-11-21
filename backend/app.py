@@ -5,8 +5,6 @@ import os
 import logging
 from logic.game import Game
 from logic.Rules import Rules
-import json
-import snowflake.connector
 import random
 from logic.database import DB
 
@@ -164,10 +162,10 @@ def signUp(data):
 
     print(username + " " + password + " " + secQues + " " + secAns)
     result = False
-    if result:
     result = database.createUser(username, password, secQues, secAns)
-        emit("userCreated",'User ' + username + ' was created!')
+    if result:
         print('User ' + username + ' was created!')
+        emit("userCreated",'User ' + username + ' was created!')
     else:
         print('A user with that name already exists. Choose another user name')
         emit("error",'A user with that name already exists. Choose another user name')

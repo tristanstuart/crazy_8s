@@ -8,7 +8,7 @@ class DB():
         self.initCon()
 
     def initCon(self):
-        with open('creds.json') as f:
+        with open('backend/logic/creds.json') as f:
             data = json.load(f)
             username = data['username']
             password = data['password']
