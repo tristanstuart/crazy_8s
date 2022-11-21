@@ -14,16 +14,9 @@ const LeaveGame = ({socket,room,ID,inSession,hand,user,isAdmin}) =>{
         if(inSession){
             data.hand = hand
             socket.emit("leaveRoom",data)
-            console.log('in shesh')
-            Navigate('/')
-
             return
         }
-        console.log('not in shesh')
         socket.emit("leaveRoom",data)
-        Navigate('/')
-
-        
     }
     //style={{display:"flex",justifyContent:"center",margin:"20px"}}
     return (

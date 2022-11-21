@@ -2,7 +2,7 @@ import React from "react";
 import LeaveGame from "./LeaveGame";
 import Loading from './Loading'
 
-function Lobby(props){
+function Lobby({socket, players, isAdmin, ROOM, ID}){
     
     return(
         <div>
@@ -11,7 +11,7 @@ function Lobby(props){
                 <div class="h-12 flex justify-between items-center border-b border-gray-200 m-4">
                 <div >
                     <div class="text-xl font-bold text-gray-700">
-                        Game Lobby: {props.ROOM}
+                        Game Lobby: {ROOM}
                     </div>
                     <div class="text-sm font-base text-gray-500 block">
                         <Loading/>
@@ -43,11 +43,11 @@ function Lobby(props){
                 </div>
                 <div class="px-6">
                     <ul>
-                        {props.players.map(data =>
+                        {players.map(data =>
                             (
                                 <div class="flex justify-between items-center h-16 p-4 my-6  rounded-lg border border-gray-100 shadow-md">
                                     <div class="flex items-center">
-                                    {/* <img class="" alt="Logo" /> */}
+                                    <img class="" alt="Avatar" />
                                         <div class="ml-2">
                                             <div class="text-sm font-semibold text-gray-600">{data}</div>
                                         </div>
@@ -75,18 +75,18 @@ function Lobby(props){
                 </div>
                 </div>
                     <div class="p-6 ">
-                        {props.isAdmin && (
-                        <button 
-                            class="p-4 bg-green-400 hover:bg-green-500 w-full rounded-lg shadow text-xl font-medium uppercase text-white"
-                            onClick={() => {
+                        {isAdmin && (
+                            <button 
+                                class="p-4 bg-green-400 hover:bg-green-500 w-full rounded-lg shadow text-xl font-medium uppercase text-white"
+                                onClick={() => {
 
-                                props.socket.emit("start_game", {
-                                    room:props.ROOM,
-                                    ID:props.ID
-                                })
-                            }}>
-                        Start the Game
-                        </button>)}
+                                    socket.emit("start_game", {
+                                        room:ROOM,
+                                        ID:ID
+                                    })
+                                }}>
+                            Start the Game
+                            </button>)}
                     </div>
                     <div class="p-6">
                         <LeaveGame />

@@ -149,7 +149,7 @@ function WaitingRoom({ socket }) {
         <div className='min-h-screen' >
             <div >
                 <div>
-                {!gameIsStarted }  
+                {/* {!gameIsStarted && <br/ >} */}
                     {!gameIsStarted && <Lobby socket={socket} players={DATA.playerList} isAdmin={isAdmin} ROOM={ROOM} ID={ID}/>}
                     {gameIsStarted && 
                         <div className='bg-purple-200 min-h-screen '>
@@ -193,21 +193,23 @@ function WaitingRoom({ socket }) {
                                     socket={socket}
                                     chooseSuit={chooseSuit}/>
 
+                                <LeaveGame 
+                                    socket={socket} 
+                                    room={ROOM} 
+                                    ID={ID} 
+                                    inSession={DATA.inSession} 
+                                    hand={DATA.hand}
+                                    user={DATA.user}
+                                    isAdmin={isAdmin}
+                                    />
+
                                 </div>
-                            </div>                    
+                            </div>
                     }
                 </div>
             </div>
                 <div className="bg-purple-200 h-full">
-                    <LeaveGame 
-                        socket={socket} 
-                        room={ROOM} 
-                        ID={ID} 
-                        inSession={DATA.inSession} 
-                        hand={DATA.hand}
-                        user={DATA.user}
-                        isAdmin={isAdmin}
-                        />
+                    
                 </div>
         </div>
     )
@@ -275,7 +277,7 @@ function CardHand(props){
 
     const hand = makeCards(props.username,props.room,props.socket,props.chooseSuit,props.hand)
     return (
-            <div className="hand ">
+            <div className="hand pb-5">
                 {hand}
             </div>
     )   
