@@ -142,16 +142,13 @@ class Game():
     #get the next player's name
     def getNext(self,over=None):
         
-        if self.index == len(self.players):
-            self.index -= 1
-
         if len(self.players) == 0:
             return "no more players"
 
         if self.needSuit == True:
             return self.playerTurn.getName()
         
-        if self.index + 1 == len(self.players):
+        if self.index + 1 >= len(self.players):
             return self.players[0].getName()
 
         return self.players[self.index+1].getName()        
@@ -175,7 +172,7 @@ class Game():
     
     # set the next players turn
     def nextTurn(self):
-        if self.index + 1 == len(self.players):
+        if self.index + 1 >= len(self.players):
             self.index = 0
         else:
             self.index +=1
@@ -291,6 +288,7 @@ class Game():
     def removePlayer(self,data):
         ID = data["ID"]
         #if the game hasn't started no prob just remove the player
+
         if not data["inSession"]:
             for p in range(len(self.players)):
                 if self.players[p].getSID() == ID:
@@ -305,12 +303,26 @@ class Game():
                 player = self.players.pop(i)
                 break
     
+        print("is leaving the game",player.getName())
         #if the player leaving is the current expected player , just set to the next player
+        
         if self.playerTurn.getSID() == player.getSID():
-            self.index-=1
+            self.index-=1    
             self.nextTurn()
         
+            print("new player turn",self.playerTurn.getName())
+
+
+        print("current player turn",self.playerTurn.getName())
         for i in range(len(player.cards)):
             self.deck.append(player.cards.pop())
         self.shuffleDeck()
+        for p in self.players:
+            print()
+            print(p)
+
+        #self.index -= 1
+        
+        print("index in removeplayer",self.index)
+        print("next player for game",self.getNext())
         del(player)

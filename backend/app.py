@@ -71,6 +71,7 @@ def leaveRoom(data):
 
     rooms[room].removePlayer(data)
     emit("leaveRoom",f'You have left room {room}')
+    print(f'room {room} has {len(rooms[room].players)} players left')
 
     #this if for the waiting room before the game starts if all users happen to leave, just del room
     if len(rooms[room].players) == 0:
