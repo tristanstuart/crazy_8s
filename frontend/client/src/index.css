@@ -1,3 +1,27 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+    .card-select:hover {
+        transform: translateY(-20px);
+        box-shadow: 10px 10px 20px lightskyblue;
+        z-index: 10;
+    }
+    .hand {
+        margin-right: 10px;
+        max-width: 95vw;
+        max-height: 60vh;
+        display: grid;
+        grid-template-columns: repeat(15, 4.5vw);
+        grid-auto-flow: row;
+        align-items: center;
+        justify-content: center;
+        
+    }
+    .hand>* {
+        /* margin-right: calc(-.20 * 100vw) ; */
+        margin-top: 1px;
+    }
+        
+}
