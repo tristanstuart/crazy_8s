@@ -7,14 +7,14 @@ function TableLayout(props){
     const avatarAnimated = <img alt='avatar icon' src='../../avatar.svg' className='motion-safe:animate-bounce rounded-lg w-20 mb-4 ' />
     const deckImg = <FontAwesomeIcon icon={faHandsHolding} size="3x" className='mt-3' />
 
-    let playerCount = 0;
+    let playerCount = 1;
     const icons = [faUserAstronaut, faPoo ,faHippo, faPlane, faGhost]
-    const icon_color = ['blue', 'brown', "purple", "grey", "yellow",]
+    const icon_color = ['#d6d3d1', '#a16207', "#d8b4fe", "#c7d2fe", "#fafaf9",]
     
 
 
 
-    let player_layout = 'flex pl-20 pr-20 items-center justify-center'
+    let player_layout = 'flex flex-shrink max-w-screen px-8 items-center justify-center'
     let playerIcon = []
     props.opponents.forEach(person => {
         playerIcon.push(
@@ -22,11 +22,11 @@ function TableLayout(props){
                 key={person.name} 
                 className={player_layout}
             >
-                <div className='text-center'>
-                    <p className="font-bold text-3xl">
+                <div className='text-center font-bold text-lime-200 mt-5'>
+                    <p className="">
                         {props.turn === person.name ?  person['name']: person['name']}    
                     </p>
-                    {props.turn === person.name ? <FontAwesomeIcon size="3x" icon={icons[playerCount]} style={{animationDuration: '1.5s'}} color={icon_color[playerCount++]} beatFade /> : <FontAwesomeIcon size="3x" icon={icons[playerCount]} color={icon_color[playerCount++]} />}
+                    {props.turn === person.name ? <FontAwesomeIcon size="3x" icon={icons[playerCount]} style={{animationDuration: '5s'}} color={icon_color[playerCount++]} spinPulse /> : <FontAwesomeIcon size="3x" icon={icons[playerCount]} color={icon_color[playerCount++]} />}
                     <div 
                         className=' relative flex justify-center' >
                         {deckImg}

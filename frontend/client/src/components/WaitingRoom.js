@@ -234,9 +234,9 @@ function makeCards(username,room,socket,chooseSuit,cards){
 const CurrentSuit = props =>{
     
     return(
-        <div className='flex justify-center mt-3 motion-safe:animate-pulse'>
-            Active Suit: 
-                <img className="w-10 ml-3 " alt={props.suit} src={`/suits/${props.suit}.svg`}/>
+        <div className='flex justify-center mt-3 text-amber-100'>
+            <div className='mt-2 font-bold' >Active Suit:</div> 
+                <img className="w-10 ml-3 bg-amber-100 rounded-lg " alt={props.suit} src={`/suits/${props.suit}.svg`}/>
         </div>
     )
 }
@@ -279,7 +279,7 @@ function UpcardDisplay(props)
                 <div>{deckImg}</div>
                 <button 
                     onClick={drawCard}
-                    className='flex items-center justify-center text-white font-bold rounded-full py-2 px-4 bg-red-400 w-20 h-7 ml-5 mt-auto mb-auto hover:bg-red-600'
+                    className='flex items-center justify-center text-white font-bold rounded-full py-2 px-4 bg-blue-400 w-20 h-7 ml-5 mt-auto mb-auto hover:bg-red-600'
                 >
                     Draw
                 </button>

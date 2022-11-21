@@ -7,7 +7,7 @@ import { faCheck, faEnvelope, faGhost, faHippo, faPlane, faPoo, faUserAstronaut 
 function Lobby({socket, players, isAdmin, ROOM, ID, DATA}){
     let playerCount = 0;
     const icons = [faUserAstronaut, faPoo ,faHippo, faPlane, faGhost]
-    const icon_color = ['blue', 'brown', "purple", "grey", "yellow",]
+    const icon_color = ['#d6d3d1', '#a16207', "#d8b4fe", "#c7d2fe", "#fafaf9",]
     return(
         <div>
             <div class="min-h-screen flex-1 bg-gray-200 p-4 flex justify-center items-center">
