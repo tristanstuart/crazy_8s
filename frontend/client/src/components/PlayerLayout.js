@@ -1,11 +1,19 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faGhost, faHippo, faPlane, faPoo, faUserAstronaut, faHandsHolding } from '@fortawesome/free-solid-svg-icons'
 
 function TableLayout(props){
     //referenced https://css-tricks.com/text-blocks-over-image/ for displaying text over the card image
     const avatar = <img alt='avatar icon' src='../../avatar.svg' className='rounded-lg w-20 mb-4' />
     const avatarAnimated = <img alt='avatar icon' src='../../avatar.svg' className='motion-safe:animate-bounce rounded-lg w-20 mb-4 ' />
-    const deckImg = <img alt="1B" src="../../cards/1B.svg" className="w-15 h-20"/>
+    const deckImg = <FontAwesomeIcon icon={faHandsHolding} size="3x" className='mt-2' />
 
+    let playerCount = 0;
+    const icons = [faUserAstronaut, faPoo ,faHippo, faPlane, faGhost]
+    const icon_color = ['blue', 'brown', "purple", "grey", "yellow",]
     
+
+
+
     let player_layout = 'flex pl-20 pr-20 items-center justify-center'
     let playerIcon = []
     props.opponents.forEach(person => {
@@ -15,16 +23,15 @@ function TableLayout(props){
                 className={player_layout}
             >
                 <div className='text-center'>
-                    {props.turn === person.name ? avatarAnimated : avatar}
-                    <h5 className="font-bold">
-                        {props.turn === person.name ?  person['name']: person['name']}
-                        
-                    </h5>
+                    <p className="font-bold text-3xl">
+                        {props.turn === person.name ?  person['name']: person['name']}    
+                    </p>
+                    {props.turn === person.name ? <FontAwesomeIcon size="3x" icon={icons[playerCount]} style={{animationDuration: '1.5s'}} color={icon_color[playerCount++]} beatFade /> : <FontAwesomeIcon size="3x" icon={icons[playerCount]} color={icon_color[playerCount++]} />}
                     <div 
                         className=' relative flex justify-center' >
                         {deckImg}
 
-                        <div className='text-8xl absolute'>
+                        <div className='text-6xl absolute'>
                             {person['count']}
                         </div>
                         
