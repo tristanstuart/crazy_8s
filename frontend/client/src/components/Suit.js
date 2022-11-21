@@ -4,8 +4,12 @@ const Suit = props =>{
         props.socket.emit("setSuit",{
             "suit":props.suit,
             "room":props.room,
+            ID:JSON.parse(sessionStorage.getItem("session")).ID
         })
-        props.setSuit(false)
+        const DATA = JSON.parse(sessionStorage.getItem("data"))
+        DATA.chooseSuit = false
+        sessionStorage.setItem("data",JSON.stringify(DATA))
+        props.setSuit(DATA.chooseSuit)
     }
     return (
         <button
