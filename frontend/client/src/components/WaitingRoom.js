@@ -4,6 +4,7 @@ import Card from './Card'
 import ChooseSuit from './ChooseSuit'
 import PlayerLayout from './PlayerLayout'
 import LeaveGame from './LeaveGame'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 function WaitingRoom({ socket }) {
 
@@ -21,7 +22,6 @@ function WaitingRoom({ socket }) {
     const [turn, setTurn] = useState(DATA.turn)
     const [hand,setHand] = useState(DATA.hand)
     const [warning,setWarning] = useState("");
-
 
     const username = DATA !== null?DATA.user:null;
     const isAdmin = DATA !== null?DATA.isAdmin:null;
@@ -77,7 +77,13 @@ function WaitingRoom({ socket }) {
                     "room":ROOM,
                     ID:ID
                 })
-            }  
+            } 
+            else if(data['rule'] === 'skip'){
+                console.log('skip')
+            }
+            else if(data['rule'] === 'reverse'){
+                console.log('reverse')
+            } 
         })
         
         socket.on("updateHand",data=>{
@@ -148,13 +154,13 @@ function WaitingRoom({ socket }) {
                 {!gameIsStarted && <Loading />}
                     {!gameIsStarted && <LobbyDisplay socket={socket} players={DATA.playerList} isAdmin={isAdmin} ROOM={ROOM} ID={ID}/>}
                     {gameIsStarted && 
-                        <div className='bg-purple-200 h-screen '>
+                        <div className='bg-purple-200 h-100vh '>
                             
                             <div className='flex  items-center justify-center'>
                                 <PlayerLayout opponents={opponentCards} players={players} turn={DATA.turn}/>
                             </div>
                             <CurrentSuit suit={activeSuit}/>
-                            {turn === username && <div className="animate-bounce" style={{textAlign:"center",color:"green",fontSize:"28px"}}>Your Turn!</div>}
+                            {turn === username && <div className="motion-safe:animate-pulse" style={{textAlign:"center",color:"green",fontSize:"28px"}}>Your Turn!</div>}
                             
                             <div style={{textAlign:"center",color:"red",fontSize:"25px",margin:"15px"}}>
                                 {warning}
@@ -173,7 +179,7 @@ function WaitingRoom({ socket }) {
                                 </div>
             
 
-                            <div className='bg-purple-200 mt-'>
+                            <div className=''>
                                 {chooseSuit === true ? 
                                     <ChooseSuit 
                                     setSuit={setSuit} 
@@ -189,25 +195,22 @@ function WaitingRoom({ socket }) {
                                     socket={socket}
                                     chooseSuit={chooseSuit}/>
 
-                               <br></br>
-                                <LeaveGame 
-                                    socket={socket} 
-                                    room={ROOM} 
-                                    ID={ID} 
-                                    inSession={DATA.inSession} 
-                                    hand={DATA.hand}
-                                    user={DATA.user}
-                                    isAdmin={isAdmin}
-                                    />
                                 </div>
-                            
-                            </div>
-                    
+                            </div>                    
                     }
                 </div>
-               
-                
             </div>
+                <div className="">
+                    <LeaveGame 
+                        socket={socket} 
+                        room={ROOM} 
+                        ID={ID} 
+                        inSession={DATA.inSession} 
+                        hand={DATA.hand}
+                        user={DATA.user}
+                        isAdmin={isAdmin}
+                        />
+                </div>
         </div>
     )
 }
@@ -228,10 +231,11 @@ function makeCards(username,room,socket,chooseSuit,cards){
     )
 }
 
-const CurrentSuit = props =>{    
+const CurrentSuit = props =>{ 
     return(
-        <div style={{display:"flex",justifyContent:"center"}}>
-            Active Suit: {props.suit}
+        <div className='flex justify-center mt-3 motion-safe:animate-pulse'>
+            Active Suit: 
+                <img className="w-10 ml-3 " alt={props.suit} src={`/suits/${props.suit}.svg`}/>
         </div>
     )
 }
@@ -307,7 +311,7 @@ function UpcardDisplay(props)
                 <div>{deckImg}</div>
                 <button 
                     onClick={drawCard}
-                    className='flex items-center justify-center rounded-full bg-red-400 w-20 h-7 mt-auto mb-auto'
+                    className='flex items-center justify-center text-white font-bold rounded-full py-2 px-4 bg-red-400 w-20 h-7 ml-5 mt-auto mb-auto hover:bg-red-600'
                 >
                     Draw
                 </button>

@@ -4,7 +4,7 @@ import { Link} from "react-router-dom";
 function Home({socket}){
 
     return (
-        <div className="bg-blue-triangles flex items-center justify-center h-screen" >
+        <div className="bg-blue-triangles bg-cover flex items-center justify-center h-screen" >
                 <main>
                     <p className="p-3 text-xl">
                     Play Crazy 8's with friends!

@@ -23,5 +23,17 @@
         /* margin-right: calc(-.20 * 100vw) ; */
         margin-top: 1px;
     }
+
+    .leave-button {
+        background-color: lightpink;
+        width: 100%;
+        border-width: 2px;
+        border-color: red;
+        position: absolute;
+        bottom: 0;
+        padding-bottom: 5px;
+        margin-bottom: 1px;
+    }
+    
         
 }

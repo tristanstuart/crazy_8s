@@ -21,10 +21,10 @@ const LeaveGame = ({socket,room,ID,inSession,hand,user,isAdmin}) =>{
     }
     //style={{display:"flex",justifyContent:"center",margin:"20px"}}
     return (
-        <div className="flex justify-center">
+        <div >
             <button 
                 onClick={handleClick}
-                className="bg-red-100 border-solid border-2 border-red-500  m-20 p-2 rounded-full "
+                className="leave-button hover:bg-red-400 rounded-full"
                 >
                 Leave Game
             </button>
