@@ -41,11 +41,6 @@ function WaitingRoom({ socket }) {
             setPlayers(DATA.playerList)
         })
 
-        //work on this
-        socket.on("winner",e=>{
-            console.log(e)
-        })
-
         socket.on("override",data=>{
             DATA.turn = data["nextTurn"]
             sessionStorage.setItem("data",JSON.stringify(DATA))
