@@ -23,7 +23,7 @@ function CreateGame({ socket }){
                     playerList:[DATA.user],
                     room:DATA.room,
                     isAdmin:true,
-                    inSesion:false
+                    inSession:false
                 }
         
                 console.log('room created')
