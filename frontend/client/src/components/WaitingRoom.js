@@ -1,69 +1,125 @@
 import {useEffect, useState} from 'react'
-import {useLocation} from 'react-router-dom'
 import Loading from './WaitBanner'
 import Card from './Card'
 import ChooseSuit from './ChooseSuit'
 import PlayerLayout from './PlayerLayout'
+import LeaveGame from './LeaveGame'
 
 function WaitingRoom({ socket }) {
-	const location = useLocation()
-	const username = location.state.user
-	const room = location.state.room
-    const isAdmin = location.state.isAdmin
-    const [gameIsStarted, startGame] = useState(false)
-	const [players, setPlayers] = useState(location.state.playerList)
+
+    const ID = sessionStorage.getItem("session") !== null?JSON.parse(sessionStorage.getItem("session")).ID:null;
+    const ROOM = sessionStorage.getItem("data") !== null?JSON.parse(sessionStorage.getItem("data")).room:null;
+    const DATA = sessionStorage.getItem("data") !== null?JSON.parse(sessionStorage.getItem("data")):null;
     
-    // gameplay state stuff starts here
-    const [hand, setHand] = useState([])
-    const [turn, setTurn] = useState("")
-    const [upcard, setUpcard] = useState({})
-    const [opponentCards, setOpponentCards] = useState([])
-    const [chooseSuit,setSuit] = useState(false)
-    const [activeSuit,setActiveSuit] = useState("")
+    
+    const [opponentCards, setOpponentCards] = useState(DATA.opponents)
+    const [activeSuit,setActiveSuit] = useState(DATA.activeSuit)
+    const [gameIsStarted, startGame] = useState(DATA.inSession)
+	const [players, setPlayers] = useState(DATA.playerList)
+    const [chooseSuit,setSuit] = useState(DATA.chooseSuit)
+    const [upCard, setUpcard] = useState(DATA.upCard)
+    const [turn, setTurn] = useState(DATA.turn)
+    const [hand,setHand] = useState(DATA.hand)
     const [warning,setWarning] = useState("");
+
+
+    const username = DATA !== null?DATA.user:null;
+    const isAdmin = DATA !== null?DATA.isAdmin:null;
+
     //delete this
     document.title = "User: " + username
 
     useEffect(()=>{
+
+        socket.on("reJoin",e=>{
+            console.log("i rejoined a room")
+        })
+
         socket.on('player_joined',e=>{
-    		setPlayers(e)
+            DATA.playerList = e
+            sessionStorage.setItem("data",JSON.stringify(DATA))
+            setPlayers(DATA.playerList)
+        })
+
+        socket.on("override",data=>{
+            DATA.turn = data["nextTurn"]
+            sessionStorage.setItem("data",JSON.stringify(DATA))
+            setTurn(DATA.turn)
         })
 
         socket.on("updateDisplay", data=>{
+            setWarning("")
             if(data["winner"] !== ""){
                 setWarning(data["winner"] + " has won!")
             }
-            setUpcard(data['upcard'])
-            setTurn(data['nextTurn'])
-            setActiveSuit(data["activeSuit"])
+            console.log("updateDisplay",data)
+            DATA.upCard = data["upCard"]
+            DATA.turn = data["nextTurn"]
+            DATA.activeSuit = data["activeSuit"]
+            
+            sessionStorage.setItem("data",JSON.stringify(DATA))
+            
+            setTurn(DATA.turn)
+            setUpcard(DATA.upCard)
+            setActiveSuit(DATA.activeSuit)
+
+            if(data['rule'] === 'draw2'){
+                socket.emit("draw",{
+                    "room":ROOM,
+                    ID:ID
+                })
+                socket.emit("draw",{
+                    "room":ROOM,
+                    ID:ID
+                })
+            }  
         })
         
         socket.on("updateHand",data=>{
             setWarning("")
-            setHand(makeCards(username,room,socket,chooseSuit,data['hand']))
+            DATA.hand = data["hand"]
+            sessionStorage.setItem("data",JSON.stringify(DATA))
+            setHand(DATA.hand)
         })
         
         socket.on("updateOpponents",data=>{
-            setOpponentCards(data['opponents'])
+            DATA.opponents = data["opponents"]
+            sessionStorage.setItem("data",JSON.stringify(DATA))
+            setOpponentCards(DATA.opponents)
         })
 
         socket.on('move_to_game_start', data =>{
-            setHand(makeCards(username,room,socket,chooseSuit,data['hand']))
-            setTurn(data['turn'])
-            setUpcard(data['upcard'])
-            setOpponentCards(data['opponents'])
-            setActiveSuit(data["upcard"]["suit"])
-            startGame(true)
+            console.log("gameStart",data)
+            DATA.inSession = true
+            DATA.hand = data["hand"]
+            DATA.upCard = data["upCard"]
+            DATA.activeSuit = data["upCard"]["suit"]
+            DATA.turn = data["turn"]
+            DATA.opponents = data["opponents"]
+            DATA.chooseSuit = false
+        
+            sessionStorage.setItem("data",JSON.stringify(DATA))
+            setActiveSuit(DATA.activeSuit)
+            setTurn(DATA.turn)
+            setUpcard(DATA.upCard)
+            setOpponentCards(DATA.opponents)
+            startGame(DATA.inSession)
+        })
+
+        socket.on("newAdmin",data=>{
+            DATA.isAdmin = true
+            sessionStorage.setItem("data",JSON.stringify(DATA))
         })
 
         socket.on("error",error=>{
-            console.log(error)
             setWarning(error)
         })
 
         socket.on("choose suit",data=>{
             if(data === true){
-                setSuit(true)
+                DATA.chooseSuit = data
+                sessionStorage.setItem("data",JSON.stringify(DATA))
+                setSuit(DATA.chooseSuit)
             }
         })
 
@@ -74,41 +130,41 @@ function WaitingRoom({ socket }) {
         
       return ()=>{
         socket.off("player_joined")
-        socket.off("move_to_game_start")
         socket.off("updateDisplay")
         socket.off("updateHand")
         socket.off("updateOpponents")
         socket.off("error")
         socket.off("choose suit")
-      }},[socket,room, username])
+      }},[socket, username, chooseSuit, DATA, ROOM, ID])
     return (
         <div >
             <div >
                 <div>
                 {!gameIsStarted && <Loading />}
-                    {!gameIsStarted && <LobbyDisplay socket={socket} players={players} isAdmin={isAdmin} room={room}/>}
+                    {!gameIsStarted && <LobbyDisplay socket={socket} players={DATA.playerList} isAdmin={isAdmin} ROOM={ROOM} ID={ID}/>}
                     {gameIsStarted && 
                         <div className='bg-purple-200 h-screen '>
                             
                             <div className='flex  items-center justify-center'>
-                                <PlayerLayout opponents={opponentCards} players={players} turn={turn}/>
+                                <PlayerLayout opponents={opponentCards} players={players} turn={DATA.turn}/>
                             </div>
                             <CurrentSuit suit={activeSuit}/>
                             {turn === username && <div className="animate-bounce" style={{textAlign:"center",color:"green",fontSize:"28px"}}>Your Turn!</div>}
-                            {/*turn !== username && <div style={{textAlign:"center"}}>Current Turn: {turn}</div>*/}
+                            
                             <div style={{textAlign:"center",color:"red",fontSize:"25px",margin:"15px"}}>
                                 {warning}
                             </div>
-                            {/* style={{ display:"center",justifyContent:"center" }} */}
-                            {/* className='container shadow-md bg-green-300 rounded-full w-1/2 py-1' */}
+                            
                                 <div style={{display:"flex",justifyContent:"center",backgroundColor:"lightgreen",width:"fit-content",margin:"10px auto 10px auto"
                                 ,padding:"15px 75px 15px 75px",borderRadius:"100px"}}  >
                                     <UpcardDisplay 
-                                        card={upcard} 
+                                        card={upCard} 
                                         username={username} 
                                         socket={socket} 
-                                        room={room} 
-                                        turn={turn}/> 
+                                        ROOM={ROOM} 
+                                        turn={DATA.turn}
+                                        ID={ID}
+                                    /> 
                                 </div>
             
 
@@ -117,14 +173,14 @@ function WaitingRoom({ socket }) {
                                     <ChooseSuit 
                                     setSuit={setSuit} 
                                     user={username} 
-                                    room={room} 
+                                    room={ROOM} 
                                     socket={socket}/>:<div/>
 
                                 }
                                 <CardHand 
-                                    user={username} 
-                                    hand={hand} 
-                                    room={room} 
+                                    username={username} 
+                                    hand={DATA.hand} 
+                                    room={ROOM} 
                                     socket={socket}
                                     chooseSuit={chooseSuit}/>
                             
@@ -132,23 +188,22 @@ function WaitingRoom({ socket }) {
                     </div>
                     }
                 </div>
+                <br></br>
+                <LeaveGame 
+                    socket={socket} 
+                    room={ROOM} 
+                    ID={ID} 
+                    inSession={DATA.inSession} 
+                    hand={DATA.hand}
+                    user={DATA.user}
+                    isAdmin={isAdmin}
+                    />
             </div>
         </div>
     )
 }
 
 
-const Popup = props =>{
-    return(
-        <div style={{display:"flex",justifyContent:"center",padding:"15px",height:"inherit"}}>
-            <ChooseSuit 
-                setSuit={props.setSuit} 
-                user={props.user} 
-                room={props.room} 
-                socket={props.socket}/>
-        </div>
-    )
-}
 
 function makeCards(username,room,socket,chooseSuit,cards){
     return cards.map( e=>
@@ -174,6 +229,7 @@ const CurrentSuit = props =>{
 
 function LobbyDisplay(props)
 {
+    //params(socket={socket} players={DATA.playerList} isAdmin={isAdmin} ROOM={ROOM} ID={ID})
     return (
     <div style={{display:"grid",justifyContent:"center",gap:"5px"}}>
         <div style={{display:"flex",justifyContent:"center",backgroundColor:"lightgreen",width:"max-content",padding:"20px 15px 20px 15px",borderRadius:"30px"}}>
@@ -190,7 +246,11 @@ function LobbyDisplay(props)
             <button 
                 className="p-2 rounded-full bg-blue-400"
                 onClick={() => {
-                    props.socket.emit("start_game", props.room)
+
+                    props.socket.emit("start_game", {
+                        room:props.ROOM,
+                        ID:props.ID
+                    })
                 }}>
             Start Game
             </button>)
@@ -200,22 +260,26 @@ function LobbyDisplay(props)
 }
 
 function CardHand(props){
+    //params:username={username} hand={hand} room={ROOM} socket={socket} chooseSuit={chooseSuit}/>
+
+    const hand = makeCards(props.username,props.room,props.socket,props.chooseSuit,props.hand)
     return (
-        // <div className='flex flex-wrap justify-center mt-5 gap-x-3'>
         <div className="flex space-x-2 items-center justify-center">
-            {props.hand }
+            {hand}
         </div>
     )   
 }
 
 function UpcardDisplay(props)
 {
+    //params: card={upCard} username={username} socket={socket} ROOM={ROOM} turn={DATA.turn} ID={ID}
     const drawCard = () =>{
         if (props.turn !== props.username){
             return
         }
         props.socket.emit("draw",{
-            "room":props.room
+            room:props.ROOM,
+            ID:props.ID
         })
     }
 
