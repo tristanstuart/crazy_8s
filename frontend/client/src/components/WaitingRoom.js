@@ -152,7 +152,7 @@ function WaitingRoom({ socket }) {
                 {/* {!gameIsStarted && <br/ >} */}
                     {!gameIsStarted && <Lobby socket={socket} players={DATA.playerList} isAdmin={isAdmin} ROOM={ROOM} ID={ID} DATA={DATA}/>}
                     {gameIsStarted && 
-                        <div className='bg-purple-200 min-h-screen '>
+                        <div className='bg-poker-table bg-cover min-h-screen '>
                             
                             <div className='flex  items-center justify-center'>
                                 <PlayerLayout opponents={opponentCards} players={players} turn={DATA.turn}/>
@@ -164,7 +164,7 @@ function WaitingRoom({ socket }) {
                                 {warning}
                             </div>
                             
-                                <div style={{display:"flex",justifyContent:"center",backgroundColor:"lightgreen",width:"fit-content",margin:"10px auto 0px auto"
+                                <div style={{display:"flex",justifyContent:"center",backgroundColor:"inherit",width:"fit-content",margin:"10px auto 0px auto"
                                 ,padding:"15px 75px 15px 75px",borderRadius:"100px"}}  >
                                     <UpcardDisplay 
                                         card={upCard} 

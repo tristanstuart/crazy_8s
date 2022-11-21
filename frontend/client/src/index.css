@@ -5,9 +5,7 @@
 @layer components {
     .card-select:hover {
         box-shadow: 10px 10px 20px lightskyblue;
-        /* z-index: 10; */
-        /* transform: scale(2); */
-        transform: translateY(-50px) scale(1.25);
+        transform: translateY(-50px) scale(1.15);
         transition: transform 500ms ease-in-out;
         opacity: 90%;
         

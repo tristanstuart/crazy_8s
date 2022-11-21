@@ -5,7 +5,7 @@ function TableLayout(props){
     //referenced https://css-tricks.com/text-blocks-over-image/ for displaying text over the card image
     const avatar = <img alt='avatar icon' src='../../avatar.svg' className='rounded-lg w-20 mb-4' />
     const avatarAnimated = <img alt='avatar icon' src='../../avatar.svg' className='motion-safe:animate-bounce rounded-lg w-20 mb-4 ' />
-    const deckImg = <FontAwesomeIcon icon={faHandsHolding} size="3x" className='mt-2' />
+    const deckImg = <FontAwesomeIcon icon={faHandsHolding} size="3x" className='mt-3' />
 
     let playerCount = 0;
     const icons = [faUserAstronaut, faPoo ,faHippo, faPlane, faGhost]

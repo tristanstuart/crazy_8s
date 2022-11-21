@@ -25,7 +25,8 @@ module.exports = {
         'digital-mesh':       "url('https://img.freepik.com/free-vector/abstract-banner-with-modern-cyber-particles-design_1048-14381.jpg?t=st=1668962359~exp=1668962959~hmac=a623a2daaead806db39eca37ffa79b7d39549f941495b31c70d3920cf3ef9638')",    
         'neon-suits':         "url('https://img.freepik.com/free-vector/neon-symbols-casino-playing-cards-background_1017-23680.jpg?w=740&t=st=1668969112~exp=1668969712~hmac=85d759f6833d4cc1a5a0c1762908425d72123bd01a7566796a8d0e02f86b00ad')",
         'card-circle':        "url('https://images.pexels.com/photos/2508565/pexels-photo-2508565.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1')",
-        'low-poly-mountain':  "url('https://wallpapercave.com/dwp1x/wp1902565.jpg')"
+        'low-poly-mountain':  "url('https://wallpapercave.com/dwp1x/wp1902565.jpg')",
+        'poker-table':        "url('https://img.freepik.com/premium-vector/poker-table-background-green-color_47243-1067.jpg?w=740')",
       }
 
     },
