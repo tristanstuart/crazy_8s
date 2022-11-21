@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { BrowserRouter as Router } from "react-router-dom";
+import { BrowserRouter as Router, useNavigate } from "react-router-dom";
 import io from "socket.io-client";
 
 const socket= io("http://127.0.0.1:5000",{
@@ -24,19 +24,49 @@ const pageAccessedByReload = (
 if(pageAccessedByReload){
   socket.emit("newSID",session)
 }
+
+const Navo = () =>{
+  const navigate = useNavigate()
+  useEffect(()=>{
+    socket.on("leaveRoom",data=>{
+      console.log(data)
+      sessionStorage.removeItem("data")
+      navigate("/")
+    })  
+
+    
+
+    
+  },[])
+  return <div/>
+}
+socket.on("debug",data=>{
+  console.log(data)
+})
+
+
 //need to fix an issue where if the server restarts, and a user has an id of 0,their
 //sid does not match to the client, this can just be avoided if we use a really good
 //random number generator to use as an id
 socket.on("connect",()=>{
   if(session == null){
     socket.emit("needSession")
+    
   }
+})
+
+socket.on("disconnect",()=>{
+  console.log("ummm your disconnecting buddy")
+})
+
+socket.on("session",data=>{
+  sessionStorage.setItem("session",JSON.stringify(data))
   const DATA = sessionStorage.getItem("data") !== null?JSON.parse(sessionStorage.getItem("data")):null;
   // not sure where im going with this, im guessing rejoin a gameroom ,
   // dont know if it should auto redirect on a successful response from the server, 
   // or let the user leave
   if(DATA !== null){
-    if(DATA.room != null){
+    if(DATA.room != null && session !== null){
       socket.emit("pendingRoom",{
         room:DATA.room,
         ID:session.ID
@@ -44,36 +74,13 @@ socket.on("connect",()=>{
   }}
 })
 
-socket.on("disconnect",()=>{
-  console.log("ummm your disconnecting buddy")
-})
-
-//this needs to go inside a useEffect in order to use navigate() or useLocation?,
-//an error is thrown if the user accesses waitinRoom.js with this new data set.
-//this message is only received if the room does not exist
-socket.on("deadRoom",message=>{
-  
-  const data = {
-    inSession:false,
-    isAdmin:false,
-    room:null,
-    playerList:null,
-    user:null,
-  }
-
-  sessionStorage.setItem("data",JSON.stringify(data))
-  console.log(message)
-})
-
-socket.on("session",data=>{
-  sessionStorage.setItem("session",JSON.stringify(data))
-})
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   // <React.StrictMode>
     
     <Router>
+      <Navo/>
       <App socket={socket}/>
     </Router>
   // {/* </React.StrictMode> */}

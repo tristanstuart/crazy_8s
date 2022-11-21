@@ -23,7 +23,7 @@ class Game():
         
 
     def hasStarted(self):
-        return self.inSession;
+        return self.inSession
         
     def status(self):
         status = {
@@ -37,7 +37,6 @@ class Game():
         status["chooseSuit"] = self.needSuit
         
         return status
-
 
     def shuffleDeck(self):
         shuffle(self.deck)
@@ -75,9 +74,7 @@ class Game():
         self.index = randint(0, len(self.players) - 1)
         self.playerTurn = self.players[self.index]
         self.inSession = True
-        
-    
-    
+         
     def upcard(self):
         return self.pile[0]
 
@@ -143,11 +140,20 @@ class Game():
         return display
 
     #get the next player's name
-    def getNext(self):
+    def getNext(self,over=None):
+        
+        if self.index == len(self.players):
+            self.index -= 1
+
+        if len(self.players) == 0:
+            return "no more players"
+
         if self.needSuit == True:
             return self.playerTurn.getName()
+        
         if self.index + 1 == len(self.players):
             return self.players[0].getName()
+
         return self.players[self.index+1].getName()        
 
     #update current player cards, and center display
@@ -282,5 +288,29 @@ class Game():
         
         return Rules.ERROR
 
+    def removePlayer(self,data):
+        ID = data["ID"]
+        #if the game hasn't started no prob just remove the player
+        if not data["inSession"]:
+            for p in range(len(self.players)):
+                if self.players[p].getSID() == ID:
+                    self.players.pop(p)
+                    return
     
-
+        player = None
+        
+        #look for player
+        for i in range(len(self.players)):
+            if self.players[i].getSID() == ID:
+                player = self.players.pop(i)
+                break
+    
+        #if the player leaving is the current expected player , just set to the next player
+        if self.playerTurn.getSID() == player.getSID():
+            self.index-=1
+            self.nextTurn()
+        
+        for i in range(len(player.cards)):
+            self.deck.append(player.cards.pop())
+        self.shuffleDeck()
+        del(player)

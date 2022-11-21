@@ -1,10 +1,13 @@
 from turtle import update
 from flask import Flask, render_template, request
-from flask_socketio import SocketIO, emit, join_room,leave_room
+from flask_socketio import SocketIO, emit, join_room,leave_room,close_room
 import os
 import logging
 from logic.game import Game
 from logic.Rules import Rules
+import json
+import snowflake.connector
+import random
 from logic.database import DB
 
 
@@ -44,6 +47,61 @@ def is_admin(id, room):
 def on_connect(data):
     print(request.sid,"is connected")
 
+
+@socketio.on("leaveRoom")
+def leaveRoom(data):
+    
+    if not data["room"] in rooms:
+        emit("leaveRoom")
+        return
+
+    room = data["room"]
+        
+    leave_room(room)
+
+    #check if the player leaving is the curr player turn
+    isCurrentPlayer = False
+    if rooms[room].hasStarted():
+        if rooms[room].playerTurn.getSID() == data["ID"]:
+            isCurrentPlayer = True
+
+    rooms[room].removePlayer(data)
+    emit("leaveRoom",f'You have left room {room}')
+
+    #this if for the waiting room before the game starts if all users happen to leave, just del room
+    if len(rooms[room].players) == 0:
+        close_room(room)
+        del(rooms[room])
+        return
+
+    #if the player leaving happens to be admin, assign the admin role to someone new
+    if data["isAdmin"] == True:
+        player = random.choice(rooms[room].players)        
+        emit("newAdmin",{"isAdmin":True},to=getSID(player.getSID()))
+        print(f'{player.getName()} is now admin')
+
+    #game hasn't started, just update the player list in waiting room
+    if not data["inSession"]:
+        emit('player_joined', rooms[room].playerList(), to=room)
+        return
+
+    if len(rooms[room].players) >= 2:
+        #if the player leaving is the current expected player, look at new player 
+        if isCurrentPlayer:
+            emit("override",{"nextTurn":rooms[room].playerTurn.getName()},to=room)
+        updateOpponents(room)
+        emit("error",f'{data["user"]} has left the room',to=room)
+        
+        return
+        
+    # do something if there is only one player left while the game is in session, del room ? 
+    # or just wait for reconnection, lets just del for rigth now
+    if len(rooms[room].players) < 2:
+        print(f'no more players in room,deleting room {room}')
+        emit("leaveRoom",f'you are the only player in the room',to=room)
+        close_room(room)
+        del(rooms[room])
+
 #set a clients newSID given to them by socketio, as it does not preserve it through the
 #users session
 @socketio.on("newSID")
@@ -53,7 +111,6 @@ def newSID(data):
         print("a new session will be given")
         need()
         return 
-    print("data on reconnect",data)
     print("assigning a new SID on server")
     people[data["ID"]]["sid"] = request.sid
     emit("session",people[data["ID"]])
@@ -107,10 +164,10 @@ def signUp(data):
 
     print(username + " " + password + " " + secQues + " " + secAns)
     result = False
-    result = database.createUser(username, password, secQues, secAns)
     if result:
-        print('User ' + username + ' was created!')
+    result = database.createUser(username, password, secQues, secAns)
         emit("userCreated",'User ' + username + ' was created!')
+        print('User ' + username + ' was created!')
     else:
         print('A user with that name already exists. Choose another user name')
         emit("error",'A user with that name already exists. Choose another user name')
@@ -120,12 +177,10 @@ def signUp(data):
 @socketio.on("pendingRoom")
 def pending(data):
     if data["room"] in rooms:
-        print("that game is still going")
         join_room(data["room"])
-        emit("reJoin","someonejoined")
+        emit("reJoin",f'successfully joined room {data["room"]}')
         return
-    emit("deadRoom","Error room " + f'{data["room"]}' + " not found")
-    print("sorry bud " + f'{data["room"]}' + "does not exist")
+    emit("leaveRoom","Error room " + f'{data["room"]}' + " not found")
 
 @socketio.on('join')
 def on_join(data):
@@ -160,19 +215,10 @@ def exists(data):
     room = data['room']
     emit('exists', room in rooms)
 
-# only emitted by admin
-
 @socketio.on('create')
 def on_create(data):
     name = data['username']
     room = data['room']
-    
-    #fix issues on client not updating data.room stored in sessionStorage
-    #a user could leave the room automatically if they disconnect, but we cannot
-    #assume they will refresh the page, so just do it here for them
-    if data.get("oldRoom") != None:
-        print("leaving old room",data["oldRoom"])
-        leave_room(data["oldRoom"])
     
     if (room in rooms ): #or len(room) < 3
         emit('create', False) #read by client in JoinGame.js
@@ -192,7 +238,8 @@ def on_start_game(data):
     room = data["room"]
     
     if rooms.get(room) == None:
-        emit("error","game does not exist")
+        emit("leaveRoom","Room does not exist")
+
         return
 
     if rooms.get(room).hasStarted():
@@ -246,7 +293,7 @@ def deal(data):
     #    updatePlayer(message,request.sid,data["room"])
        return emit("error", message ,to=getSID(data["ID"]))
     
-    updateRoom(message,data["ID"],data["room"]) #update center display, curr player hand, and opponent hands
+    updateRoom(message,data["room"]) #update center display, curr player hand, and opponent hands
     updatePlayer(message,data["ID"],data["room"])
 
 @socketio.on("setSuit")
@@ -258,12 +305,13 @@ def setSuit(data):
 
     message = rooms[data["room"]].setSuit(data["suit"])
 
-    updateRoom(message,data["ID"],data["room"])
+    updateRoom(message,data["room"])
     updatePlayer(message,data["ID"],data["room"])
 
 #validates that the room exists, that it is the player's turn, and that the game hasn't ended
 def checkData(data):
     if not data["room"] in rooms:
+        emit("leaveRoom","Sorry the game you tried to join never existed")
         return Rules.ERROR, "room does not exist"
 
     if rooms[data["room"]].gameOver == True:
@@ -276,17 +324,17 @@ def checkData(data):
     return Rules.VALID," current turn " + rooms[data["room"]].playerTurn.getName()
 
 
-def updateRoom(message,SID, room):
+def updateRoom(message, room):
     #updates center card, current turn, and activesuit as a dict
     emit("updateDisplay", message["updateDisplay"], to=room)
-
-    for p in rooms[room].players:#update all opponent card counts
-        opponentCards = rooms[room].getCardState(p)[1] #function returns player and opponent hand info [1] on the end gets just the opponent info
-        emit("updateOpponents", {'opponents':opponentCards}, to=getSID(p.getSID()))
-
+    updateOpponents(room)
+    
 def updatePlayer(message, SID, room):
     #update specific playerhand, refers to them by request.sid as SID 
     emit("updateHand",message["updateHand"],to=getSID(SID))
+    updateOpponents(room)
+    
+def updateOpponents(room):
     for p in rooms[room].players:#update all opponent card counts
         opponentCards = rooms[room].getCardState(p)[1] #function returns player and opponent hand info [1] on the end gets just the opponent info
         emit("updateOpponents", {'opponents':opponentCards}, to=getSID(p.getSID()))
