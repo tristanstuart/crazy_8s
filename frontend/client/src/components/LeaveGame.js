@@ -1,4 +1,4 @@
-
+import {Navigate, useNavigate} from 'react-router-dom'
 const LeaveGame = ({socket,room,ID,inSession,hand,user,isAdmin}) =>{
     
     const handleClick = () =>{
@@ -14,9 +14,15 @@ const LeaveGame = ({socket,room,ID,inSession,hand,user,isAdmin}) =>{
         if(inSession){
             data.hand = hand
             socket.emit("leaveRoom",data)
+            console.log('in shesh')
+            Navigate('/')
+
             return
         }
+        console.log('not in shesh')
         socket.emit("leaveRoom",data)
+        Navigate('/')
+
         
     }
     //style={{display:"flex",justifyContent:"center",margin:"20px"}}
@@ -24,7 +30,8 @@ const LeaveGame = ({socket,room,ID,inSession,hand,user,isAdmin}) =>{
         <div >
             <button 
                 onClick={handleClick}
-                className="leave-button hover:bg-red-400 hover:text-white"
+                className="p-4 bg-red-400 hover:bg-red-500 w-full rounded-lg shadow text-xl font-medium uppercase text-white"
+                // leave-button hover:bg-red-400 hover:text-white uppercase font-medium
                 >
                 Leave Game
             </button>

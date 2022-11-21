@@ -1,10 +1,9 @@
 import {useEffect, useState} from 'react'
-import Loading from './WaitBanner'
 import Card from './Card'
 import ChooseSuit from './ChooseSuit'
 import PlayerLayout from './PlayerLayout'
 import LeaveGame from './LeaveGame'
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import Lobby from './Lobby'
 
 function WaitingRoom({ socket }) {
 
@@ -100,7 +99,6 @@ function WaitingRoom({ socket }) {
         })
 
         socket.on('move_to_game_start', data =>{
-            console.log("gameStart",data)
             DATA.inSession = true
             DATA.hand = data["hand"]
             DATA.upCard = data["upCard"]
@@ -151,8 +149,8 @@ function WaitingRoom({ socket }) {
         <div className='min-h-screen' >
             <div >
                 <div>
-                {!gameIsStarted && <Loading />}
-                    {!gameIsStarted && <LobbyDisplay socket={socket} players={DATA.playerList} isAdmin={isAdmin} ROOM={ROOM} ID={ID}/>}
+                {!gameIsStarted }  
+                    {!gameIsStarted && <Lobby socket={socket} players={DATA.playerList} isAdmin={isAdmin} ROOM={ROOM} ID={ID}/>}
                     {gameIsStarted && 
                         <div className='bg-purple-200 min-h-screen '>
                             
