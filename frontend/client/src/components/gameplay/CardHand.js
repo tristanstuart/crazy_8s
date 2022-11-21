@@ -1,12 +1,12 @@
 import Card from './Card'
 
 function CardHand(props){
+   const hand = makeCards(props.socket, props.room, props.hand)
     return (
-        // <div className='flex flex-wrap justify-center mt-5 gap-x-3'>
         <div className="flex space-x-2 items-center justify-center">
-            {props.hand }
+            {hand}
         </div>
-    )   
+    ) 
 }
 
 // creates a list of Card components from hand data
@@ -22,4 +22,4 @@ function makeCards(socket, room, cards){
     )
 }
 
-export {CardHand, makeCards};
+export default CardHand

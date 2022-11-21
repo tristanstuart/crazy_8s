@@ -7,7 +7,8 @@ function UpcardDisplay(props)
             return
         }
         props.socket.emit("draw",{
-            "room":props.room
+            room:props.ROOM,
+            ID:props.ID
         })
     }
 
