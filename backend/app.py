@@ -6,8 +6,7 @@ import logging
 from logic.game import Game
 from logic.Rules import Rules
 from logic.database import DB
-import json
-import snowflake.connector
+
 
 
 
@@ -17,6 +16,9 @@ app.config.update(
     DEBUG=True,
     SECRET_KEY = SECRET,
 )
+
+#instantiate the DB object initializing the connection
+database = DB()
 
 socketio = SocketIO(app,cors_allowed_origins="*")
 socketio.init_app(app, cors_allowed_origins="*")
@@ -31,6 +33,9 @@ rooms = {}
 users=[{"username":"test","password":"test"},{"username":"test2","password":"test2"}]
 #make db handle unique ID's for session
 people = {}
+
+
+
 
 def is_admin(id, room):
     return rooms[room].getAdmin()['sid'] == id
@@ -78,29 +83,36 @@ def dis():
 def login(data):
     ##edit when we have access to database
     authenticated = False
-
+    print("in login")
     username = data["username"]
     password = data["password"]
-    authenticated = DB.authenticate(username, password) #returns True or False if the user authenticated
+    authenticated = database.authenticate(username, password) #returns True or False if the user authenticated
 
     if authenticated:
         users.append(data)
-        emit("signed","User logged in")
+        print("authenticated!")
+        emit("signuplistener","User logged in")
     else:
-        emit("error","Wrong Username/Password")
+        print("authentication failed")
+        emit("signuplistener","Wrong Username/Password")
     
     
 @socketio.on("signup")
 def signUp(data):
+    print("in signup")
     username = data["username"]
     password = data["password"]
     secQues = data["question"]
     secAns = data["answer"]
 
-    result = DB.createUser
+    print(username + " " + password + " " + secQues + " " + secAns)
+    result = False
+    result = database.createUser(username, password, secQues, secAns)
     if result:
+        print('User ' + username + ' was created!')
         emit("userCreated",'User ' + username + ' was created!')
     else:
+        print('A user with that name already exists. Choose another user name')
         emit("error",'A user with that name already exists. Choose another user name')
 
 #sent by client if they disconnected while in a gameSesion
