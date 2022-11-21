@@ -148,13 +148,13 @@ function WaitingRoom({ socket }) {
         socket.off("choose suit")
       }},[socket, username, chooseSuit, DATA, ROOM, ID])
     return (
-        <div >
+        <div className='min-h-screen' >
             <div >
                 <div>
                 {!gameIsStarted && <Loading />}
                     {!gameIsStarted && <LobbyDisplay socket={socket} players={DATA.playerList} isAdmin={isAdmin} ROOM={ROOM} ID={ID}/>}
                     {gameIsStarted && 
-                        <div className='bg-purple-200 h-100% '>
+                        <div className='bg-purple-200 min-h-screen '>
                             
                             <div className='flex  items-center justify-center'>
                                 <PlayerLayout opponents={opponentCards} players={players} turn={DATA.turn}/>
@@ -166,7 +166,7 @@ function WaitingRoom({ socket }) {
                                 {warning}
                             </div>
                             
-                                <div style={{display:"flex",justifyContent:"center",backgroundColor:"lightgreen",width:"fit-content",margin:"10px auto 10px auto"
+                                <div style={{display:"flex",justifyContent:"center",backgroundColor:"lightgreen",width:"fit-content",margin:"10px auto 0px auto"
                                 ,padding:"15px 75px 15px 75px",borderRadius:"100px"}}  >
                                     <UpcardDisplay 
                                         card={upCard} 
@@ -200,7 +200,7 @@ function WaitingRoom({ socket }) {
                     }
                 </div>
             </div>
-                <div className="bg-purple-200">
+                <div className="bg-purple-200 h-full">
                     <LeaveGame 
                         socket={socket} 
                         room={ROOM} 

@@ -11,8 +11,8 @@
         opacity: 90%;
     }
     .hand {
-        margin-top: -25px;
         margin-right: 15px;
+        padding-top: 2px;
         max-width: 100vw;
         display: grid;
         grid-template-columns: repeat(20, 4.5vw);
@@ -34,7 +34,7 @@
         width: 100%;
         border-width: 2px;
         border-color: red;
-        position: relative;
+        position: fixed;
         bottom: 0;
         padding-bottom: 2px;
         margin-bottom: 1px;
