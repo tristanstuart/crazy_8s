@@ -4,11 +4,13 @@
 
 @layer components {
     .card-select:hover {
-        transform: translateY(-20px);
         box-shadow: 10px 10px 20px lightskyblue;
-        z-index: 10;
-        transform: scale(1.3);
+        /* z-index: 10; */
+        /* transform: scale(2); */
+        transform: translateY(-50px) scale(1.25);
+        transition: transform 500ms ease-in-out;
         opacity: 90%;
+        
     }
     .hand {
         margin-right: 15px;
@@ -19,12 +21,12 @@
         grid-auto-flow: row;
         align-items: center;
         justify-content: center;
-        transform: scale(.8);
+        transform: scale(.84);
         
     }
     .hand>* {
         /* margin-right: calc(-.20 * 100vw) ; */
-        margin-top: 1px;
+        margin-top: 2px;
         
     }
 
