@@ -1,4 +1,3 @@
-from turtle import update
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit, join_room,leave_room,close_room
 import os
@@ -7,6 +6,7 @@ from logic.game import Game
 from logic.Rules import Rules
 import random
 from logic.database import DB
+from flask_cors import CORS
 
 
 
@@ -25,6 +25,7 @@ socketio = SocketIO(app,cors_allowed_origins="*")
 socketio.init_app(app, cors_allowed_origins="*")
 log = logging.getLogger("werkzeug")
 log.disabled = True
+CORS(app)#delete this later, only needed when running locally
 
 
 print()
@@ -33,7 +34,12 @@ count = [0]
 rooms = {}
 users=[{"username":"test","password":"test"},{"username":"test2","password":"test2"}]
 #make db handle unique ID's for session
-people = {}
+activePeople = {}
+#move this to leaderboard db
+scores = [
+        {"name":"John","wins":100},
+        {"name":"Goodman","wins":2000},
+        {"name":"Johnny","wins":11}]
 
 
 
@@ -104,14 +110,14 @@ def leaveRoom(data):
 #users session
 @socketio.on("newSID")
 def newSID(data):
-    if people.get(data["ID"]) == None:
+    if activePeople.get(data["ID"]) == None:
         print("Error ID " + f'{data["ID"]}' + " not found")
         print("a new session will be given")
         need()
         return 
     print("assigning a new SID on server")
-    people[data["ID"]]["sid"] = request.sid
-    emit("session",people[data["ID"]])
+    activePeople[data["ID"]]["sid"] = request.sid
+    emit("session",activePeople[data["ID"]])
 
 #since react doesnt remember anything after a page refresh
 # we need to create a session for a user on their side.
@@ -124,14 +130,14 @@ def need():
     #disconnects, additionally this logic should be on the db
     num = count[0]
     count[0] += 1
-    people[num] = { 
+    activePeople[num] = { 
         "ID":num,
         "sid":request.sid
     }
-    emit("session",people[num])
+    emit("session",activePeople[num])
 
 @socketio.on("disconnect")
-def dis():
+def disconnect():
     print(request.sid,"is disconnecting")
 
 @socketio.on("login")
@@ -266,7 +272,7 @@ def draw(data):
     elif result is Rules.CHOOSE_SUIT: return emit("choose suit", "Please choose a suit",to=getSID(data["ID"]))
 
     updatePlayer(message,data["ID"],data["room"])
-
+    
 @socketio.on("deal")
 def deal(data):
     # validate turn can be processed
@@ -280,8 +286,8 @@ def deal(data):
     result, message = rooms[data["room"]].play_card(data) 
     
     # player made winning play
-    if result is Rules.WINNER: 
-        emit("winner",to=data["room"])
+    if result is Rules.WINNER:
+        addScore(message["updateDisplay"]["winner"])
     # player played an 8
     elif result is Rules.CHOOSE_SUIT:
        emit("choose suit", True ,to=getSID(data["ID"]))
@@ -290,9 +296,8 @@ def deal(data):
     elif result is Rules.ERROR: 
     #    updatePlayer(message,request.sid,data["room"])
        return emit("error", message ,to=getSID(data["ID"]))
-    
-    updateRoom(message,data["room"]) #update center display, curr player hand, and opponent hands
     updatePlayer(message,data["ID"],data["room"])
+    updateRoom(message,data["room"]) #update center display, curr player hand, and opponent hands
 
 @socketio.on("setSuit")
 def setSuit(data):
@@ -321,7 +326,6 @@ def checkData(data):
 
     return Rules.VALID," current turn " + rooms[data["room"]].playerTurn.getName()
 
-
 def updateRoom(message, room):
     #updates center card, current turn, and activesuit as a dict
     emit("updateDisplay", message["updateDisplay"], to=room)
@@ -337,19 +341,37 @@ def updateOpponents(room):
         opponentCards = rooms[room].getCardState(p)[1] #function returns player and opponent hand info [1] on the end gets just the opponent info
         emit("updateOpponents", {'opponents':opponentCards}, to=getSID(p.getSID()))
 
-@app.route("/")
-def index():
-    return render_template("index.html")
+def sortScores(val):
+    return val["wins"]
 
-#gets a users SID based on their ID in people dictionary
+def addScore(winner):
+    for p in scores:
+        if p["name"] == winner:
+            p["wins"] += 1
+            return
+
+    scores.append({
+        "name":winner,
+        "wins":1})    
+
+#gets a users SID based on their ID in activePeople dictionary
 def getSID(ID):
     #if the server restarts it has no recollection of past ID's 
-    if people.get(ID) == None:
+    if activePeople.get(ID) == None:
         print("not a known ID, a new one will be assigned")
         need()
         return
 
-    return people[ID]["sid"]
+    return activePeople[ID]["sid"]
+
+@app.route("/")
+def index():
+    return render_template("index.html")
+
+@app.route("/scores")
+def leaderBoardScores():
+    scores.sort(key=sortScores,reverse=True)
+    return scores
 
 if __name__ == '__main__':
 	socketio.run(app) 
