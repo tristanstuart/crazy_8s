@@ -22,7 +22,7 @@ function JoinGame({ socket }){
                 playerList : e
             }
             sessionStorage.setItem("data",JSON.stringify(data))
-			navigate('/waitingRoom', {state:{room:roomState.room, playerList:e, user:roomState.user, isAdmin:false}}) //go to waiting room
+			navigate('/waitingRoom') //go to waiting room
         })
         socket.on("error",data=>{
             setErrorTitle(data.title)

@@ -1,5 +1,4 @@
 import {useEffect, useState} from 'react'
-//import {useLocation} from 'react-router-dom'
 import CardHand from './gameplay/CardHand'
 import UpcardDisplay from './gameplay/UpcardDisplay'
 import ChooseSuit from './gameplay/ChooseSuit'
@@ -12,7 +11,6 @@ function GameRoom({ socket }) {
 	const ID = sessionStorage.getItem("session") !== null ? JSON.parse(sessionStorage.getItem("session")).ID : null
     const ROOM = sessionStorage.getItem("data") !== null ? JSON.parse(sessionStorage.getItem("data")).room : null
     const DATA = sessionStorage.getItem("data") !== null ? JSON.parse(sessionStorage.getItem("data")) : null
-    //const location = useLocation()
 
     const username = DATA !== null ? DATA.user : null
     const isAdmin = DATA !== null ? DATA.isAdmin : null
@@ -24,20 +22,6 @@ function GameRoom({ socket }) {
     const [turn, setTurn] = useState(DATA.turn)
     const [hand,setHand] = useState(DATA.hand)
     const [warning,setWarning] = useState("")
-    //const [loadedData,setLoadedData] = useState(false)
-
-    //fill in data brought over from waiting room
-    //probably not the best solution, may change when refactoring backend
-    /*if(!loadedData)
-    {
-        var data = location.state.data
-        setHand(makeCards(socket,room,data['hand'])) //moved makeCards to /gameplay/CardHand.js
-        setTurn(data['turn'])
-        setUpcard(data['upcard'])
-        setOpponentCards(data['opponents'])
-        setActiveSuit(data["upcard"]["suit"])
-        setLoadedData(true)
-    }*/
 
     //delete this
     document.title = "User: " + username

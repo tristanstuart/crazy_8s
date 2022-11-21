@@ -28,7 +28,7 @@ function CreateGame({ socket }){
         
                 console.log('room created')
                 sessionStorage.setItem("data",JSON.stringify(data))
-				navigate('/waitingRoom', {state:{room:data.room, playerList:[data.user], user:data.user, isAdmin:data.isAdmin}}) //go to waiting room
+				navigate('/waitingRoom') //go to waiting room
             
             }
         })
