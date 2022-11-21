@@ -150,7 +150,7 @@ function WaitingRoom({ socket }) {
             <div >
                 <div>
                 {/* {!gameIsStarted && <br/ >} */}
-                    {!gameIsStarted && <Lobby socket={socket} players={DATA.playerList} isAdmin={isAdmin} ROOM={ROOM} ID={ID}/>}
+                    {!gameIsStarted && <Lobby socket={socket} players={DATA.playerList} isAdmin={isAdmin} ROOM={ROOM} ID={ID} DATA={DATA}/>}
                     {gameIsStarted && 
                         <div className='bg-purple-200 min-h-screen '>
                             
@@ -192,17 +192,17 @@ function WaitingRoom({ socket }) {
                                     room={ROOM} 
                                     socket={socket}
                                     chooseSuit={chooseSuit}/>
-
-                                <LeaveGame 
-                                    socket={socket} 
-                                    room={ROOM} 
-                                    ID={ID} 
-                                    inSession={DATA.inSession} 
-                                    hand={DATA.hand}
-                                    user={DATA.user}
-                                    isAdmin={isAdmin}
-                                    />
-
+                                <div className="leave-button"> 
+                                    <LeaveGame 
+                                        socket={socket} 
+                                        room={ROOM} 
+                                        ID={ID} 
+                                        inSession={DATA.inSession} 
+                                        hand={DATA.hand}
+                                        user={DATA.user}
+                                        isAdmin={isAdmin}
+                                        />
+                                </div>
                                 </div>
                             </div>
                     }
@@ -231,7 +231,8 @@ function makeCards(username,room,socket,chooseSuit,cards){
     )
 }
 
-const CurrentSuit = props =>{ 
+const CurrentSuit = props =>{
+    
     return(
         <div className='flex justify-center mt-3 motion-safe:animate-pulse'>
             Active Suit: 
@@ -240,37 +241,6 @@ const CurrentSuit = props =>{
     )
 }
 
-function LobbyDisplay(props)
-{
-    //params(socket={socket} players={DATA.playerList} isAdmin={isAdmin} ROOM={ROOM} ID={ID})
-    return (
-    <div style={{display:"grid",justifyContent:"center",gap:"5px"}}>
-        <div style={{display:"flex",justifyContent:"center",backgroundColor:"lightgreen",width:"max-content",padding:"20px 15px 20px 15px",borderRadius:"30px"}}>
-            <div style={{display:"grid",justifyContent:"center"}}>
-                <u style={{textAlign:"center"}}>Player List</u>
-                <ul style={{display:"grid",justifyContent:"center",gridTemplateColumns:"max-content"}}>
-                    {props.players.map(data => 
-                        (<li style={{display:"flex",justifyContent:"center"}}key={data}>{data}</li>)
-                    )}
-                </ul>
-            </div>
-        </div>{
-        props.isAdmin && (
-            <button 
-                className="p-2 rounded-full bg-blue-400"
-                onClick={() => {
-
-                    props.socket.emit("start_game", {
-                        room:props.ROOM,
-                        ID:props.ID
-                    })
-                }}>
-            Start Game
-            </button>)
-        }
-    </div>
-    )
-}
 
 function CardHand(props){
     //params:username={username} hand={hand} room={ROOM} socket={socket} chooseSuit={chooseSuit}/>

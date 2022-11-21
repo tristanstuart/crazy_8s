@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
-const Nth =  require('tailwindcss-nth-child');
-const plugin =  new  Nth()
+// const Nth =  require('tailwindcss-nth-child');
+// const plugin =  new  Nth()
 module.exports = {
   content: [
     "./src/**/*.{js,jsx,ts,tsx}",
@@ -36,7 +36,7 @@ module.exports = {
       }
     }
   },
-  plugins: [ plugin.nthChild()],
+  // plugins: [ plugin.nthChild()],
 }
 
 

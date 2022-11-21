@@ -1,9 +1,13 @@
 import React from "react";
 import LeaveGame from "./LeaveGame";
 import Loading from './Loading'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCheck, faEnvelope, faGhost, faHippo, faPlane, faPoo, faUserAstronaut } from '@fortawesome/free-solid-svg-icons'
 
-function Lobby({socket, players, isAdmin, ROOM, ID}){
-    
+function Lobby({socket, players, isAdmin, ROOM, ID, DATA}){
+    let playerCount = 0;
+    const icons = [faUserAstronaut, faPoo ,faHippo, faPlane, faGhost]
+    const icon_color = ['blue', 'brown', "purple", "grey", "yellow",]
     return(
         <div>
             <div class="min-h-screen flex-1 bg-gray-200 p-4 flex justify-center items-center">
@@ -47,16 +51,18 @@ function Lobby({socket, players, isAdmin, ROOM, ID}){
                             (
                                 <div class="flex justify-between items-center h-16 p-4 my-6  rounded-lg border border-gray-100 shadow-md">
                                     <div class="flex items-center">
-                                    <img class="" alt="Avatar" />
+                                    {/* <img class="" alt="Avatar" /> */}
+                                    <FontAwesomeIcon size="2x" icon={icons[playerCount]} color={icon_color[playerCount++]} />
                                         <div class="ml-2">
                                             <div class="text-sm font-semibold text-gray-600">{data}</div>
                                         </div>
                                     </div>
                                     <div>
-                                        <button class="bg-red-400 hover:bg-red-500 p-2 rounded-full shadow-md flex justify-center items-center">
-                                            <svg class="text-white toggle__lock w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <button class="bg-green-400 hover:bg-red-500 p-2 rounded-full shadow-md flex justify-center items-center">
+                                            {/* <svg class="text-white toggle__lock w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                            </svg>
+                                            </svg> */}
+                                            <FontAwesomeIcon icon={faCheck} />
                                         </button>
                                     </div>
                                 </div>
@@ -89,7 +95,15 @@ function Lobby({socket, players, isAdmin, ROOM, ID}){
                             </button>)}
                     </div>
                     <div class="p-6">
-                        <LeaveGame />
+                        <LeaveGame
+                            socket={socket} 
+                            room={ROOM} 
+                            ID={ID} 
+                            inSession={DATA.inSession} 
+                            hand={DATA.hand}
+                            user={DATA.user}
+                            isAdmin={isAdmin}
+                        />
                     </div>
                 </div>
             </div>
