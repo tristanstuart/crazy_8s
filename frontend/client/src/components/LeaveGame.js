@@ -24,7 +24,7 @@ const LeaveGame = ({socket,room,ID,inSession,hand,user,isAdmin}) =>{
         <div >
             <button 
                 onClick={handleClick}
-                className="leave-button hover:bg-red-400 rounded-full"
+                className="leave-button hover:bg-red-400 hover:text-white"
                 >
                 Leave Game
             </button>

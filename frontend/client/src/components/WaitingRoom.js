@@ -154,7 +154,7 @@ function WaitingRoom({ socket }) {
                 {!gameIsStarted && <Loading />}
                     {!gameIsStarted && <LobbyDisplay socket={socket} players={DATA.playerList} isAdmin={isAdmin} ROOM={ROOM} ID={ID}/>}
                     {gameIsStarted && 
-                        <div className='bg-purple-200 h-100vh '>
+                        <div className='bg-purple-200 h-100% '>
                             
                             <div className='flex  items-center justify-center'>
                                 <PlayerLayout opponents={opponentCards} players={players} turn={DATA.turn}/>
@@ -200,7 +200,7 @@ function WaitingRoom({ socket }) {
                     }
                 </div>
             </div>
-                <div className="">
+                <div className="bg-purple-200">
                     <LeaveGame 
                         socket={socket} 
                         room={ROOM} 
