@@ -7,14 +7,20 @@ module.exports = {
   ],
   theme: {
     fontSize: {
+      '4xl': '1.5rem',
+      '5xl': "2rem",
+      '6xl': '2.5rem',
+      '7xl':  '3rem',
+      '8xl': '3.5rem',
       '9xl': '10rem',
-      '8xl': '3rem',
-      '6xl': '2rem',
-      '4xl': '1.5rem'
     },
     extend: {
       backgroundColor:{
         'black-t-50': 'rgba(0,0,0,0.5)'
+      },
+      textColor:{
+        'bright-yellow': "#ffff00",
+        'bright-red':    "#ff0000"
       },
       backgroundImage:{
         // template "url('')",
