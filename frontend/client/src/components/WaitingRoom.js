@@ -10,7 +10,7 @@ function WaitingRoom({ socket }) {
     const DATA = sessionStorage.getItem("data") !== null ? JSON.parse(sessionStorage.getItem("data")) : null;
     
     const navigate = useNavigate()
-	const [players, setPlayers] = useState(DATA.playerList)
+	const [players, setPlayers] = useState(DATA.playerList)//used but not used? here for causing updates to DOM for re-renders, i guess
     const username = DATA !== null ? DATA.user : null
     const isAdmin = DATA !== null ? DATA.isAdmin : null
 
@@ -92,7 +92,9 @@ function LobbyDisplay(props)
                 <u style={{textAlign:"center"}}>Player List</u>
                 <ul style={{display:"grid",justifyContent:"center",gridTemplateColumns:"max-content"}}>
                     {props.players.map(data => 
-                        (<li style={{display:"flex",justifyContent:"center"}}key={data}>{data}</li>)
+                        (<li style={{display:"flex",justifyContent:"center"}} key={data}> 
+                            {data}
+                        </li>)
                     )}
                 </ul>
             </div>

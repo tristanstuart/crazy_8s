@@ -20,7 +20,7 @@ function GameRoom({ socket }) {
     const [chooseSuit,setSuit] = useState(DATA.chooseSuit)
     const [upCard, setUpcard] = useState(DATA.upCard)
     const [turn, setTurn] = useState(DATA.turn)
-    const [hand,setHand] = useState(DATA.hand)
+    const [hand,setHand] = useState(DATA.hand)//used but not used? here for causing updates to DOM for re-renders, i guess
     const [warning,setWarning] = useState("")
 
     //delete this
@@ -113,10 +113,14 @@ function GameRoom({ socket }) {
     return (
         <div className='bg-purple-200 h-screen '>          
             <div className='flex  items-center justify-center'>
-                <PlayerLayout opponents={opponentCards} players={players} turn={DATA.turn}/>
+                <PlayerLayout opponents={opponentCards} players={players} turn={DATA.turn} isGameOver={warning.endsWith("has won!")}/>
             </div>
             <CurrentSuit suit={activeSuit}/>
-            {turn === username && <div className="animate-bounce" style={{textAlign:"center",color:"green",fontSize:"28px"}}>Your Turn!</div>}
+
+                                   {/*hacky way of disabling player
+                                    turn indicator when game ends. 
+                                    add variable for this later*/}
+            {(turn === username && !warning.endsWith("has won!")) && <div className="animate-bounce" style={{textAlign:"center",color:"green",fontSize:"28px"}}>Your Turn!</div>}
             
             <div style={{textAlign:"center",color:"red",fontSize:"25px",margin:"15px"}}>
                 {warning}
