@@ -1,4 +1,4 @@
-
+import {Navigate, useNavigate} from 'react-router-dom'
 const LeaveGame = ({socket,room,ID,inSession,hand,user,isAdmin}) =>{
     
     const handleClick = () =>{
@@ -16,16 +16,12 @@ const LeaveGame = ({socket,room,ID,inSession,hand,user,isAdmin}) =>{
         }
         socket.emit("leaveRoom",data)
     }
-
     return (
-        <div style={{display:"flex",justifyContent:"center",margin:"20px"}}>
+        <div >
             <button 
                 onClick={handleClick}
-                style={{
-                    backgroundColor:"#b9c0ea",
-                    padding:"10px",
-                    borderRadius:"30px"
-                }}>
+                className="p-4 bg-red-400 hover:bg-red-500 w-full rounded-lg shadow text-xl font-medium uppercase text-white"
+                >
                 Leave Game
             </button>
         </div>

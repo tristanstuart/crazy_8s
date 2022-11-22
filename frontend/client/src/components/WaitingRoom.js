@@ -1,7 +1,7 @@
 import {useEffect, useState} from 'react'
-import Loading from './WaitBanner'
 import {useNavigate} from 'react-router-dom'
 import LeaveGame from './gameplay/LeaveGame'
+import Lobby from './Lobby'
 
 function WaitingRoom({ socket }) {
 
@@ -14,6 +14,7 @@ function WaitingRoom({ socket }) {
     const [error,setError] = useState("")
     const username = DATA !== null ? DATA.user : null
     const isAdmin = DATA !== null ? DATA.isAdmin : null
+    
 
     //delete this
     document.title = "User: " + username
@@ -70,56 +71,12 @@ function WaitingRoom({ socket }) {
     return (
         <div >
             <div>
-                <Loading />
-                {error !== ""?<div style={{textAlign:"center",padding:"10px"}}>{error}</div>:<div/>}
-                <LobbyDisplay socket={socket} players={DATA.playerList} isAdmin={isAdmin} ROOM={ROOM} ID={ID}/>
+                <Lobby socket={socket} players={DATA.playerList} isAdmin={isAdmin} ROOM={ROOM} ID={ID} DATA={DATA}/>
             </div>
-            <br></br>
-            <LeaveGame 
-                socket={socket} 
-                room={ROOM} 
-                ID={ID} 
-                inSession={DATA.inSession} 
-                hand={DATA.hand}
-                user={DATA.user}
-                isAdmin={isAdmin}
-                />
+            
         </div>
     )
 }
 
-function LobbyDisplay(props)
-{
-    //params(socket={socket} players={DATA.playerList} isAdmin={isAdmin} ROOM={ROOM} ID={ID})
-    return (
-    <div style={{display:"grid",justifyContent:"center",gap:"5px"}}>
-        <div style={{display:"flex",justifyContent:"center",backgroundColor:"lightgreen",width:"max-content",padding:"20px 15px 20px 15px",borderRadius:"30px"}}>
-            <div style={{display:"grid",justifyContent:"center"}}>
-                <u style={{textAlign:"center"}}>Player List</u>
-                <ul style={{display:"grid",justifyContent:"center",gridTemplateColumns:"max-content"}}>
-                    {props.players.map(data => 
-                        (<li style={{display:"flex",justifyContent:"center"}} key={data}> 
-                            {data}
-                        </li>)
-                    )}
-                </ul>
-            </div>
-        </div>{
-        props.isAdmin && (
-            <button 
-                className="p-2 rounded-full bg-blue-400"
-                onClick={() => {
-
-                    props.socket.emit("start_game", {
-                        room:props.ROOM,
-                        ID:props.ID
-                    })
-                }}>
-            Start Game
-            </button>)
-        }
-    </div>
-    )
-}
 
 export default WaitingRoom;

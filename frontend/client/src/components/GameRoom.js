@@ -5,6 +5,7 @@ import ChooseSuit from './gameplay/ChooseSuit'
 import CurrentSuit from './gameplay/CurrentSuit'
 import PlayerLayout from './gameplay/PlayerLayout'
 import LeaveGame from './gameplay/LeaveGame'
+import RuleAnimation from './RuleAnimation'
 
 function GameRoom({ socket }) {
     console.log("in game room")
@@ -22,6 +23,7 @@ function GameRoom({ socket }) {
     const [turn, setTurn] = useState(DATA.turn)
     const [hand,setHand] = useState(DATA.hand)//used but not used? here for causing updates to DOM for re-renders, i guess
     const [warning,setWarning] = useState("")
+    const [rule, setRule] = useState(null);
 
     //delete this
     document.title = "User: " + username
@@ -53,16 +55,36 @@ function GameRoom({ socket }) {
             setUpcard(DATA.upCard)
             setActiveSuit(DATA.activeSuit)
 
-            if(data['rule'] === 'draw2'){
-                socket.emit("draw",{
-                    "room":ROOM,
-                    ID:ID
-                })
-                socket.emit("draw",{
-                    "room":ROOM,
-                    ID:ID
-                })
-            }  
+            if(data['rule']){
+
+                // animation stops after 5 seconds 
+                setTimeout(function(){
+                    setRule(null);
+                },5000);
+
+                if(data['rule'] === 'draw2'){
+                    setRule('draw2')
+                    socket.emit("draw",{
+                        "room":ROOM,
+                        ID:ID
+                    })
+                    socket.emit("draw",{
+                        "room":ROOM,
+                        ID:ID
+                    })
+                    
+                } 
+                else if(data['rule'] === 'skip'){
+                    console.log('skip')
+                    setRule('skip')
+                    
+                }
+                else if(data['rule'] === 'reverse'){
+                    console.log('reverse')
+                    setRule('reverse')
+                }
+                // setTimeout();
+            }
         })
         
         socket.on("updateHand",data=>{
@@ -111,22 +133,23 @@ function GameRoom({ socket }) {
         socket.off("choose suit")
       }},[socket, DATA, ID, ROOM, username, chooseSuit])
     return (
-        <div className='bg-purple-200 h-screen '>          
-            <div className='flex  items-center justify-center'>
-                <PlayerLayout opponents={opponentCards} players={players} turn={DATA.turn} isGameOver={warning.endsWith("has won!")}/>
+        <div className='bg-poker-table bg-cover min-h-screen '>          
+            {rule? <RuleAnimation rule={rule} /> : <div></div>}
+             <div className='flex  items-center justify-center'>
+                <PlayerLayout opponents={opponentCards} players={players} turn={DATA.turn}/>
             </div>
             <CurrentSuit suit={activeSuit}/>
 
                                    {/*hacky way of disabling player
                                     turn indicator when game ends. 
                                     add variable for this later*/}
-            {(turn === username && !warning.endsWith("has won!")) && <div className="animate-bounce" style={{textAlign:"center",color:"green",fontSize:"28px"}}>Your Turn!</div>}
+            {(turn === username && !warning.endsWith("has won!")) && <div className="motion-safe:animate-pulse neon-text mt-2" style={{textAlign:"center",fontSize:"28px"}}>Your Turn!</div>}
             
             <div style={{textAlign:"center",color:"red",fontSize:"25px",margin:"15px"}}>
                 {warning}
             </div>
-            <div style={{display:"flex",justifyContent:"center",backgroundColor:"lightgreen",width:"fit-content",
-                            margin:"10px auto 10px auto",padding:"15px 75px 15px 75px",borderRadius:"100px"}}>
+             <div style={{display:"flex",justifyContent:"center",backgroundColor:"inherit",width:"fit-content",margin:"10px auto 0px auto"
+            ,padding:"0px 75px 15px 75px",borderRadius:"100px"}}  >
                 <UpcardDisplay 
                     card={upCard} 
                     username={username} 
@@ -136,31 +159,33 @@ function GameRoom({ socket }) {
                     ID={ID}
                 /> 
             </div>
-            <div className='bg-purple-200 h-full'>
+             <div className=''>
                 {chooseSuit === true ? 
                     <ChooseSuit 
                     setSuit={setSuit} 
                     user={username} 
                     room={ROOM} 
-                    socket={socket}
-                    /> : <div/>
+                    socket={socket}/>:<div/>
+
                 }
-                <CardHand 
-                    hand={DATA.hand} 
-                    room={ROOM} 
-                    socket={socket}
-                />
-            </div>
-             <br></br>
-                <LeaveGame 
-                    socket={socket} 
-                    room={ROOM} 
-                    ID={ID} 
-                    inSession={DATA.inSession} 
-                    hand={DATA.hand}
-                    user={DATA.user}
-                    isAdmin={isAdmin}
-                />
+                    <CardHand 
+                        username={username} 
+                        hand={DATA.hand} 
+                        room={ROOM} 
+                        socket={socket}
+                        chooseSuit={chooseSuit}/>
+                    <div className="leave-button"> 
+                        <LeaveGame 
+                            socket={socket} 
+                            room={ROOM} 
+                            ID={ID} 
+                            inSession={DATA.inSession} 
+                            hand={DATA.hand}
+                            user={DATA.user}
+                            isAdmin={isAdmin}
+                            />
+                    </div>
+                </div>
         </div>   
     )
 }
