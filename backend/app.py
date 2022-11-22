@@ -1,13 +1,15 @@
-from turtle import update
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit, join_room,leave_room,close_room
 import os
 import logging
 from logic.game import Game
 from logic.Rules import Rules
-import json
-import snowflake.connector
 import random
+from logic.database import DB
+from flask_cors import CORS
+
+
+
 
 app = Flask(__name__)
 SECRET = "areallybadsecreat"
@@ -16,42 +18,31 @@ app.config.update(
     SECRET_KEY = SECRET,
 )
 
+#instantiate the DB object initializing the connection
+database = DB()
+
 socketio = SocketIO(app,cors_allowed_origins="*")
 socketio.init_app(app, cors_allowed_origins="*")
 log = logging.getLogger("werkzeug")
 log.disabled = True
+CORS(app)#delete this later, only needed when running locally
 
-with open('creds.json') as f:
-    data = json.load(f)
-    username = data['username']
-    password = data['password']
-    SF_ACCOUNT = data["account"]
-    SF_WH = data["warehouse"]
 
-ctx = snowflake.connector.connect(
-    user=username,
-    password=password,
-    account=SF_ACCOUNT
-    )
-cs = ctx.cursor()
-try:
-    #validate that we are reading from the data base and also test the login query with the sample user
-    cs.execute("SELECT current_version()")
-    one_row = cs.fetchone()
-    cs.execute("use warehouse {0}".format(SF_WH))
-    cs.execute("select * from login where username='{0}' and password = hash('{1}')".format("testuser", "foo"))
-    one_row = cs.fetchone()
-except:
-    print("no user was found")
-finally:
-    cs.close()
 print()
 #ctx.close()
 count = [0]
 rooms = {}
 users=[{"username":"test","password":"test"},{"username":"test2","password":"test2"}]
 #make db handle unique ID's for session
-people = {}
+activePeople = {}
+#move this to leaderboard db
+scores = [
+        {"name":"John","wins":100},
+        {"name":"Goodman","wins":2000},
+        {"name":"Johnny","wins":11}]
+
+
+
 
 def is_admin(id, room):
     return rooms[room].getAdmin()['sid'] == id
@@ -119,14 +110,14 @@ def leaveRoom(data):
 #users session
 @socketio.on("newSID")
 def newSID(data):
-    if people.get(data["ID"]) == None:
+    if activePeople.get(data["ID"]) == None:
         print("Error ID " + f'{data["ID"]}' + " not found")
         print("a new session will be given")
         need()
         return 
     print("assigning a new SID on server")
-    people[data["ID"]]["sid"] = request.sid
-    emit("session",people[data["ID"]])
+    activePeople[data["ID"]]["sid"] = request.sid
+    emit("session",activePeople[data["ID"]])
 
 #since react doesnt remember anything after a page refresh
 # we need to create a session for a user on their side.
@@ -139,57 +130,51 @@ def need():
     #disconnects, additionally this logic should be on the db
     num = count[0]
     count[0] += 1
-    people[num] = { 
+    activePeople[num] = { 
         "ID":num,
         "sid":request.sid
     }
-    emit("session",people[num])
+    emit("session",activePeople[num])
 
 @socketio.on("disconnect")
-def dis():
+def disconnect():
     print(request.sid,"is disconnecting")
 
 @socketio.on("login")
 def login(data):
     ##edit when we have access to database
-    cs = ctx.cursor()
     authenticated = False
-
+    print("in login")
     username = data["username"]
     password = data["password"]
-    query = "select * from login where username='{0}' and password = hash('{1}')".format(username, password)
-    print(query)
+    authenticated = database.authenticate(username, password) #returns True or False if the user authenticated
 
-    try:
-        cs.execute(query)
-        one_row = cs.fetchone()
-        print(one_row[0])
-        #if at least one row is found the user authenticated
-        authenticated = True
-        #add this data object to the users list
+    if authenticated:
         users.append(data)
-    except:
-        print("no user was found")
-        #uncomment these later when we can create a user using signup with database
-        #emit("error","Wrong Username/Password")
-        #return
-    finally:
-        cs.close()
+        print("authenticated!")
+        emit("signuplistener","User logged in")
+    else:
+        print("authentication failed")
+        emit("signuplistener","Wrong Username/Password")
     
-    #can user data in users or the authenticatesd flag set above
-    if data in users:
-        emit("signed","User logged in")
-
-    emit("error","Wrong Username/Password")
     
 @socketio.on("signup")
 def signUp(data):
-    ##edit when we have access to database
-    if data in users:
-        emit("error","Username taken.")
-        return
-    users.append(data)
-    emit("userCreated", "User created. Please log in")
+    print("in signup")
+    username = data["username"]
+    password = data["password"]
+    secQues = data["question"]
+    secAns = data["answer"]
+
+    print(username + " " + password + " " + secQues + " " + secAns)
+    result = False
+    result = database.createUser(username, password, secQues, secAns)
+    if result:
+        print('User ' + username + ' was created!')
+        emit("userCreated",'User ' + username + ' was created!')
+    else:
+        print('A user with that name already exists. Choose another user name')
+        emit("error",'A user with that name already exists. Choose another user name')
 
 #sent by client if they disconnected while in a gameSesion
 #still needs to be finished
@@ -287,7 +272,7 @@ def draw(data):
     elif result is Rules.CHOOSE_SUIT: return emit("choose suit", "Please choose a suit",to=getSID(data["ID"]))
 
     updatePlayer(message,data["ID"],data["room"])
-
+    
 @socketio.on("deal")
 def deal(data):
     # validate turn can be processed
@@ -301,8 +286,8 @@ def deal(data):
     result, message = rooms[data["room"]].play_card(data) 
     
     # player made winning play
-    if result is Rules.WINNER: 
-        emit("winner",to=data["room"])
+    if result is Rules.WINNER:
+        addScore(message["updateDisplay"]["winner"])
     # player played an 8
     elif result is Rules.CHOOSE_SUIT:
        emit("choose suit", True ,to=getSID(data["ID"]))
@@ -311,9 +296,8 @@ def deal(data):
     elif result is Rules.ERROR: 
     #    updatePlayer(message,request.sid,data["room"])
        return emit("error", message ,to=getSID(data["ID"]))
-    
-    updateRoom(message,data["room"]) #update center display, curr player hand, and opponent hands
     updatePlayer(message,data["ID"],data["room"])
+    updateRoom(message,data["room"]) #update center display, curr player hand, and opponent hands
 
 @socketio.on("setSuit")
 def setSuit(data):
@@ -342,7 +326,6 @@ def checkData(data):
 
     return Rules.VALID," current turn " + rooms[data["room"]].playerTurn.getName()
 
-
 def updateRoom(message, room):
     #updates center card, current turn, and activesuit as a dict
     emit("updateDisplay", message["updateDisplay"], to=room)
@@ -358,19 +341,37 @@ def updateOpponents(room):
         opponentCards = rooms[room].getCardState(p)[1] #function returns player and opponent hand info [1] on the end gets just the opponent info
         emit("updateOpponents", {'opponents':opponentCards}, to=getSID(p.getSID()))
 
-@app.route("/")
-def index():
-    return render_template("index.html")
+def sortScores(val):
+    return val["wins"]
 
-#gets a users SID based on their ID in people dictionary
+def addScore(winner):
+    for p in scores:
+        if p["name"] == winner:
+            p["wins"] += 1
+            return
+
+    scores.append({
+        "name":winner,
+        "wins":1})    
+
+#gets a users SID based on their ID in activePeople dictionary
 def getSID(ID):
     #if the server restarts it has no recollection of past ID's 
-    if people.get(ID) == None:
+    if activePeople.get(ID) == None:
         print("not a known ID, a new one will be assigned")
         need()
         return
 
-    return people[ID]["sid"]
+    return activePeople[ID]["sid"]
+
+@app.route("/")
+def index():
+    return render_template("index.html")
+
+@app.route("/scores")
+def leaderBoardScores():
+    scores.sort(key=sortScores,reverse=True)
+    return scores
 
 if __name__ == '__main__':
 	socketio.run(app) 

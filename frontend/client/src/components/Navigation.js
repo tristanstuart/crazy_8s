@@ -69,6 +69,13 @@ function Navigation(){
             >
                 Rules
             </NavLink>
+            <NavLink 
+                className={"block p-3"}  
+                to="leaderboard"
+                onClick={() => setShowMenu(!showMenu)}
+            >
+                Leader Board
+            </NavLink>
 
         </div>
         menuMask = 

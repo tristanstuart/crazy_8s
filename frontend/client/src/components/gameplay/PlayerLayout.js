@@ -34,7 +34,6 @@ function TableLayout(props){
                         <div className='text-5xl absolute'>
                             {person['count']}
                         </div>
-                        
                     </div>
                 </div>
             </div>
