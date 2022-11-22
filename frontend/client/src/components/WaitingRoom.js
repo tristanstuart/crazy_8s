@@ -158,14 +158,14 @@ function WaitingRoom({ socket }) {
                                 <PlayerLayout opponents={opponentCards} players={players} turn={DATA.turn}/>
                             </div>
                             <CurrentSuit suit={activeSuit}/>
-                            {turn === username && <div className="motion-safe:animate-pulse" style={{textAlign:"center",color:"green",fontSize:"28px"}}>Your Turn!</div>}
+                            {turn === username && <div className="motion-safe:animate-pulse neon-text mt-2" style={{textAlign:"center",fontSize:"28px"}}>Your Turn!</div>}
                             
                             <div style={{textAlign:"center",color:"red",fontSize:"25px",margin:"15px"}}>
                                 {warning}
                             </div>
                             
                                 <div style={{display:"flex",justifyContent:"center",backgroundColor:"inherit",width:"fit-content",margin:"10px auto 0px auto"
-                                ,padding:"15px 75px 15px 75px",borderRadius:"100px"}}  >
+                                ,padding:"0px 75px 15px 75px",borderRadius:"100px"}}  >
                                     <UpcardDisplay 
                                         card={upCard} 
                                         username={username} 
