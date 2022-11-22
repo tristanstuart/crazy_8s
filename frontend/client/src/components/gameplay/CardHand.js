@@ -1,24 +1,27 @@
 import Card from './Card'
 
 function CardHand(props){
-   const hand = makeCards(props.socket, props.room, props.hand)
+
+    const hand = makeCards(props.username,props.room,props.socket,props.chooseSuit,props.hand)
     return (
-        <div className="flex space-x-2 items-center justify-center">
-            {hand}
-        </div>
-    ) 
+            <div className="hand pb-5">
+                {hand}
+            </div>
+    )   
 }
 
 // creates a list of Card components from hand data
-function makeCards(socket, room, cards){
+function makeCards(username,room,socket,chooseSuit,cards){
     return cards.map( e=>
-        <Card 
+        <Card key={e["rank"]+ " " +e["suit"] }
+            user={username} 
             rank={e["rank"]} 
             suit={e["suit"]} 
             room={room}
             socket={socket}
-            class_={'relative flex transition-all transform-gpu rounded-lg shadow-2xl cursor-pointer hover:-mt-20'}
-        />
+            chooseSuit={chooseSuit}
+            class_={'card-select'}
+        />                                 
     )
 }
 

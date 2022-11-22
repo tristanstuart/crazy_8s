@@ -10,18 +10,18 @@ function Navigation(){
     let menuMask;
     if(showMenu){
         menu = <div
-            className="absolute z-10 bg-white top-0 left-0 w-4/5 h-full shadow p-3  "
+            className="absolute z-10 bg-slate-200 top-0 left-0 h-full shadow p-3 text-4xl w-auto  "
         >
-            <span className="font-bold block p-3">The Menu</span>
+            <span className="font-bold block border-b-2 border-slate-600 pl-3 pt-0">Nav Bar</span>
             <NavLink 
-                className={"block p-3"} 
+                className={"block p-3 "} 
                 to="/" 
                 onClick={() => setShowMenu(!showMenu)}
             >
                 Home
             </NavLink>
             <NavLink 
-                className={"block p-3"} 
+                className={"block p-3 "} 
                 to="joinGame"
                 onClick={() => setShowMenu(!showMenu)}
             >
