@@ -43,7 +43,8 @@ function CreateGame({ socket }){
       }
 
     return (
-        <div className="grid items-center justify-center h-screen text-xl bg-green-300 ">
+        <div className="grid items-center justify-center h-screen text-xl bg-gradient-to-r from-violet-500 to-fuchsia-500">
+
             <div className='flex-initial flex-wrap'>
                 {error ? <AlertBox title={room + " is not available"} message="Please choose another room name"/> : null}
                 {/* only shows when error is set, happens in useEffect() */}
@@ -52,7 +53,7 @@ function CreateGame({ socket }){
                         type="text" 
                         id="user" 
                         placeholder="User Name" 
-                        className="p-3 text-2xl rounded-full grid items-center justify-center mt-2" 
+                        className="p-3 text-2xl rounded-full grid items-center justify-center mt-2 " 
                         onChange= {e => {
                             setError(false)  
                             setUser(e.target.value.trim())
@@ -62,12 +63,12 @@ function CreateGame({ socket }){
                         id="room" 
                         type="text" 
                         placeholder="Room Name" 
-                        className="p-3 text-2xl rounded-full mt-1 grid items-center justify-center"
+                        className="p-3 text-2xl rounded-full mt-1 grid items-center justify-center "
                         onChange= {e => handleChange(e)}
                     />
                 </form>
                     <button 
-                    className="p-2 rounded-full bg-blue-400 mt-1"
+                    className="p-2 rounded-full bg-blue-400 mt-1 "
                     onClick={() => {
 
                         if (username==="" || room ===""){
@@ -112,6 +113,7 @@ function CreateGame({ socket }){
                     Create Game </button>
             </div>
         </div>
+    
     )
 }
 

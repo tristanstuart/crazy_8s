@@ -34,7 +34,7 @@ function JoinGame({ socket }){
       }},[socket, navigate, room, username])  
 
         return (
-            <div className="grid items-center justify-center h-screen bg-purple-300" >
+            <div className="grid items-center justify-center h-screen bg-gradient-to-r from-purple-500 to-pink-500 " >
                 <div className='flex-initial flex-wrap'>
                     {error ? <AlertBox title={errorTitle} message={errorMsg}/> : null}
                     {/*only shows when there's an error which is set in useEffect()*/}
@@ -43,7 +43,7 @@ function JoinGame({ socket }){
                             id="name" 
                             type="text"  
                             placeholder="Enter Username" 
-                            className="p-3 text-2xl rounded-full grid items-center justify-center mt-2"
+                            className="p-3 text-2xl rounded-full grid items-center justify-center mt-2 "
                             onChange= {e => {
                                 setError(false)
                                 setUser(e.target.value.trim())
@@ -53,7 +53,7 @@ function JoinGame({ socket }){
                             id="room" 
                             type="text" 
                             placeholder="Enter Room Code" 
-                            className="p-3 text-2xl rounded-full mt-1 grid items-center justify-center"
+                            className="p-3 text-2xl rounded-full mt-1 grid items-center justify-center "
                             onChange={e=>{
                                 setError(false)
                                 setRoom(e.target.value.trim())
@@ -63,7 +63,7 @@ function JoinGame({ socket }){
                     </form>
                         
                     <button id="join" 
-                    className="p-3 text-xl rounded-full mt-1 bg-green-300"
+                    className="p-3 text-xl rounded-full mt-1 bg-green-300 "
                     onClick={() => {
                         if(room === "" ||username ===""){
                             setErrorTitle('Error')
