@@ -7,7 +7,7 @@ function TableLayout(props){
     const avatarAnimated = <img alt='avatar icon' src='../../avatar.svg' className='motion-safe:animate-bounce rounded-lg w-20 mb-4 ' />
     const deckImg = <FontAwesomeIcon icon={faHandsHolding} size="3x" className='mt-3' />
 
-    let playerCount = 1;
+    let playerCount = 0;
     const icons = [faUserAstronaut, faPoo ,faHippo, faPlane, faGhost]
     const icon_color = ['#d6d3d1', '#a16207', "#d8b4fe", "#c7d2fe", "#fafaf9",]
     

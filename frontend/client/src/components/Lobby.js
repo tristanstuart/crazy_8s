@@ -1,5 +1,5 @@
 import React from "react";
-import LeaveGame from "./LeaveGame";
+import LeaveGame from "./gameplay/LeaveGame";
 import Loading from './Loading'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck, faEnvelope, faGhost, faHippo, faPlane, faPoo, faUserAstronaut } from '@fortawesome/free-solid-svg-icons'

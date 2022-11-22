@@ -5,6 +5,7 @@ import ChooseSuit from './gameplay/ChooseSuit'
 import CurrentSuit from './gameplay/CurrentSuit'
 import PlayerLayout from './gameplay/PlayerLayout'
 import LeaveGame from './gameplay/LeaveGame'
+import RuleAnimation from './RuleAnimation'
 
 function GameRoom({ socket }) {
     console.log("in game room")
@@ -22,6 +23,7 @@ function GameRoom({ socket }) {
     const [turn, setTurn] = useState(DATA.turn)
     const [hand,setHand] = useState(DATA.hand)//used but not used? here for causing updates to DOM for re-renders, i guess
     const [warning,setWarning] = useState("")
+    const [rule, setRule] = useState(null);
 
     //delete this
     document.title = "User: " + username
