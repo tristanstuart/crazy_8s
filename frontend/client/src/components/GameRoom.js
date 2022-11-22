@@ -62,7 +62,8 @@ function GameRoom({ socket }) {
                     setRule(null);
                 },5000);
 
-                if(data['rule'] === 'draw2'){
+                if(data['rule'] === 'draw2' && data["nextTurn"] === username){
+                    console.log("draw2 event")
                     setRule('draw2')
                     socket.emit("draw",{
                         "room":ROOM,
