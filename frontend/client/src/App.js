@@ -8,6 +8,7 @@ import { Route, Routes } from "react-router-dom";
 import SignUp from './components/Signup'
 import Login from './components/Login'
 import WaitingRoom from "./components/WaitingRoom";
+import GameRoom from "./components/GameRoom";
 import SandBox from "./components/SandBox"
 import Rules from "./components/Rules";
 import LeaderBoard from "./components/LeaderBoard";
@@ -30,6 +31,7 @@ function App({socket}) {
         <Route path ='joinGame' element={<JoinGame socket={socket}/>} />
         <Route path ='createGame' element={<CreateGame socket={socket}/>} />
         <Route path ='waitingRoom' element={<WaitingRoom socket={socket}/>} />
+        <Route path ='gameRoom' element={<GameRoom socket={socket}/>} />
         <Route path ='Sandbox' element={<SandBox socket={socket}/>} />
         <Route path ='Rules' element={<Rules socket={socket}/>} />
         <Route path ='leaderboard' element={<LeaderBoard socket={socket}/>} />
