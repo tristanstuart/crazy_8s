@@ -8,9 +8,6 @@ import random
 from logic.database import DB
 from flask_cors import CORS
 
-
-
-
 app = Flask(__name__)
 SECRET = "areallybadsecreat"
 app.config.update(
@@ -40,9 +37,6 @@ scores = [
         {"name":"John","wins":100},
         {"name":"Goodman","wins":2000},
         {"name":"Johnny","wins":11}]
-
-
-
 
 def is_admin(id, room):
     return rooms[room].getAdmin()['sid'] == id
@@ -74,6 +68,7 @@ def leaveRoom(data):
 
     #this if for the waiting room before the game starts if all users happen to leave, just del room
     if len(rooms[room].players) == 0:
+        print(f'deleting room {room}')
         close_room(room)
         del(rooms[room])
         return
@@ -248,6 +243,11 @@ def on_start_game(data):
 
     if rooms.get(room).hasStarted():
         emit("error","Cannot start a game that has already started")
+        return
+
+    if len(rooms[room].players) < 2:
+        print("Need at least two players to start game in room",room)
+        emit("error","Need at least two players to start the game :(")
         return
 
     rooms[room].gameStart()
