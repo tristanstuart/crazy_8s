@@ -9,6 +9,7 @@
         transition: transform 500ms ease-in-out;
         opacity: 90%;
         
+        
     }
     .hand {
         margin-right: 15px;
@@ -26,6 +27,9 @@
         /* margin-right: calc(-.20 * 100vw) ; */
         margin-top: 2px;
         
+    }
+    img {
+        image-rendering: pixelated;
     }
 
     .leave-button {
