@@ -4,6 +4,7 @@ import ChooseSuit from './ChooseSuit'
 import PlayerLayout from './PlayerLayout'
 import LeaveGame from './LeaveGame'
 import Lobby from './Lobby'
+import RuleAnimation from './RuleAnimation'
 
 function WaitingRoom({ socket }) {
 
@@ -21,6 +22,7 @@ function WaitingRoom({ socket }) {
     const [turn, setTurn] = useState(DATA.turn)
     const [hand,setHand] = useState(DATA.hand)
     const [warning,setWarning] = useState("");
+    const [rule, setRule] = useState(null);
 
     const username = DATA !== null?DATA.user:null;
     const isAdmin = DATA !== null?DATA.isAdmin:null;
@@ -67,22 +69,36 @@ function WaitingRoom({ socket }) {
             setUpcard(DATA.upCard)
             setActiveSuit(DATA.activeSuit)
 
-            if(data['rule'] === 'draw2'){
-                socket.emit("draw",{
-                    "room":ROOM,
-                    ID:ID
-                })
-                socket.emit("draw",{
-                    "room":ROOM,
-                    ID:ID
-                })
-            } 
-            else if(data['rule'] === 'skip'){
-                console.log('skip')
+            if(data['rule']){
+
+                // animation stops after 5 seconds 
+                setTimeout(function(){
+                    setRule(null);
+                },5000);
+
+                if(data['rule'] === 'draw2'){
+                    setRule('draw2')
+                    socket.emit("draw",{
+                        "room":ROOM,
+                        ID:ID
+                    })
+                    socket.emit("draw",{
+                        "room":ROOM,
+                        ID:ID
+                    })
+                    
+                } 
+                else if(data['rule'] === 'skip'){
+                    console.log('skip')
+                    setRule('skip')
+                    
+                }
+                else if(data['rule'] === 'reverse'){
+                    console.log('reverse')
+                    setRule('reverse')
+                }
+                // setTimeout();
             }
-            else if(data['rule'] === 'reverse'){
-                console.log('reverse')
-            } 
         })
         
         socket.on("updateHand",data=>{
@@ -153,7 +169,7 @@ function WaitingRoom({ socket }) {
                     {!gameIsStarted && <Lobby socket={socket} players={DATA.playerList} isAdmin={isAdmin} ROOM={ROOM} ID={ID} DATA={DATA}/>}
                     {gameIsStarted && 
                         <div className='bg-poker-table bg-cover min-h-screen '>
-                            
+                            {rule? <RuleAnimation rule={rule} /> : <div></div>}
                             <div className='flex  items-center justify-center'>
                                 <PlayerLayout opponents={opponentCards} players={players} turn={DATA.turn}/>
                             </div>
@@ -208,9 +224,7 @@ function WaitingRoom({ socket }) {
                     }
                 </div>
             </div>
-                <div className="bg-purple-200 h-full">
-                    
-                </div>
+               
         </div>
     )
 }

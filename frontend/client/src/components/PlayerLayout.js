@@ -26,12 +26,12 @@ function TableLayout(props){
                     <p className="">
                         {props.turn === person.name ?  person['name']: person['name']}    
                     </p>
-                    {props.turn === person.name ? <FontAwesomeIcon size="3x" icon={icons[playerCount]} style={{animationDuration: '5s'}} color={icon_color[playerCount++]} spinPulse /> : <FontAwesomeIcon size="3x" icon={icons[playerCount]} color={icon_color[playerCount++]} />}
+                    {props.turn === person.name ? <FontAwesomeIcon size="3x" icon={icons[playerCount]} style={{animationDuration: '5s'}} color={icon_color[playerCount++]} bounce /> : <FontAwesomeIcon size="3x" icon={icons[playerCount]} color={icon_color[playerCount++]} />}
                     <div 
                         className=' relative flex justify-center' >
                         {deckImg}
 
-                        <div className='text-6xl absolute'>
+                        <div className='text-5xl absolute'>
                             {person['count']}
                         </div>
                         

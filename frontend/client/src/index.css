@@ -5,8 +5,8 @@
 @layer components {
     .card-select:hover {
         box-shadow: 10px 10px 20px lightskyblue;
-        transform: translateY(-50px) scale(1.15);
-        transition: transform 500ms ease-in-out;
+        transform: translateY(-20px);
+        transition: transform .5s ease-in-out;
         opacity: 90%;
         
         
@@ -62,7 +62,46 @@
             0 0 92px #ff9,
             0 0 102px #ff9,
             0 0 151px #ff9;
-        
+    }
+    .rule {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 20;
+        animation: floatRule 2s infinite;
+        animation-direction: alternate;
+    }
+    @keyframes floatRule {
+        from {
+            top: 0;
+            animation-timing-function: ease-in;
+
+        }
+        to {
+            top: 200px;
+            animation-timing-function: ease-out;
+        }
+
+    }
+    .draw2 {
+        position: absolute;
+        left: 0;
+        transform: translateX(50%);
+        color: Pink;
+        font-weight: bold;
+        font-family: "Courier";
+        font-size: 100px;
+        margin: 10px 0 0 10px;
+        white-space: nowrap;
+        overflow: hidden;
+        width: 100vw;
+        animation: type 3s steps(60, end) infinite;
+        z-index: 20;
+    }
+    @keyframes type {
+        from {
+            width: 0;
+        }
     }
         
 }
