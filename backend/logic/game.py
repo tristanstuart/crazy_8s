@@ -1,11 +1,7 @@
 from random import shuffle, randint
-import json
-from .cards import Card
 from .deck import Deck
 from .player import Player
-from .bot import Bot
 from .Rules import Rules
-
 
 class Game():
     def __init__(self, admin) -> None:
@@ -21,7 +17,6 @@ class Game():
         self.gameOver = False
         self.inSession = False
         
-
     def hasStarted(self):
         return self.inSession
         
@@ -314,3 +309,15 @@ class Game():
             self.deck.append(player.cards.pop())
         self.shuffleDeck()
         del(player)
+
+    def reset(self):
+        for p in self.players:
+            p.cards.clear()
+        self.deck = Deck().init_cards().copy()
+        self.pile = []
+        self.activeSuit = ""
+        self.playerTurn = None
+        self.index = None
+        self.needSuit = False
+        self.gameOver = False
+        self.inSession = False

@@ -25,6 +25,7 @@ function JoinGame({ socket }){
                 iconList:{[roomState.user]:iconGen}
             }
             sessionStorage.setItem("data",JSON.stringify(data))
+            sessionStorage.setItem("gameOver",JSON.parse(false))
             console.log("emit update icon " + JSON.stringify(iconGen))
             socket.emit("setIconForPlayer", {
                 room: roomState.room,

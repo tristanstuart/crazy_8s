@@ -47,7 +47,7 @@ function Lobby({socket, players, iconDictionary, isAdmin, ROOM, ID, DATA}) {
                     <ul>
                         {players.map(data =>
                             (
-                                <div className="flex justify-between items-center h-16 p-4 my-6  rounded-lg border border-gray-100 shadow-md">
+                                <div key={data} className="flex justify-between items-center h-16 p-4 my-6  rounded-lg border border-gray-100 shadow-md">
                                     <div className="flex items-center">
                                     {/* <img className="" alt="Avatar" /> */}
                                     {/*debugging*/ /*console.log("lobby: " + JSON.stringify(iconDictionary))*/}

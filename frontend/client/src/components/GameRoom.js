@@ -6,10 +6,12 @@ import CurrentSuit from './gameplay/CurrentSuit'
 import PlayerLayout from './gameplay/PlayerLayout'
 import LeaveGame from './gameplay/LeaveGame'
 import RuleAnimation from './RuleAnimation'
+import ResetGame from './gameplay/ResetGame'
+import { useNavigate } from "react-router-dom"
 
 function GameRoom({ socket }) {
-    console.log("in game room")
 	const ID = sessionStorage.getItem("session") !== null ? JSON.parse(sessionStorage.getItem("session")).ID : null
+    const gameOver = sessionStorage.getItem("gameOver") !== null ? JSON.parse(sessionStorage.getItem("gameOver")) : null
     const ROOM = sessionStorage.getItem("data") !== null ? JSON.parse(sessionStorage.getItem("data")).room : null
     const DATA = sessionStorage.getItem("data") !== null ? JSON.parse(sessionStorage.getItem("data")) : null
 
@@ -23,10 +25,27 @@ function GameRoom({ socket }) {
     const [turn, setTurn] = useState(DATA.turn)
     const [hand,setHand] = useState(DATA.hand)//used but not used? here for causing updates to DOM for re-renders, i guess
     const [warning,setWarning] = useState("")
-    const [rule, setRule] = useState(null);
+    const [rule, setRule] = useState(null)
+    const nav = useNavigate()
 
     //delete this
     document.title = "User: " + username
+    
+    useEffect(()=>{
+        socket.on("move",message=>{
+            sessionStorage.setItem("gameOver","false")
+            const data = {
+                isAdmin:DATA.isAdmin,
+                inSession:false,
+                playerList:DATA.playerList,
+                room:DATA.room,
+                user:DATA.user
+            }
+            sessionStorage.setItem("data",JSON.stringify(data))
+            nav("/waitingRoom")
+        })
+
+    },[DATA.isAdmin, DATA.playerList, DATA.room, DATA.user, nav, socket])
 
     useEffect(()=>{
         socket.on("reJoin",e=>{
@@ -42,6 +61,9 @@ function GameRoom({ socket }) {
         socket.on("updateDisplay", data=>{
             setWarning("")
             if(data["winner"] !== ""){
+                DATA.inSession = false
+                sessionStorage.setItem("data",JSON.stringify(DATA))
+                sessionStorage.setItem("gameOver",JSON.parse(true))
                 setWarning(data["winner"] + " has won!")
             }
             console.log("updateDisplay",data)
@@ -134,7 +156,8 @@ function GameRoom({ socket }) {
         socket.off("choose suit")
       }},[socket, DATA, ID, ROOM, username, chooseSuit])
     return (
-        <div className='bg-poker-table bg-cover min-h-screen '>          
+        <div className='bg-poker-table bg-cover min-h-screen '>
+            {isAdmin === true && gameOver === true?<ResetGame socket={socket} ID={ID} room={ROOM}/>:<div/>}          
             {rule? <RuleAnimation rule={rule} /> : <div></div>}
              <div className='flex  items-center justify-center'>
                 <PlayerLayout opponents={opponentCards} players={players} iconDictionary={DATA.iconList} gameIsOver={warning.endsWith("has won!")} turn={DATA.turn}/>
