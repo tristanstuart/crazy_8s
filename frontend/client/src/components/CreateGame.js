@@ -28,6 +28,7 @@ function CreateGame({ socket }){
         
                 console.log('room created')
                 sessionStorage.setItem("data",JSON.stringify(data))
+                sessionStorage.setItem("gameOver",JSON.parse(false))
 				navigate('/waitingRoom') //go to waiting room
             
             }

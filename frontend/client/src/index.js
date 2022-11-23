@@ -25,25 +25,18 @@ if(pageAccessedByReload){
   socket.emit("newSID",session)
 }
 
-const Navo = () =>{
+const Nav = () =>{
   const navigate = useNavigate()
   useEffect(()=>{
     socket.on("leaveRoom",data=>{
       console.log(data)
       sessionStorage.removeItem("data")
+      sessionStorage.removeItem("gameOver")
       navigate("/")
     })  
-
-    
-
-    
-  },[])
+  },[navigate])
   return <div/>
 }
-socket.on("debug",data=>{
-  console.log(data)
-})
-
 
 //need to fix an issue where if the server restarts, and a user has an id of 0,their
 //sid does not match to the client, this can just be avoided if we use a really good
@@ -51,7 +44,6 @@ socket.on("debug",data=>{
 socket.on("connect",()=>{
   if(session == null){
     socket.emit("needSession")
-    
   }
 })
 
@@ -74,13 +66,12 @@ socket.on("session",data=>{
   }}
 })
 
-
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   // <React.StrictMode>
     
     <Router>
-      <Navo/>
+      <Nav/>
       <App socket={socket}/>
     </Router>
   // {/* </React.StrictMode> */}

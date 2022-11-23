@@ -8,9 +8,6 @@ import random
 from logic.database import DB
 from flask_cors import CORS
 
-
-
-
 app = Flask(__name__)
 SECRET = "areallybadsecreat"
 app.config.update(
@@ -27,8 +24,6 @@ log = logging.getLogger("werkzeug")
 log.disabled = True
 CORS(app)#delete this later, only needed when running locally
 
-
-print()
 #ctx.close()
 count = [0]
 rooms = {}
@@ -40,9 +35,6 @@ scores = [
         {"name":"John","wins":100},
         {"name":"Goodman","wins":2000},
         {"name":"Johnny","wins":11}]
-
-
-
 
 def is_admin(id, room):
     return rooms[room].getAdmin()['sid'] == id
@@ -74,6 +66,7 @@ def leaveRoom(data):
 
     #this if for the waiting room before the game starts if all users happen to leave, just del room
     if len(rooms[room].players) == 0:
+        print(f'deleting room {room}')
         close_room(room)
         del(rooms[room])
         return
@@ -105,6 +98,22 @@ def leaveRoom(data):
         emit("leaveRoom",f'you are the only player in the room',to=room)
         close_room(room)
         del(rooms[room])
+
+#emitted by admin when the game ends and they no longer want to keep playing with the same people
+@socketio.on("closeGame")
+def closeGame(data):
+    room = data["room"]
+    emit("leaveRoom","the admin does not want to restart the game",to=room)
+    close_room(room)
+    del rooms[room]
+
+#emitted by admin when the game ends and want to restart the game with the same people,
+#however the game is not started from here as the people still have the choice to leave 
+@socketio.on("restartGame")
+def restartGame(data):
+    room = data["room"]
+    rooms[room].reset()
+    emit("move",f'move to waiting room {room}',to=room)
 
 #set a clients newSID given to them by socketio, as it does not preserve it through the
 #users session
@@ -248,6 +257,11 @@ def on_start_game(data):
 
     if rooms.get(room).hasStarted():
         emit("error","Cannot start a game that has already started")
+        return
+
+    if len(rooms[room].players) < 2:
+        print("Need at least two players to start game in room",room)
+        emit("error","Need at least two players to start the game :(")
         return
 
     rooms[room].gameStart()

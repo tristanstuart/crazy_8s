@@ -2,8 +2,6 @@ import {Navigate, useNavigate} from 'react-router-dom'
 const LeaveGame = ({socket,room,ID,inSession,hand,user,isAdmin}) =>{
     
     const handleClick = () =>{
-        console.log("you clicked leave button")
-        console.log()
         const data = {
             "ID":ID,
             "room":room,

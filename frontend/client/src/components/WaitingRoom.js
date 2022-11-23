@@ -11,6 +11,7 @@ function WaitingRoom({ socket }) {
     
     const navigate = useNavigate()
 	const [players, setPlayers] = useState(DATA.playerList)//used but not used? here for causing updates to DOM for re-renders, i guess
+    const [error,setError] = useState("")
     const username = DATA !== null ? DATA.user : null
     const isAdmin = DATA !== null ? DATA.isAdmin : null
     
@@ -55,13 +56,17 @@ function WaitingRoom({ socket }) {
         socket.on("status",status=>{
             console.log(JSON.stringify(status,null, 2))
         })
-        
+        socket.on("error",error=>{
+            console.log(error)
+            setError(error)
+        })
       return ()=>{
         socket.off("player_joined")
         socket.off("reJoin")
         socket.off("move_to_game_start")
         socket.off("newAdmin")
         socket.off("status")
+        socket.off("error")
       }},[socket, navigate, username, DATA, ROOM, ID])
     return (
         <div >
