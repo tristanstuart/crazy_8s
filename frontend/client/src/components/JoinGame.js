@@ -22,6 +22,7 @@ function JoinGame({ socket }){
                 playerList : e
             }
             sessionStorage.setItem("data",JSON.stringify(data))
+            sessionStorage.setItem("gameOver",JSON.parse(false))
 			navigate('/waitingRoom') //go to waiting room
         })
         socket.on("error",data=>{
