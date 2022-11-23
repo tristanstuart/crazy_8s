@@ -1,6 +1,7 @@
 import {useEffect, useState} from 'react'
 import AlertBox from './AlertBox';
 import {useNavigate} from 'react-router-dom'
+import {generateRandomIcon} from "./gameplay/IconData"
 
 function CreateGame({ socket }){
     const [username,setUser] = useState("")
@@ -16,6 +17,7 @@ function CreateGame({ socket }){
             }
             else {
                 
+                const iconGen = generateRandomIcon() 
                 const DATA = JSON.parse(sessionStorage.getItem("data"))
                 //clears out prev gameData in sessionStorage
                 const data = {
@@ -23,13 +25,18 @@ function CreateGame({ socket }){
                     playerList:[DATA.user],
                     room:DATA.room,
                     isAdmin:true,
-                    inSession:false
+                    inSession:false,
+                    iconList:{[DATA.user]:iconGen}
                 }
         
                 console.log('room created')
+                socket.emit("setIconForPlayer", {
+                    room: DATA.room,
+                    ID: JSON.parse(sessionStorage.getItem("session")).ID,
+                    icon: iconGen
+                })
                 sessionStorage.setItem("data",JSON.stringify(data))
 				navigate('/waitingRoom') //go to waiting room
-            
             }
         })
       return ()=>{

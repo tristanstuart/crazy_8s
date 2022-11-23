@@ -3,10 +3,17 @@ class Player():
     def __init__(self, info) -> None:
         print("info",info)
         self.info = info
+        self.icon = []
         self.cards = []
 
     def __repr__(self):
         return self.getName() + " (" + str(self.getSID()) + ")"
+
+    def getIcon(self):
+        return self.icon
+
+    def setIcon(self, icon):
+        self.icon = icon
 
     def getName(self):
         return self.info['name']

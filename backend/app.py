@@ -41,9 +41,6 @@ scores = [
         {"name":"Goodman","wins":2000},
         {"name":"Johnny","wins":11}]
 
-
-
-
 def is_admin(id, room):
     return rooms[room].getAdmin()['sid'] == id
 
@@ -113,7 +110,7 @@ def newSID(data):
     if activePeople.get(data["ID"]) == None:
         print("Error ID " + f'{data["ID"]}' + " not found")
         print("a new session will be given")
-        need()
+        createNewSessionUsingSID()
         return 
     print("assigning a new SID on server")
     activePeople[data["ID"]]["sid"] = request.sid
@@ -123,7 +120,7 @@ def newSID(data):
 # we need to create a session for a user on their side.
 #to preserve gameInfo
 @socketio.on("needSession")
-def need():
+def createNewSessionUsingSID():
     print("sending a new session")
     #refer to each new person by an ID, and store their request.sid
     #their sid would need to be updated as socketio ditches their id if the user
@@ -311,6 +308,24 @@ def setSuit(data):
     updateRoom(message,data["room"])
     updatePlayer(message,data["ID"],data["room"])
 
+@socketio.on("setIconForPlayer")
+def setIconForPlayer(data):
+    room = data['room']
+    playerSID = data['ID']
+    icon = data['icon']
+
+    print("setIconForPlayer received with data: \n\troom: " + str(room) + "\n\tplayerSID" + str(data['ID']) + "\n\ticon: " + str(icon))
+
+    iconList = {}
+    for player in rooms[room].players:
+        if player.getSID() == playerSID:
+            player.setIcon(icon)
+            iconList[player.getName()] = icon
+        else:
+            iconList[player.getName()] = player.getIcon()
+    print("updating player icons for room " + room + ": " + str(iconList))
+    emit("updateIconForPlayer", iconList, to=room)
+
 #validates that the room exists, that it is the player's turn, and that the game hasn't ended
 def checkData(data):
     if not data["room"] in rooms:
@@ -359,7 +374,7 @@ def getSID(ID):
     #if the server restarts it has no recollection of past ID's 
     if activePeople.get(ID) == None:
         print("not a known ID, a new one will be assigned")
-        need()
+        createNewSessionUsingSID()
         return
 
     return activePeople[ID]["sid"]

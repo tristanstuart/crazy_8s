@@ -1,6 +1,7 @@
 import {useEffect, useState} from 'react'
 import AlertBox from './AlertBox';
 import {useNavigate} from 'react-router-dom'
+import {generateRandomIcon} from "./gameplay/IconData"
 
 var roomState//needed to pass info through navigate()
 
@@ -14,14 +15,22 @@ function JoinGame({ socket }){
 
     useEffect(()=>{
         socket.on("player_joined", e =>{
+            const iconGen = generateRandomIcon() 
             const data = {
                 room : roomState.room,
                 inSession : false,
                 isAdmin : false,
                 user : roomState.user,
-                playerList : e
+                playerList : e,
+                iconList:{[roomState.user]:iconGen}
             }
             sessionStorage.setItem("data",JSON.stringify(data))
+            console.log("emit update icon " + JSON.stringify(iconGen))
+            socket.emit("setIconForPlayer", {
+                room: roomState.room,
+                ID: JSON.parse(sessionStorage.getItem("session")).ID,
+                icon: iconGen
+            })
 			navigate('/waitingRoom') //go to waiting room
         })
         socket.on("error",data=>{
@@ -31,7 +40,7 @@ function JoinGame({ socket }){
         })
 
       return ()=>{
-      }},[socket, navigate, room, username])  
+      }},[socket, navigate])  
 
         return (
             <div className="grid items-center justify-center h-screen bg-gradient-to-r from-purple-500 to-pink-500 " >

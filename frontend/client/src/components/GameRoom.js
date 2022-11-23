@@ -137,7 +137,7 @@ function GameRoom({ socket }) {
         <div className='bg-poker-table bg-cover min-h-screen '>          
             {rule? <RuleAnimation rule={rule} /> : <div></div>}
              <div className='flex  items-center justify-center'>
-                <PlayerLayout opponents={opponentCards} players={players} turn={DATA.turn}/>
+                <PlayerLayout opponents={opponentCards} players={players} iconDictionary={DATA.iconList} gameIsOver={warning.endsWith("has won!")} turn={DATA.turn}/>
             </div>
             <CurrentSuit suit={activeSuit}/>
 

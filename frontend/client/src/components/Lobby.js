@@ -2,12 +2,10 @@ import React from "react";
 import LeaveGame from "./gameplay/LeaveGame";
 import Loading from './Loading'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheck, faEnvelope, faGhost, faHippo, faPlane, faPoo, faUserAstronaut } from '@fortawesome/free-solid-svg-icons'
+import { faCheck } from '@fortawesome/free-solid-svg-icons'
+import {icons, icon_color} from './gameplay/IconData'
 
-function Lobby({socket, players, isAdmin, ROOM, ID, DATA}){
-    let playerCount = 0;
-    const icons = [faUserAstronaut, faPoo ,faHippo, faPlane, faGhost]
-    const icon_color = ['#d6d3d1', '#a16207', "#d8b4fe", "#c7d2fe", "#fafaf9",]
+function Lobby({socket, players, iconDictionary, isAdmin, ROOM, ID, DATA}) {
     return(
         <div>
             <div className="min-h-screen flex-1 bg-gray-200 p-4 flex justify-center items-center">
@@ -52,7 +50,8 @@ function Lobby({socket, players, isAdmin, ROOM, ID, DATA}){
                                 <div className="flex justify-between items-center h-16 p-4 my-6  rounded-lg border border-gray-100 shadow-md">
                                     <div className="flex items-center">
                                     {/* <img className="" alt="Avatar" /> */}
-                                    <FontAwesomeIcon size="2x" icon={icons[playerCount]} color={icon_color[playerCount++]} />
+                                    {/*debugging*/ /*console.log("lobby: " + JSON.stringify(iconDictionary))*/}
+                                    {iconDictionary[data] !== undefined && <FontAwesomeIcon size="2x" icon={icons[iconDictionary[data].icon]} color={icon_color[iconDictionary[data].color]} />}
                                         <div className="ml-2">
                                             <div className="text-sm font-semibold text-gray-600">{data}</div>
                                         </div>
@@ -112,4 +111,4 @@ function Lobby({socket, players, isAdmin, ROOM, ID, DATA}){
 
 }
 
-export default Lobby;
+export { Lobby }
