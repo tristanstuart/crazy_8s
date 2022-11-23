@@ -39,6 +39,7 @@ function WaitingRoom({ socket }) {
             DATA.iconList = e.icons
             sessionStorage.setItem("data",JSON.stringify(DATA))
             setPlayers(DATA.playerList)
+            setIconList(DATA.iconList)
         })
 
         socket.on('move_to_game_start', data =>{
@@ -82,7 +83,7 @@ function WaitingRoom({ socket }) {
     return (
         <div >
             <div>
-                <Lobby socket={socket} players={DATA.playerList} iconDictionary={DATA.iconList} isAdmin={isAdmin} ROOM={ROOM} ID={ID} DATA={DATA}/>
+                <Lobby socket={socket} username={username} players={DATA.playerList} iconDictionary={DATA.iconList} isAdmin={isAdmin} ROOM={ROOM} ID={ID} DATA={DATA}/>
             </div>
             
         </div>
