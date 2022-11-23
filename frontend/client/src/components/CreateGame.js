@@ -1,6 +1,7 @@
 import {useEffect, useState} from 'react'
 import AlertBox from './AlertBox';
 import {useNavigate} from 'react-router-dom'
+import {generateRandomIcon} from "./gameplay/IconData"
 
 function CreateGame({ socket }){
     const [username,setUser] = useState("")
@@ -15,7 +16,6 @@ function CreateGame({ socket }){
                 setError(true)
             }
             else {
-                
                 const DATA = JSON.parse(sessionStorage.getItem("data"))
                 //clears out prev gameData in sessionStorage
                 const data = {
@@ -23,14 +23,14 @@ function CreateGame({ socket }){
                     playerList:[DATA.user],
                     room:DATA.room,
                     isAdmin:true,
-                    inSession:false
+                    inSession:false,
+                    iconList:DATA.iconList
                 }
         
                 console.log('room created')
                 sessionStorage.setItem("data",JSON.stringify(data))
                 sessionStorage.setItem("gameOver",JSON.parse(false))
 				navigate('/waitingRoom') //go to waiting room
-            
             }
         })
       return ()=>{
@@ -85,14 +85,17 @@ function CreateGame({ socket }){
 
                         if(JSON.parse(sessionStorage.getItem("data")) == null){
                             
+                            const iconGen = generateRandomIcon()
                             socket.emit("create", {
                                 "username":username, 
                                 "room":room,
-                                ID:JSON.parse(sessionStorage.getItem("session")).ID
+                                ID:JSON.parse(sessionStorage.getItem("session")).ID,
+                                icon: iconGen
                             })
                             const data = {
                                 room:room,
-                                user:username
+                                user:username,
+                                iconList:{[username]:iconGen}
                             }
                             sessionStorage.setItem("data",JSON.stringify(data))
                             
@@ -100,14 +103,17 @@ function CreateGame({ socket }){
                         }
                         
                         const data = JSON.parse(sessionStorage.getItem("data"))
+                        const iconGen = generateRandomIcon()
                         socket.emit("create", {
                             "username":username, 
                             "room":room,
                             "oldRoom":data.room,
-                            ID:JSON.parse(sessionStorage.getItem("session")).ID
+                            ID:JSON.parse(sessionStorage.getItem("session")).ID,
+                            icon: iconGen
                         })
                         data.room = room
                         data.user = username
+                        data.iconList = {[username]:iconGen}
                         sessionStorage.setItem("data",JSON.stringify(data))                
 						
                     }}>

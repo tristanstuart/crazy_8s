@@ -1,13 +1,17 @@
-import React from "react";
+import { React, useState } from "react";
 import LeaveGame from "./gameplay/LeaveGame";
 import Loading from './Loading'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheck, faEnvelope, faGhost, faHippo, faPlane, faPoo, faUserAstronaut } from '@fortawesome/free-solid-svg-icons'
+import { faCheck } from '@fortawesome/free-solid-svg-icons'
+import {icons, icon_color} from './gameplay/IconData'
 
-function Lobby({socket, players, isAdmin, ROOM, ID, DATA}){
-    let playerCount = 0;
-    const icons = [faUserAstronaut, faPoo ,faHippo, faPlane, faGhost]
-    const icon_color = ['#d6d3d1', '#a16207', "#d8b4fe", "#c7d2fe", "#fafaf9",]
+function Lobby({socket, username, players, iconDictionary, isAdmin, ROOM, ID, DATA}) {
+    const [showIconSelect, toggleShowIconSelect] = useState(false) 
+    const onClick = () => {
+        toggleShowIconSelect(!showIconSelect)
+        console.log(showIconSelect)
+    }
+
     return(
         <div>
             <div className="min-h-screen flex-1 bg-gray-200 p-4 flex justify-center items-center">
@@ -49,21 +53,24 @@ function Lobby({socket, players, isAdmin, ROOM, ID, DATA}){
                     <ul>
                         {players.map(data =>
                             (
-                                <div key={data} className="flex justify-between items-center h-16 p-4 my-6  rounded-lg border border-gray-100 shadow-md">
-                                    <div className="flex items-center">
-                                    {/* <img className="" alt="Avatar" /> */}
-                                    <FontAwesomeIcon size="2x" icon={icons[playerCount]} color={icon_color[playerCount++]} />
-                                        <div className="ml-2">
-                                            <div className="text-sm font-semibold text-gray-600">{data}</div>
+                                <div>{username === data && showIconSelect && <IconSelector room={ROOM} ID={ID} socket={socket}/>}
+                                    <div key={data} className="flex justify-between items-center h-16 p-4 my-6  rounded-lg border border-gray-100 shadow-md">
+                                        <div className="flex items-center">
+                                        {/* <img className="" alt="Avatar" /> */}
+                                        {/*debugging*/ /*console.log("lobby: " + JSON.stringify(iconDictionary))*/}
+                                            {iconDictionary !== undefined && iconDictionary[data] !== undefined && <PlayerIcon onClick={onClick} username={username} data={data} iconDictionary={iconDictionary}/>}
+                                            <div className="ml-2">
+                                                <div className="text-sm font-semibold text-gray-600">{data}</div>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div>
-                                        <button className="bg-green-400 hover:bg-red-500 p-2 rounded-full shadow-md flex justify-center items-center">
-                                            {/* <svg className="text-white toggle__lock w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                            </svg> */}
-                                            <FontAwesomeIcon icon={faCheck} />
-                                        </button>
+                                        <div>
+                                            <button className="bg-green-400 hover:bg-red-500 p-2 rounded-full shadow-md flex justify-center items-center">
+                                                {/* <svg className="text-white toggle__lock w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                                </svg> */}
+                                                <FontAwesomeIcon icon={faCheck} />
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             ))}
@@ -112,4 +119,51 @@ function Lobby({socket, players, isAdmin, ROOM, ID, DATA}){
 
 }
 
-export default Lobby;
+function PlayerIcon({onClick, username, data, iconDictionary})
+{
+    if(username === data)
+        return <ClickableIcon onClick={onClick} data={data} iconDictionary={iconDictionary}/>
+    else
+        return <FontAwesomeIcon size="2x" icon={icons[iconDictionary[data].icon]} color={icon_color[iconDictionary[data].color]} />
+}
+
+function ClickableIcon({onClick, data, iconDictionary}) {
+    return <button onClick={onClick}>
+            <PlayerIcon data={data} iconDictionary={iconDictionary}/>
+        </button>
+}
+
+function IconSelector({room, ID, socket})
+{
+    const iconGrid = []
+    for(let i = 0; i < icons.length; i++){
+        let row = []
+        for(let j = 0; j < icon_color.length; j++){
+            row.push(<button onClick={() => {socket.emit("setIconForPlayer", {room:room, ID:ID, icon:{icon:i, color:j}})}}>
+                <FontAwesomeIcon size='2x' icon={icons[i]} color={icon_color[j]}/>
+            </button>)
+        }
+        iconGrid.push(<div className="space-y-1.5">{row}</div>)
+    }
+
+    /*= (icons, colors) => {
+        return colors.map(color => 
+            <div className="space-y-1">{icons.map(icon => 
+                <button onClick={() => {socket.emit("setIconForPlayer", {room:room, ID:ID, icon:{icon:iconInd++, color:colorInd++}})}}>
+                    <FontAwesomeIcon size='2x' icon={icon} color={color}/>
+                </button>)}
+            </div>)
+    }*/
+
+    return(
+        <div className="p-4 my-6 rounded-lg border border-gray-100 shadow-md">
+            <p>Select your icon:</p>
+            <br></br>
+            <div className={"grid grid-rows-" + icons.length + " grid-flow-col gap-2.5 auto-cols-min"}>
+                {iconGrid}
+            </div>
+        </div>
+    )
+}
+
+export { Lobby }

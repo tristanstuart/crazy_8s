@@ -84,7 +84,8 @@ function GameRoom({ socket }) {
                     setRule(null);
                 },5000);
 
-                if(data['rule'] === 'draw2'){
+                if(data['rule'] === 'draw2' && data["nextTurn"] === username){
+                    console.log("draw2 event")
                     setRule('draw2')
                     socket.emit("draw",{
                         "room":ROOM,
@@ -159,7 +160,7 @@ function GameRoom({ socket }) {
             {isAdmin === true && gameOver === true?<ResetGame socket={socket} ID={ID} room={ROOM}/>:<div/>}          
             {rule? <RuleAnimation rule={rule} /> : <div></div>}
              <div className='flex  items-center justify-center'>
-                <PlayerLayout opponents={opponentCards} players={players} turn={DATA.turn}/>
+                <PlayerLayout opponents={opponentCards} players={players} iconDictionary={DATA.iconList} gameIsOver={warning.endsWith("has won!")} turn={DATA.turn}/>
             </div>
             <CurrentSuit suit={activeSuit}/>
 

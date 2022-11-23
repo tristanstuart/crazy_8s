@@ -122,7 +122,7 @@ def newSID(data):
     if activePeople.get(data["ID"]) == None:
         print("Error ID " + f'{data["ID"]}' + " not found")
         print("a new session will be given")
-        need()
+        createNewSessionUsingSID()
         return 
     print("assigning a new SID on server")
     activePeople[data["ID"]]["sid"] = request.sid
@@ -132,7 +132,7 @@ def newSID(data):
 # we need to create a session for a user on their side.
 #to preserve gameInfo
 @socketio.on("needSession")
-def need():
+def createNewSessionUsingSID():
     print("sending a new session")
     #refer to each new person by an ID, and store their request.sid
     #their sid would need to be updated as socketio ditches their id if the user
@@ -200,11 +200,13 @@ def on_join(data):
 
     name = data['name']
     room = data['room']
+    icon = data['icon']
     if rooms.get(room) == None:
         emit("error","No room provided")
     playerInfo = {}
     playerInfo['sid'] = data["ID"]
     playerInfo['name'] = name
+    playerInfo['icon'] = icon
 
     if room not in rooms:
         emit('error',{"title":'This room does not exist',"message":'please join an existing game or create your own'})
@@ -221,7 +223,7 @@ def on_join(data):
         join_room(room)
         rooms[room].addPlayer(playerInfo)
         emit('player_joined', rooms[room].playerList(), to=room) #read by players in WaitingRoom.js
-        print(f'{name} joined room {room}: {repr(rooms[room])}')
+        print(f'{name} joined room {room}: {repr(rooms[room])}')        
 
 @socketio.on('exists')
 def exists(data):
@@ -232,6 +234,7 @@ def exists(data):
 def on_create(data):
     name = data['username']
     room = data['room']
+    icon = data['icon']
     
     if (room in rooms ): #or len(room) < 3
         emit('create', False) #read by client in JoinGame.js
@@ -241,6 +244,7 @@ def on_create(data):
         adminInfo = {}
         adminInfo['sid'] = data["ID"]
         adminInfo['name'] = name
+        adminInfo['icon'] = icon
         newGame = Game(adminInfo)
         rooms[room] = newGame
         emit('create', True) #read by client in CreateGame.js
@@ -325,6 +329,22 @@ def setSuit(data):
     updateRoom(message,data["room"])
     updatePlayer(message,data["ID"],data["room"])
 
+#only used when a player manually changes their icon.
+#for icon initialization, see socket.on("join") or socket.on("create")
+@socketio.on("setIconForPlayer")
+def setIconForPlayer(data):
+    room = data['room']
+    playerSID = data['ID']
+    icon = data['icon']
+
+    for player in rooms[room].players:
+        if player.getSID() == playerSID: # this code wont update the lobby's icon for the player  
+            player.setIcon(icon)         # if the player isnt found here for whatever reason
+            break
+    emit('player_joined', rooms[room].playerList(), to=room) #update player and icon lists, for some reason the final player added to the game
+                                                             #wont update icons properly unless they receive a player_joined even while in WaitingRoom
+                                                             #no harm in firing this event so that's okay for now, but should be fixed eventually
+
 #validates that the room exists, that it is the player's turn, and that the game hasn't ended
 def checkData(data):
     if not data["room"] in rooms:
@@ -373,7 +393,7 @@ def getSID(ID):
     #if the server restarts it has no recollection of past ID's 
     if activePeople.get(ID) == None:
         print("not a known ID, a new one will be assigned")
-        need()
+        createNewSessionUsingSID()
         return
 
     return activePeople[ID]["sid"]

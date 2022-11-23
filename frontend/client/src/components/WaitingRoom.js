@@ -1,7 +1,6 @@
 import {useEffect, useState} from 'react'
 import {useNavigate} from 'react-router-dom'
-import LeaveGame from './gameplay/LeaveGame'
-import Lobby from './Lobby'
+import {Lobby} from './Lobby'
 
 function WaitingRoom({ socket }) {
 
@@ -12,6 +11,7 @@ function WaitingRoom({ socket }) {
     const navigate = useNavigate()
 	const [players, setPlayers] = useState(DATA.playerList)//used but not used? here for causing updates to DOM for re-renders, i guess
     const [error,setError] = useState("")
+    const [iconList, setIconList] = useState(DATA.iconList !== null ? DATA.iconList : [])
     const username = DATA !== null ? DATA.user : null
     const isAdmin = DATA !== null ? DATA.isAdmin : null
     
@@ -21,14 +21,22 @@ function WaitingRoom({ socket }) {
 
     useEffect(()=>{
 
+        socket.on("updateIconForPlayer", data => {
+            DATA.iconList[data.username] = data.icon
+            sessionStorage.setItem("data",JSON.stringify(DATA))
+            setIconList(DATA.iconList)
+        })
+
         socket.on("reJoin",e=>{
             console.log("i rejoined a room")
         })
 
         socket.on('player_joined',e=>{
-            DATA.playerList = e
+            DATA.playerList = e.players
+            DATA.iconList = e.icons
             sessionStorage.setItem("data",JSON.stringify(DATA))
             setPlayers(DATA.playerList)
+            setIconList(DATA.iconList)
         })
 
         socket.on('move_to_game_start', data =>{
@@ -67,11 +75,12 @@ function WaitingRoom({ socket }) {
         socket.off("newAdmin")
         socket.off("status")
         socket.off("error")
-      }},[socket, navigate, username, DATA, ROOM, ID])
+        socket.off("updateIconForPlayer")
+      }},[socket, navigate, iconList, username, DATA, ROOM, ID])
     return (
         <div >
             <div>
-                <Lobby socket={socket} players={DATA.playerList} isAdmin={isAdmin} ROOM={ROOM} ID={ID} DATA={DATA}/>
+                <Lobby socket={socket} username={username} players={DATA.playerList} iconDictionary={DATA.iconList} isAdmin={isAdmin} ROOM={ROOM} ID={ID} DATA={DATA}/>
             </div>
             
         </div>
