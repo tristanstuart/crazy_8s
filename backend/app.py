@@ -224,8 +224,6 @@ def on_join(data):
         rooms[room].addPlayer(playerInfo)
         emit('player_joined', rooms[room].playerList(), to=room) #read by players in WaitingRoom.js
         print(f'{name} joined room {room}: {repr(rooms[room])}')        
-        
-        #updateIconsForLobby(room, icon, playerInfo['sid'])
 
 @socketio.on('exists')
 def exists(data):
@@ -251,7 +249,6 @@ def on_create(data):
         rooms[room] = newGame
         emit('create', True) #read by client in CreateGame.js
         print(f'created room: {room}{repr(rooms[room])}') #repr() calls __repr__() in whatever object you pass it, in this case game.py
-        #updateIconsForLobby(room, icon, adminInfo['sid'])
 
 @socketio.on('start_game')
 def on_start_game(data):
@@ -332,23 +329,21 @@ def setSuit(data):
     updateRoom(message,data["room"])
     updatePlayer(message,data["ID"],data["room"])
 
-'''@socketio.on("setIconForPlayer")
+#only used when a player manually changes their icon.
+#for icon initialization, see socket.on("join") or socket.on("create")
+@socketio.on("setIconForPlayer")
 def setIconForPlayer(data):
     room = data['room']
     playerSID = data['ID']
     icon = data['icon']
 
-    print("\nsetIconForPlayer received with data: \n\troom: " + str(room) + "\n\tplayerSID" + str(data['ID']) + "\n\ticon: " + str(icon) + "\n")
-
-    iconList = {}
     for player in rooms[room].players:
-        if player.getSID() == playerSID:
-            player.setIcon(icon)
-            iconList[player.getName()] = icon
-        else:
-            iconList[player.getName()] = player.getIcon()
-    print("updating player icons for room " + room + ": " + str(iconList))
-    emit("updateIconForPlayer", iconList, to=room)'''
+        if player.getSID() == playerSID: # this code wont update the lobby's icon for the player  
+            player.setIcon(icon)         # if the player isnt found here for whatever reason
+            break
+    emit('player_joined', rooms[room].playerList(), to=room) #update player and icon lists, for some reason the final player added to the game
+                                                             #wont update icons properly unless they receive a player_joined even while in WaitingRoom
+                                                             #no harm in firing this event so that's okay for now, but should be fixed eventually
 
 #validates that the room exists, that it is the player's turn, and that the game hasn't ended
 def checkData(data):
@@ -392,15 +387,6 @@ def addScore(winner):
     scores.append({
         "name":winner,
         "wins":1})    
-
-def updateIconsForLobby(room, icon, playerSID):
-    iconList = {} # send out list of player icons to everyone in the room
-    for player in rooms[room].players:
-        if player.getSID() == playerSID:
-            player.setIcon(icon)
-        iconList[player.getName()] = player.getIcon()
-    print("updating player icons for room " + room + ": " + str(iconList))
-    emit("updateIconForPlayer", iconList, to=room)
 
 #gets a users SID based on their ID in activePeople dictionary
 def getSID(ID):

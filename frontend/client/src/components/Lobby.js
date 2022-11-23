@@ -53,7 +53,7 @@ function Lobby({socket, username, players, iconDictionary, isAdmin, ROOM, ID, DA
                     <ul>
                         {players.map(data =>
                             (
-                                <div>{username === data && showIconSelect && <IconSelector socket={socket}/>}
+                                <div>{username === data && showIconSelect && <IconSelector room={ROOM} ID={ID} socket={socket}/>}
                                     <div key={data} className="flex justify-between items-center h-16 p-4 my-6  rounded-lg border border-gray-100 shadow-md">
                                         <div className="flex items-center">
                                         {/* <img className="" alt="Avatar" /> */}
@@ -133,23 +133,34 @@ function ClickableIcon({onClick, data, iconDictionary}) {
         </button>
 }
 
-function IconSelector(socket)
+function IconSelector({room, ID, socket})
 {
-    const iconGrid = (icons, colors) => {
+    const iconGrid = []
+    for(let i = 0; i < icons.length; i++){
+        let row = []
+        for(let j = 0; j < icon_color.length; j++){
+            row.push(<button onClick={() => {socket.emit("setIconForPlayer", {room:room, ID:ID, icon:{icon:i, color:j}})}}>
+                <FontAwesomeIcon size='2x' icon={icons[i]} color={icon_color[j]}/>
+            </button>)
+        }
+        iconGrid.push(<div className="space-y-1.5">{row}</div>)
+    }
+
+    /*= (icons, colors) => {
         return colors.map(color => 
             <div className="space-y-1">{icons.map(icon => 
-                <button onClick={() => {socket.emit("setIconForPlayer", {icon:icon, color:color})}}>
+                <button onClick={() => {socket.emit("setIconForPlayer", {room:room, ID:ID, icon:{icon:iconInd++, color:colorInd++}})}}>
                     <FontAwesomeIcon size='2x' icon={icon} color={color}/>
                 </button>)}
             </div>)
-    }
+    }*/
 
     return(
         <div className="p-4 my-6 rounded-lg border border-gray-100 shadow-md">
             <p>Select your icon:</p>
             <br></br>
-            <div className={"grid grid-rows-" + icons.length + " grid-flow-col gap-2 auto-cols-min"}>
-                {iconGrid(icons, icon_color)}
+            <div className={"grid grid-rows-" + icons.length + " grid-flow-col gap-2.5 auto-cols-min"}>
+                {iconGrid}
             </div>
         </div>
     )

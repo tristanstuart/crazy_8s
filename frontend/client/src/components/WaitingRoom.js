@@ -11,7 +11,7 @@ function WaitingRoom({ socket }) {
     const navigate = useNavigate()
 	const [players, setPlayers] = useState(DATA.playerList)//used but not used? here for causing updates to DOM for re-renders, i guess
     const [error,setError] = useState("")
-    const [iconList, setIconList] = useState([])
+    const [iconList, setIconList] = useState(DATA.iconList !== null ? DATA.iconList : [])
     const username = DATA !== null ? DATA.user : null
     const isAdmin = DATA !== null ? DATA.isAdmin : null
     
@@ -21,20 +21,17 @@ function WaitingRoom({ socket }) {
 
     useEffect(()=>{
 
-        /*socket.on("updateIconForPlayer", data => {
-            DATA.iconList = data
+        socket.on("updateIconForPlayer", data => {
+            DATA.iconList[data.username] = data.icon
             sessionStorage.setItem("data",JSON.stringify(DATA))
             setIconList(DATA.iconList)
-            console.log("uifp: " + JSON.stringify(DATA.iconList))
-        })*/
+        })
 
         socket.on("reJoin",e=>{
             console.log("i rejoined a room")
         })
 
         socket.on('player_joined',e=>{
-            console.log("lpayer joinedd wile in waitingrommo")
-            console.log(JSON.stringify(e))
             DATA.playerList = e.players
             DATA.iconList = e.icons
             sessionStorage.setItem("data",JSON.stringify(DATA))
@@ -79,7 +76,7 @@ function WaitingRoom({ socket }) {
         socket.off("status")
         socket.off("error")
         socket.off("updateIconForPlayer")
-      }},[socket, navigate, username, DATA, ROOM, ID])
+      }},[socket, navigate, iconList, username, DATA, ROOM, ID])
     return (
         <div >
             <div>

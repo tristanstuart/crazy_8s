@@ -23,7 +23,8 @@ function CreateGame({ socket }){
                     playerList:[DATA.user],
                     room:DATA.room,
                     isAdmin:true,
-                    inSession:false
+                    inSession:false,
+                    iconList:DATA.iconList
                 }
         
                 console.log('room created')
@@ -84,15 +85,17 @@ function CreateGame({ socket }){
 
                         if(JSON.parse(sessionStorage.getItem("data")) == null){
                             
+                            const iconGen = generateRandomIcon()
                             socket.emit("create", {
                                 "username":username, 
                                 "room":room,
                                 ID:JSON.parse(sessionStorage.getItem("session")).ID,
-                                icon: generateRandomIcon()
+                                icon: iconGen
                             })
                             const data = {
                                 room:room,
-                                user:username
+                                user:username,
+                                iconList:{[username]:iconGen}
                             }
                             sessionStorage.setItem("data",JSON.stringify(data))
                             
@@ -100,15 +103,17 @@ function CreateGame({ socket }){
                         }
                         
                         const data = JSON.parse(sessionStorage.getItem("data"))
+                        const iconGen = generateRandomIcon()
                         socket.emit("create", {
                             "username":username, 
                             "room":room,
                             "oldRoom":data.room,
                             ID:JSON.parse(sessionStorage.getItem("session")).ID,
-                            icon: generateRandomIcon()
+                            icon: iconGen
                         })
                         data.room = room
                         data.user = username
+                        data.iconList = {[username]:iconGen}
                         sessionStorage.setItem("data",JSON.stringify(data))                
 						
                     }}>

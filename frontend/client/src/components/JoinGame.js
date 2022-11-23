@@ -25,6 +25,7 @@ function JoinGame({ socket }){
                     playerList : e.players,
                     iconList : e.icons
                 }
+                console.log("player_joined iconList " + JSON.stringify(e.icons))
                 sessionStorage.setItem("data",JSON.stringify(data))
                 sessionStorage.setItem("gameOver",JSON.parse(false))
                 setJoinedRoom(true)
