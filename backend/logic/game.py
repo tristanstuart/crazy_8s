@@ -94,9 +94,11 @@ class Game():
     
     def playerList(self):
         allPlayers = []
+        allIcons = {}
         for p in self.players:
             allPlayers.append(p.getName())
-        return allPlayers
+            allIcons[p.getName()] = p.getIcon()
+        return {"players":allPlayers, "icons":allIcons}
 
     def getCardState(self, player):
         playerCards = []

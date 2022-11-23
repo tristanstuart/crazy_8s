@@ -200,11 +200,13 @@ def on_join(data):
 
     name = data['name']
     room = data['room']
+    icon = data['icon']
     if rooms.get(room) == None:
         emit("error","No room provided")
     playerInfo = {}
     playerInfo['sid'] = data["ID"]
     playerInfo['name'] = name
+    playerInfo['icon'] = icon
 
     if room not in rooms:
         emit('error',{"title":'This room does not exist',"message":'please join an existing game or create your own'})
@@ -221,7 +223,9 @@ def on_join(data):
         join_room(room)
         rooms[room].addPlayer(playerInfo)
         emit('player_joined', rooms[room].playerList(), to=room) #read by players in WaitingRoom.js
-        print(f'{name} joined room {room}: {repr(rooms[room])}')
+        print(f'{name} joined room {room}: {repr(rooms[room])}')        
+        
+        #updateIconsForLobby(room, icon, playerInfo['sid'])
 
 @socketio.on('exists')
 def exists(data):
@@ -232,6 +236,7 @@ def exists(data):
 def on_create(data):
     name = data['username']
     room = data['room']
+    icon = data['icon']
     
     if (room in rooms ): #or len(room) < 3
         emit('create', False) #read by client in JoinGame.js
@@ -241,10 +246,12 @@ def on_create(data):
         adminInfo = {}
         adminInfo['sid'] = data["ID"]
         adminInfo['name'] = name
+        adminInfo['icon'] = icon
         newGame = Game(adminInfo)
         rooms[room] = newGame
         emit('create', True) #read by client in CreateGame.js
         print(f'created room: {room}{repr(rooms[room])}') #repr() calls __repr__() in whatever object you pass it, in this case game.py
+        #updateIconsForLobby(room, icon, adminInfo['sid'])
 
 @socketio.on('start_game')
 def on_start_game(data):
@@ -325,13 +332,13 @@ def setSuit(data):
     updateRoom(message,data["room"])
     updatePlayer(message,data["ID"],data["room"])
 
-@socketio.on("setIconForPlayer")
+'''@socketio.on("setIconForPlayer")
 def setIconForPlayer(data):
     room = data['room']
     playerSID = data['ID']
     icon = data['icon']
 
-    print("setIconForPlayer received with data: \n\troom: " + str(room) + "\n\tplayerSID" + str(data['ID']) + "\n\ticon: " + str(icon))
+    print("\nsetIconForPlayer received with data: \n\troom: " + str(room) + "\n\tplayerSID" + str(data['ID']) + "\n\ticon: " + str(icon) + "\n")
 
     iconList = {}
     for player in rooms[room].players:
@@ -341,7 +348,7 @@ def setIconForPlayer(data):
         else:
             iconList[player.getName()] = player.getIcon()
     print("updating player icons for room " + room + ": " + str(iconList))
-    emit("updateIconForPlayer", iconList, to=room)
+    emit("updateIconForPlayer", iconList, to=room)'''
 
 #validates that the room exists, that it is the player's turn, and that the game hasn't ended
 def checkData(data):
@@ -385,6 +392,15 @@ def addScore(winner):
     scores.append({
         "name":winner,
         "wins":1})    
+
+def updateIconsForLobby(room, icon, playerSID):
+    iconList = {} # send out list of player icons to everyone in the room
+    for player in rooms[room].players:
+        if player.getSID() == playerSID:
+            player.setIcon(icon)
+        iconList[player.getName()] = player.getIcon()
+    print("updating player icons for room " + room + ": " + str(iconList))
+    emit("updateIconForPlayer", iconList, to=room)
 
 #gets a users SID based on their ID in activePeople dictionary
 def getSID(ID):

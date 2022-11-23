@@ -16,8 +16,6 @@ function CreateGame({ socket }){
                 setError(true)
             }
             else {
-                
-                const iconGen = generateRandomIcon() 
                 const DATA = JSON.parse(sessionStorage.getItem("data"))
                 //clears out prev gameData in sessionStorage
                 const data = {
@@ -25,16 +23,10 @@ function CreateGame({ socket }){
                     playerList:[DATA.user],
                     room:DATA.room,
                     isAdmin:true,
-                    inSession:false,
-                    iconList:{[DATA.user]:iconGen}
+                    inSession:false
                 }
         
                 console.log('room created')
-                socket.emit("setIconForPlayer", {
-                    room: DATA.room,
-                    ID: JSON.parse(sessionStorage.getItem("session")).ID,
-                    icon: iconGen
-                })
                 sessionStorage.setItem("data",JSON.stringify(data))
                 sessionStorage.setItem("gameOver",JSON.parse(false))
 				navigate('/waitingRoom') //go to waiting room
@@ -95,7 +87,8 @@ function CreateGame({ socket }){
                             socket.emit("create", {
                                 "username":username, 
                                 "room":room,
-                                ID:JSON.parse(sessionStorage.getItem("session")).ID
+                                ID:JSON.parse(sessionStorage.getItem("session")).ID,
+                                icon: generateRandomIcon()
                             })
                             const data = {
                                 room:room,
@@ -111,7 +104,8 @@ function CreateGame({ socket }){
                             "username":username, 
                             "room":room,
                             "oldRoom":data.room,
-                            ID:JSON.parse(sessionStorage.getItem("session")).ID
+                            ID:JSON.parse(sessionStorage.getItem("session")).ID,
+                            icon: generateRandomIcon()
                         })
                         data.room = room
                         data.user = username

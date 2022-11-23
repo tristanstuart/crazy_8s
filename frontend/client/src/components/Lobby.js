@@ -6,6 +6,8 @@ import { faCheck } from '@fortawesome/free-solid-svg-icons'
 import {icons, icon_color} from './gameplay/IconData'
 
 function Lobby({socket, players, iconDictionary, isAdmin, ROOM, ID, DATA}) {
+    let numPeople = 0
+
     return(
         <div>
             <div className="min-h-screen flex-1 bg-gray-200 p-4 flex justify-center items-center">
@@ -51,7 +53,7 @@ function Lobby({socket, players, iconDictionary, isAdmin, ROOM, ID, DATA}) {
                                     <div className="flex items-center">
                                     {/* <img className="" alt="Avatar" /> */}
                                     {/*debugging*/ /*console.log("lobby: " + JSON.stringify(iconDictionary))*/}
-                                    {iconDictionary[data] !== undefined && <FontAwesomeIcon size="2x" icon={icons[iconDictionary[data].icon]} color={icon_color[iconDictionary[data].color]} />}
+                                    {iconDictionary !== undefined && iconDictionary[data] !== undefined && <FontAwesomeIcon size="2x" icon={icons[iconDictionary[data].icon]} color={icon_color[iconDictionary[data].color]} />}
                                         <div className="ml-2">
                                             <div className="text-sm font-semibold text-gray-600">{data}</div>
                                         </div>

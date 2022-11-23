@@ -12,27 +12,24 @@ function JoinGame({ socket }){
     const [errorTitle, setErrorTitle] = useState('')
     const [errorMsg, setErrorMsg] = useState('')
 	const navigate = useNavigate()
+    const [joinedRoom, setJoinedRoom] = useState(false)
 
     useEffect(()=>{
-        socket.on("player_joined", e =>{
-            const iconGen = generateRandomIcon() 
-            const data = {
-                room : roomState.room,
-                inSession : false,
-                isAdmin : false,
-                user : roomState.user,
-                playerList : e,
-                iconList:{[roomState.user]:iconGen}
+        socket.on("player_joined", e =>{ 
+            if(!joinedRoom) { //this is firing even after the navigate() call to waiting room?
+                const data = {
+                    room : roomState.room,
+                    inSession : false,
+                    isAdmin : false,
+                    user : roomState.user,
+                    playerList : e.players,
+                    iconList : e.icons
+                }
+                sessionStorage.setItem("data",JSON.stringify(data))
+                sessionStorage.setItem("gameOver",JSON.parse(false))
+                setJoinedRoom(true)
+                navigate('/waitingRoom') //go to waiting room
             }
-            sessionStorage.setItem("data",JSON.stringify(data))
-            sessionStorage.setItem("gameOver",JSON.parse(false))
-            console.log("emit update icon " + JSON.stringify(iconGen))
-            socket.emit("setIconForPlayer", {
-                room: roomState.room,
-                ID: JSON.parse(sessionStorage.getItem("session")).ID,
-                icon: iconGen
-            })
-			navigate('/waitingRoom') //go to waiting room
         })
         socket.on("error",data=>{
             setErrorTitle(data.title)
@@ -87,7 +84,7 @@ function JoinGame({ socket }){
                             setError(true)
                             return
                         }
-                        socket.emit("join", {name: username, room: room,ID:JSON.parse(sessionStorage.getItem("session")).ID})
+                        socket.emit("join", {name: username, room: room,ID:JSON.parse(sessionStorage.getItem("session")).ID, icon: generateRandomIcon()})
 						roomState = {room: room, user: username}
                     }}> 
                     Join Game </button>

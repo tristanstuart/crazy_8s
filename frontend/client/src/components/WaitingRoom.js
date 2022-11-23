@@ -21,12 +21,12 @@ function WaitingRoom({ socket }) {
 
     useEffect(()=>{
 
-        socket.on("updateIconForPlayer", data => {
+        /*socket.on("updateIconForPlayer", data => {
             DATA.iconList = data
             sessionStorage.setItem("data",JSON.stringify(DATA))
             setIconList(DATA.iconList)
             console.log("uifp: " + JSON.stringify(DATA.iconList))
-        })
+        })*/
 
         socket.on("reJoin",e=>{
             console.log("i rejoined a room")
@@ -34,7 +34,9 @@ function WaitingRoom({ socket }) {
 
         socket.on('player_joined',e=>{
             console.log("lpayer joinedd wile in waitingrommo")
-            DATA.playerList = e
+            console.log(JSON.stringify(e))
+            DATA.playerList = e.players
+            DATA.iconList = e.icons
             sessionStorage.setItem("data",JSON.stringify(DATA))
             setPlayers(DATA.playerList)
         })

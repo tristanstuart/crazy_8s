@@ -3,7 +3,7 @@ class Player():
     def __init__(self, info) -> None:
         print("info",info)
         self.info = info
-        self.icon = []
+        self.icon = info['icon']
         self.cards = []
 
     def __repr__(self):
