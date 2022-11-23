@@ -24,8 +24,6 @@ log = logging.getLogger("werkzeug")
 log.disabled = True
 CORS(app)#delete this later, only needed when running locally
 
-
-print()
 #ctx.close()
 count = [0]
 rooms = {}
@@ -100,6 +98,22 @@ def leaveRoom(data):
         emit("leaveRoom",f'you are the only player in the room',to=room)
         close_room(room)
         del(rooms[room])
+
+#emitted by admin when the game ends and they no longer want to keep playing with the same people
+@socketio.on("closeGame")
+def closeGame(data):
+    room = data["room"]
+    emit("leaveRoom","the admin does not want to restart the game",to=room)
+    close_room(room)
+    del rooms[room]
+
+#emitted by admin when the game ends and want to restart the game with the same people,
+#however the game is not started from here as the people still have the choice to leave 
+@socketio.on("restartGame")
+def restartGame(data):
+    room = data["room"]
+    rooms[room].reset()
+    emit("move",f'move to waiting room {room}',to=room)
 
 #set a clients newSID given to them by socketio, as it does not preserve it through the
 #users session
