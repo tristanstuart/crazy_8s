@@ -221,8 +221,21 @@
     
     
 - Emmanuel
-    
-
+    - `Find Avatar Icons`
+        * [Task](https://cs3398f22ferengi.atlassian.net/browse/FC8-59?atlOrigin=eyJpIjoiMzk0MjA4MWQ0Y2NlNDA0MDhiMGVhZjk5NDIwMzYwY2UiLCJwIjoiaiJ9)
+        * [Pull Request](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/pull-requests/47)
+    - `Added Avatars To Collection`
+        * [Task](https://cs3398f22ferengi.atlassian.net/browse/FC8-56?atlOrigin=eyJpIjoiZTkwZDIxMTg1ZWMwNGE5ZmE3NzU0MDIzZWI0Njk3YWEiLCJwIjoiaiJ9)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/commits/0e7a0ef9ae3e46e08c6fff0347380882916a42eb)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/commits/58b2a5e05fdd03c6b6953cbacd2b7495c9e451be)
+        * [Pull Request](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/pull-requests/34)
+    - `Added Tutorial Button`
+        * [Task](https://cs3398f22ferengi.atlassian.net/browse/FC8-36?atlOrigin=eyJpIjoiOGJmOTYyZWFhYzZjNGNlYWIyNTY4MWM0MDM2OGQzNWEiLCJwIjoiaiJ9)
+        * [Pull Request](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/pull-requests/48)
+    - `Test Case`
+        * [Task](https://cs3398f22ferengi.atlassian.net/browse/FC8-77?atlOrigin=eyJpIjoiY2QyMDk4OTQyYWQwNDBmMjkzNTJiOWRhZWNmM2E2OWYiLCJwIjoiaiJ9)
+        * [Pull Request](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/pull-requests/37)
+    - 
 
 - Tristan
     
@@ -236,7 +249,7 @@
     * Since, this is the last sprint of the assignment I am not sure if there will be anymore steps. Maybe if I have some free time in the future I may turn it into a mobile app. 
     
 - Emmanuel 
-    
+    * PLay crazy_8s in my free time and possibly add to it if i have time 
     
 - Tristan
    
