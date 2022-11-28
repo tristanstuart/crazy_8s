@@ -59,6 +59,9 @@ function WaitingRoom({ socket }) {
             DATA.isAdmin = true
             sessionStorage.setItem("data",JSON.stringify(DATA))
         })
+        socket.on("reset", message =>{
+            window.alert("Game Is Over")
+        })
 
         //uncomment to display status
         socket.on("status",status=>{

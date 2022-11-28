@@ -181,7 +181,6 @@
         * [Task](https://cs3398f22ferengi.atlassian.net/jira/software/projects/FC8/boards/2?assignee=6304d77555894b7fbddcc2f3&selectedIssue=FC8-23)
         * [Commit](https://bitbucket.org/cs3398f22ferengi/crazy_8s/commits/972b42397bde4d50a37521d8debf3d4f9f939d57) 
 
-
 ## Next Steps
 - Marco
     * Make our bot work in single player mode
@@ -201,6 +200,70 @@
     * Get a functioning login and register page
     * Refactor UI
     * Test for bugs
+
+# Sprint 3
+## Contributions
+- Marco
+    
+- Christian
+    - `Add Custom Rules`
+        * [Task](https://cs3398f22ferengi.atlassian.net/jira/software/projects/FC8/boards/2?selectedIssue=FC8-67)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/pull-requests/29)
+    - `Add graphics, transitions, and animations`
+        * [Task](https://cs3398f22ferengi.atlassian.net/jira/software/projects/FC8/boards/2?assignee=6306a1439278161d1937db38&selectedIssue=FC8-63)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/pull-requests/44)
+    - `Test Cases`
+        * [Task](https://cs3398f22ferengi.atlassian.net/jira/software/projects/FC8/boards/2?assignee=6306a1439278161d1937db38&selectedIssue=FC8-74)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/branch/FC8-74-a20_cld113)
+    - `Implement sounds`
+        * [Task](https://cs3398f22ferengi.atlassian.net/jira/software/projects/FC8/boards/2?assignee=6306a1439278161d1937db38&selectedIssue=FC8-66)
+        * This task was not completed due to the length of time spent on adding graphics, transitions and animations. 
+    
+    
+- Emmanuel
+    - `Find Avatar Icons`
+        * [Task](https://cs3398f22ferengi.atlassian.net/browse/FC8-59?atlOrigin=eyJpIjoiMzk0MjA4MWQ0Y2NlNDA0MDhiMGVhZjk5NDIwMzYwY2UiLCJwIjoiaiJ9)
+        * [Pull Request](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/pull-requests/47)
+    - `Added Avatars To Collection`
+        * [Task](https://cs3398f22ferengi.atlassian.net/browse/FC8-56?atlOrigin=eyJpIjoiZTkwZDIxMTg1ZWMwNGE5ZmE3NzU0MDIzZWI0Njk3YWEiLCJwIjoiaiJ9)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/commits/0e7a0ef9ae3e46e08c6fff0347380882916a42eb)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/commits/58b2a5e05fdd03c6b6953cbacd2b7495c9e451be)
+        * [Pull Request](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/pull-requests/34)
+    - `Added Tutorial Button`
+        * [Task](https://cs3398f22ferengi.atlassian.net/browse/FC8-36?atlOrigin=eyJpIjoiOGJmOTYyZWFhYzZjNGNlYWIyNTY4MWM0MDM2OGQzNWEiLCJwIjoiaiJ9)
+        * [Pull Request](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/pull-requests/48)
+    - `Test Case`
+        * [Task](https://cs3398f22ferengi.atlassian.net/browse/FC8-77?atlOrigin=eyJpIjoiY2QyMDk4OTQyYWQwNDBmMjkzNTJiOWRhZWNmM2E2OWYiLCJwIjoiaiJ9)
+        * [Pull Request](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/pull-requests/37)
+    - 
+
+- Tristan
+    - `Creating avatar selection`
+        * [FC8-57](https://cs3398f22ferengi.atlassian.net/browse/FC8-57?atlOrigin=eyJpIjoiY2E1ODA2MGM3YmFiNDRiZmIyMGU5ZmEyMDExZTkxMDIiLCJwIjoiaiJ9)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/pull-requests/46)
+    - `refactor frontend`
+        * [FC8-54](https://cs3398f22ferengi.atlassian.net/browse/FC8-54?atlOrigin=eyJpIjoiNzU0NmZiZGVkZDE4NDczMjhhYzI4ZjQ2OTlkNjc5YmIiLCJwIjoiaiJ9)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/pull-requests/43)
+    - `refactor backend`
+        * [FC8-55](https://cs3398f22ferengi.atlassian.net/browse/FC8-55?atlOrigin=eyJpIjoiYjU0NGQzNzAzMzRlNDVhNTljMjc0ODVmODUyYzdhZGYiLCJwIjoiaiJ9)
+        * Task incomplete due to underestimating work for other tasks, several outside obligations, and mismanagement of remaining free time.
+
+- Quinn
+   
+## Next Steps
+- Marco
+    
+- Christian
+    * Since, this is the last sprint of the assignment I am not sure if there will be anymore steps. Maybe if I have some free time in the future I may turn it into a mobile app. 
+    
+- Emmanuel 
+    * PLay crazy_8s in my free time and possibly add to it if i have time 
+    
+- Tristan
+   * For this class, no more additional steps since this is the last sprint, but I would eventually like to try cleaning up the codebase and adding more features in my free time.
+   
+- Quinn
+    
 	
 
 <div style="display:flex; justify-content:center;">
