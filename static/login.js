@@ -1,2 +1,0 @@
-
-$('body').addClass('center')

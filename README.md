@@ -121,25 +121,127 @@
         * Task: https://cs3398f22ferengi.atlassian.net/browse/FC8-42
         * Commit: https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/pull-requests/8
 - Christian
+    - `Render/Create game table with players shown`
+        * [Task](https://cs3398f22ferengi.atlassian.net/jira/software/projects/FC8/boards/2?assignee=6306a1439278161d1937db38&selectedIssue=FC8-40)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/pull-requests/15)
+    - `Render Players Hand`
+        * [Task](https://cs3398f22ferengi.atlassian.net/jira/software/projects/FC8/boards/2?assignee=6306a1439278161d1937db38&selectedIssue=FC8-35)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/pull-requests/14)
+    - `Render Up Card`
+        * [Task](https://cs3398f22ferengi.atlassian.net/jira/software/projects/FC8/boards/2?assignee=6306a1439278161d1937db38&selectedIssue=FC8-37)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/pull-requests/11)
+    - `Moved frontend to react and setup front and backend communication`
+        * [Task](https://cs3398f22ferengi.atlassian.net/jira/software/projects/FC8/boards/2?assignee=6306a1439278161d1937db38&selectedIssue=FC8-50)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/pull-requests/9)
+    
     
 - Emmanuel
+    - `Game Reset Game.Python`
+        * [Task](https://cs3398f22ferengi.atlassian.net/browse/FC8-5?atlOrigin=eyJpIjoiYWMxMmUxNGI4ODk2NDI1MGFmNWIzOWViNzU0MjJiZjMiLCJwIjoiaiJ9) 
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/commits/b65d668647c86603817d95ee15071befa5571046)
+        * [Pull Request](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/pull-requests/26)
+    -  `Game Reset Front end`
+        * [Task](https://cs3398f22ferengi.atlassian.net/browse/FC8-44?atlOrigin=eyJpIjoiMTdiNDA1ZmYyZmFlNDkyMjgxODdmMmI2MWY1NzNiNDAiLCJwIjoiaiJ9)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/commits/ce924d210eed3de238acbdd0de0337d4144b3522)
+        * [Pull Request](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/pull-requests/26)
+    - `Reset App.Py`
+        * [Task](https://cs3398f22ferengi.atlassian.net/browse/FC8-19?atlOrigin=eyJpIjoiYzcwZTgwZTFjOTlhNDA5MGI0OWI3Y2NjNTNhZDUwNjIiLCJwIjoiaiJ9)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/commits/3b80b938268962d1179282ef41c5e59a411bfb12)
+        * [Pull Request](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/pull-requests/26)
+
 
 - Tristan
+    - `FC8-41: Render number of cards in opponents hands`
+        * [Task](https://cs3398f22ferengi.atlassian.net/browse/FC8-41?atlOrigin=eyJpIjoiM2NlZWI2MzQ3ZTk2NDU5Yzg0OTI1YjJmNWQ3M2FmMjEiLCJwIjoiaiJ9)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/crazy_8s/commits/520b90c5692d577ce22a2bcbd06bc5eca6efc2c1)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/crazy_8s/commits/e82bd7582cab128a6ad0f4b682226537301cb4c1)
+        * [Pull Request](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/pull-requests/10)
+    - `FC8-48: Setup waiting room and game lobby communication`
+        * [Task](https://cs3398f22ferengi.atlassian.net/browse/FC8-41?atlOrigin=eyJpIjoiM2NlZWI2MzQ3ZTk2NDU5Yzg0OTI1YjJmNWQ3M2FmMjEiLCJwIjoiaiJ9)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/crazy_8s/commits/b31ea22a3abe5f5ac2c0a904b7f9a8011e7e1a8a)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/crazy_8s/commits/492b746100d9d990fb983ca24d9c28e7150daad7)
+        * [Pull Request](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/pull-requests/12)
+    - `FC8-38: Render Whose Turn Indication`
+        * [Task](https://cs3398f22ferengi.atlassian.net/browse/FC8-38?atlOrigin=eyJpIjoiMjEzZDUwZmMwNjk1NDllYmI0NmE5MzI0MzRlMmM5YjEiLCJwIjoiaiJ9)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/crazy_8s/commits/6e94e05fe54224881a7607a1cd7c67c240276886)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/crazy_8s/commits/efbd9cfde7051097039cef4c908c73fc72f7473d)
+        * [Pull Request](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/pull-requests/25)
 
 - Quinn
-
+    - Added a draw button with card drawing functioanlity
+        * [Task](https://cs3398f22ferengi.atlassian.net/jira/software/projects/FC8/boards/2?assignee=6304d77555894b7fbddcc2f3&selectedIssue=FC8-46)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/crazy_8s/commits/b439c9a63f9967388d68d9aff320b9ca5bc4c48e)
+    - Established a connection to our SQL database
+        * [Task](https://cs3398f22ferengi.atlassian.net/jira/software/projects/FC8/boards/2?assignee=6304d77555894b7fbddcc2f3&selectedIssue=FC8-9)
+        * [Commit] (https://bitbucket.org/cs3398f22ferengi/crazy_8s/commits/a3425edf538acc2ffafe69ad1189c48468b41be3)
+    - Added a rules page to nav bar and also content to rules page
+        * [Task](https://cs3398f22ferengi.atlassian.net/jira/software/projects/FC8/boards/2?assignee=6304d77555894b7fbddcc2f3&selectedIssue=FC8-20)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/pull-requests/21)
+    - Bug tested
+        * [Task](https://cs3398f22ferengi.atlassian.net/jira/software/projects/FC8/boards/2?assignee=6304d77555894b7fbddcc2f3&selectedIssue=FC8-23)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/crazy_8s/commits/972b42397bde4d50a37521d8debf3d4f9f939d57) 
 
 ## Next Steps
 - Marco
     * Make our bot work in single player mode
     * Fix bugs
 - Christian
+    * Make the web app look better
+    * deploy the web app
     
 - Emmanuel 
+    * Work on Customization 
+    * Work on end game functions
+    
+- Tristan
+   * Fix edge cases in UI rendering
+   * Work on customization features for player profiles
+- Quinn
+    * Get a functioning login and register page
+    * Refactor UI
+    * Test for bugs
 
+# Sprint 3
+## Contributions
+- Marco
+    
+- Christian
+    - `Add Custom Rules`
+        * [Task](https://cs3398f22ferengi.atlassian.net/jira/software/projects/FC8/boards/2?selectedIssue=FC8-67)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/pull-requests/29)
+    - `Add graphics, transitions, and animations`
+        * [Task](https://cs3398f22ferengi.atlassian.net/jira/software/projects/FC8/boards/2?assignee=6306a1439278161d1937db38&selectedIssue=FC8-63)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/pull-requests/44)
+    - `Test Cases`
+        * [Task](https://cs3398f22ferengi.atlassian.net/jira/software/projects/FC8/boards/2?assignee=6306a1439278161d1937db38&selectedIssue=FC8-74)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/branch/FC8-74-a20_cld113)
+    - `Implement sounds`
+        * [Task](https://cs3398f22ferengi.atlassian.net/jira/software/projects/FC8/boards/2?assignee=6306a1439278161d1937db38&selectedIssue=FC8-66)
+        * This task was not completed due to the length of time spent on adding graphics, transitions and animations. 
+    
+    
+- Emmanuel
+    
+
+
+- Tristan
+    
+
+- Quinn
+   
+## Next Steps
+- Marco
+    
+- Christian
+    * Since, this is the last sprint of the assignment I am not sure if there will be anymore steps. Maybe if I have some free time in the future I may turn it into a mobile app. 
+    
+- Emmanuel 
+    
+    
 - Tristan
    
 - Quinn
+    
 	
 
 <div style="display:flex; justify-content:center;">

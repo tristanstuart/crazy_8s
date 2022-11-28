@@ -1,6 +1,7 @@
 import {useEffect, useState} from 'react'
 import AlertBox from './AlertBox';
 import {useNavigate} from 'react-router-dom'
+import {generateRandomIcon} from "./gameplay/IconData"
 
 var roomState//needed to pass info through navigate()
 
@@ -11,32 +12,37 @@ function JoinGame({ socket }){
     const [errorTitle, setErrorTitle] = useState('')
     const [errorMsg, setErrorMsg] = useState('')
 	const navigate = useNavigate()
+    const [joinedRoom, setJoinedRoom] = useState(false)
 
     useEffect(()=>{
-        socket.on("user_already_in_room",e=>{
-            setErrorTitle('Username is not available')
-            setErrorMsg('Someone with this username is already in this room')
-            setError(true)
+        socket.on("player_joined", e =>{ 
+            if(!joinedRoom) { //this is firing even after the navigate() call to waiting room?
+                const data = {
+                    room : roomState.room,
+                    inSession : false,
+                    isAdmin : false,
+                    user : roomState.user,
+                    playerList : e.players,
+                    iconList : e.icons
+                }
+                console.log("player_joined iconList " + JSON.stringify(e.icons))
+                sessionStorage.setItem("data",JSON.stringify(data))
+                sessionStorage.setItem("gameOver",JSON.parse(false))
+                setJoinedRoom(true)
+                navigate('/waitingRoom') //go to waiting room
+            }
         })
-        socket.on("player_joined", e =>{
-            console.log("joined room " + room)
-            
-			navigate('/waitingRoom', {state:{room:roomState.room, playerList:e, user:roomState.user, isAdmin:false}}) //go to waiting room
-        })
-        socket.on('room_does_not_exist', e=>{
-            setErrorTitle('This room does not exist')
-            setErrorMsg('please join an existing game or create your own')
+        socket.on("error",data=>{
+            setErrorTitle(data.title)
+            setErrorMsg(data.message)
             setError(true)
         })
 
       return ()=>{
-        socket.off("user_already_in_room")
-        socket.off("player_joined")
-        socket.off("room_does_not_exist")
-      }},[socket, navigate, room, username])  
+      }},[socket, navigate])  
 
         return (
-            <div className="grid items-center justify-center h-screen bg-purple-300" >
+            <div className="grid items-center justify-center h-screen bg-gradient-to-r from-purple-500 to-pink-500 " >
                 <div className='flex-initial flex-wrap'>
                     {error ? <AlertBox title={errorTitle} message={errorMsg}/> : null}
                     {/*only shows when there's an error which is set in useEffect()*/}
@@ -45,7 +51,7 @@ function JoinGame({ socket }){
                             id="name" 
                             type="text"  
                             placeholder="Enter Username" 
-                            className="p-3 text-2xl rounded-full grid items-center justify-center mt-2"
+                            className="p-3 text-2xl rounded-full grid items-center justify-center mt-2 "
                             onChange= {e => {
                                 setError(false)
                                 setUser(e.target.value.trim())
@@ -55,7 +61,7 @@ function JoinGame({ socket }){
                             id="room" 
                             type="text" 
                             placeholder="Enter Room Code" 
-                            className="p-3 text-2xl rounded-full mt-1 grid items-center justify-center"
+                            className="p-3 text-2xl rounded-full mt-1 grid items-center justify-center "
                             onChange={e=>{
                                 setError(false)
                                 setRoom(e.target.value.trim())
@@ -65,7 +71,7 @@ function JoinGame({ socket }){
                     </form>
                         
                     <button id="join" 
-                    className="p-3 text-xl rounded-full mt-1 bg-green-300"
+                    className="p-3 text-xl rounded-full mt-1 bg-green-300 "
                     onClick={() => {
                         if(room === "" ||username ===""){
                             setErrorTitle('Error')
@@ -79,7 +85,7 @@ function JoinGame({ socket }){
                             setError(true)
                             return
                         }
-                        socket.emit("join", {name: username, room: room})
+                        socket.emit("join", {name: username, room: room,ID:JSON.parse(sessionStorage.getItem("session")).ID, icon: generateRandomIcon()})
 						roomState = {room: room, user: username}
                     }}> 
                     Join Game </button>
