@@ -238,7 +238,15 @@
     - 
 
 - Tristan
-    
+    - `Creating avatar selection`
+        * [FC8-57](https://cs3398f22ferengi.atlassian.net/browse/FC8-57?atlOrigin=eyJpIjoiY2E1ODA2MGM3YmFiNDRiZmIyMGU5ZmEyMDExZTkxMDIiLCJwIjoiaiJ9)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/pull-requests/46)
+    - `refactor frontend`
+        * [FC8-54](https://cs3398f22ferengi.atlassian.net/browse/FC8-54?atlOrigin=eyJpIjoiNzU0NmZiZGVkZDE4NDczMjhhYzI4ZjQ2OTlkNjc5YmIiLCJwIjoiaiJ9)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/pull-requests/43)
+    - `refactor backend`
+        * [FC8-55](https://cs3398f22ferengi.atlassian.net/browse/FC8-55?atlOrigin=eyJpIjoiYjU0NGQzNzAzMzRlNDVhNTljMjc0ODVmODUyYzdhZGYiLCJwIjoiaiJ9)
+        * Task incomplete due to underestimating work for other tasks, several outside obligations, and mismanagement of remaining free time.
 
 - Quinn
    
@@ -252,6 +260,7 @@
     * PLay crazy_8s in my free time and possibly add to it if i have time 
     
 - Tristan
+   * For this class, no more additional steps since this is the last sprint, but I would eventually like to try cleaning up the codebase and adding more features in my free time.
    
 - Quinn
     
