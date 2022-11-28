@@ -181,7 +181,6 @@
         * [Task](https://cs3398f22ferengi.atlassian.net/jira/software/projects/FC8/boards/2?assignee=6304d77555894b7fbddcc2f3&selectedIssue=FC8-23)
         * [Commit](https://bitbucket.org/cs3398f22ferengi/crazy_8s/commits/972b42397bde4d50a37521d8debf3d4f9f939d57) 
 
-
 ## Next Steps
 - Marco
     * Make our bot work in single player mode
@@ -201,6 +200,48 @@
     * Get a functioning login and register page
     * Refactor UI
     * Test for bugs
+
+# Sprint 3
+## Contributions
+- Marco
+    
+- Christian
+    - `Add Custom Rules`
+        * [Task](https://cs3398f22ferengi.atlassian.net/jira/software/projects/FC8/boards/2?selectedIssue=FC8-67)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/pull-requests/29)
+    - `Add graphics, transitions, and animations`
+        * [Task](https://cs3398f22ferengi.atlassian.net/jira/software/projects/FC8/boards/2?assignee=6306a1439278161d1937db38&selectedIssue=FC8-63)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/pull-requests/44)
+    - `Test Cases`
+        * [Task](https://cs3398f22ferengi.atlassian.net/jira/software/projects/FC8/boards/2?assignee=6306a1439278161d1937db38&selectedIssue=FC8-74)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/branch/FC8-74-a20_cld113)
+    - `Implement sounds`
+        * [Task](https://cs3398f22ferengi.atlassian.net/jira/software/projects/FC8/boards/2?assignee=6306a1439278161d1937db38&selectedIssue=FC8-66)
+        * This task was not completed due to the length of time spent on adding graphics, transitions and animations. 
+    
+    
+- Emmanuel
+    
+
+
+- Tristan
+    
+
+- Quinn
+   
+## Next Steps
+- Marco
+    
+- Christian
+    * Since, this is the last sprint of the assignment I am not sure if there will be anymore steps. Maybe if I have some free time in the future I may turn it into a mobile app. 
+    
+- Emmanuel 
+    
+    
+- Tristan
+   
+- Quinn
+    
 	
 
 <div style="display:flex; justify-content:center;">
