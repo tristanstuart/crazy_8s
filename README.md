@@ -249,6 +249,17 @@
         * Task incomplete due to underestimating work for other tasks, several outside obligations, and mismanagement of remaining free time.
 
 - Quinn
+    - `Configure Login`
+        * [Task](https://cs3398f22ferengi.atlassian.net/jira/software/projects/FC8/boards/2?assignee=6304d77555894b7fbddcc2f3&selectedIssue=FC8-58)
+        * [Commit](https://cs3398f22ferengi.atlassian.net/jira/software/projects/FC8/boards/2?assignee=6304d77555894b7fbddcc2f3&selectedIssue=FC8-58)
+    - `Configure Registration`
+        * [Task](https://cs3398f22ferengi.atlassian.net/jira/software/projects/FC8/boards/2?assignee=6304d77555894b7fbddcc2f3&selectedIssue=FC8-60)
+        * [Commit]Committed with the Configure Login task
+    - `Implement Leaderboard`
+        * [Task](https://cs3398f22ferengi.atlassian.net/jira/software/projects/FC8/boards/2?assignee=6304d77555894b7fbddcc2f3&selectedIssue=FC8-64)
+        * [Commit] Was not committed.
+    
+
    
 ## Next Steps
 - Marco
@@ -263,6 +274,7 @@
    * For this class, no more additional steps since this is the last sprint, but I would eventually like to try cleaning up the codebase and adding more features in my free time.
    
 - Quinn
+    * The next steps for the project is to get it deployed and make billions off of our perfect product.
     
 	
 
