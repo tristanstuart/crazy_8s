@@ -204,6 +204,19 @@
 # Sprint 3
 ## Contributions
 - Marco
+    - `Add back cards from a left player`
+        * [FC8-70](https://cs3398f22ferengi.atlassian.net/browse/FC8-70)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/pull-requests/33)
+    - `Play again option`
+        * [FC8-68](https://cs3398f22ferengi.atlassian.net/browse/FC8-68)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/pull-requests/45)
+    - `Create leader board component`
+        * [FC8-65](https://cs3398f22ferengi.atlassian.net/browse/FC8-65)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/pull-requests/42)
+    - `Leave Game Option`
+        * [FC8-69](https://cs3398f22ferengi.atlassian.net/browse/FC8-69)
+        * [Commit](https://bitbucket.org/cs3398f22ferengi/%7B4ad351c1-86be-4593-8482-c5a02180b9e3%7D/pull-requests/39)
+    
     
 - Christian
     - `Add Custom Rules`
@@ -263,7 +276,9 @@
    
 ## Next Steps
 - Marco
-    
+    * Transition the app to use standard request methods, instead of relying on SocketIO.
+    * Transition this web app to a react native app to use as a mobile game. 
+
 - Christian
     * Since, this is the last sprint of the assignment I am not sure if there will be anymore steps. Maybe if I have some free time in the future I may turn it into a mobile app. 
     
