@@ -6,8 +6,7 @@
 -  [Info](#technologies)
 -  [Features](#features)
 -  [Setup](#setup)
--  [Sprint 1](#sprint-1)
--  [Sprint 2](#sprint-2)
+
 # Who you’re working with (you and your team members)? #
 *Team Members Here: Marco Roman, Tristan Stuart, Quinn Templeton, Emmanual Sapolucia, Christian Davis*
 
